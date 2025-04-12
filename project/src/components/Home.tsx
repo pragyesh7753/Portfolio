@@ -91,7 +91,7 @@ const Home = () => {
             >
               <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary/5 via-blue-500/10 to-purple-600/5 blur-2xl animate-pulse duration-5000" />
               <ProfileAvatar 
-                src="./src/assets/Pragyesh Kumar Seth.jpg" 
+                src="./src/assets/profile.jpg" 
                 alt="Pragyesh Kumar Seth" 
                 size="xl"
                 className="shadow-xl"
