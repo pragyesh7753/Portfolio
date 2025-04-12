@@ -1,4 +1,5 @@
 import { Github, Linkedin, Mail } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { Separator } from './ui/separator';
 
 const Footer = () => {
@@ -48,16 +49,32 @@ const Footer = () => {
             <h3 className="text-lg font-medium">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-muted-foreground hover:text-primary transition-colors">Home</a>
+                <NavLink to="/" className={({ isActive }) => 
+                  `${isActive ? 'text-primary' : 'text-muted-foreground'} hover:text-primary transition-colors`
+                }>
+                  Home
+                </NavLink>
               </li>
               <li>
-                <a href="/about" className="text-muted-foreground hover:text-primary transition-colors">About</a>
+                <NavLink to="/about" className={({ isActive }) => 
+                  `${isActive ? 'text-primary' : 'text-muted-foreground'} hover:text-primary transition-colors`
+                }>
+                  About
+                </NavLink>
               </li>
               <li>
-                <a href="/projects" className="text-muted-foreground hover:text-primary transition-colors">Projects</a>
+                <NavLink to="/projects" className={({ isActive }) => 
+                  `${isActive ? 'text-primary' : 'text-muted-foreground'} hover:text-primary transition-colors`
+                }>
+                  Projects
+                </NavLink>
               </li>
               <li>
-                <a href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</a>
+                <NavLink to="/contact" className={({ isActive }) => 
+                  `${isActive ? 'text-primary' : 'text-muted-foreground'} hover:text-primary transition-colors`
+                }>
+                  Contact
+                </NavLink>
               </li>
             </ul>
           </div>
