@@ -94,8 +94,17 @@ const Contact = () => {
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
       
+      console.log("Environment variables check:", {
+        serviceId: serviceId ? "Found" : "Missing",
+        templateId: templateId ? "Found" : "Missing",
+        publicKey: publicKey ? "Found" : "Missing"
+      });
+      
       if (!serviceId || !templateId || !publicKey) {
-        throw new Error("EmailJS configuration is missing");
+        throw new Error("EmailJS configuration is missing: " + 
+          (!serviceId ? "Service ID, " : "") +
+          (!templateId ? "Template ID, " : "") +
+          (!publicKey ? "Public Key" : ""));
       }
       
       // Initialize with your public key
@@ -124,9 +133,17 @@ const Contact = () => {
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
       console.error("Email sending failed:", error);
+      
+      // More detailed error message
+      let errorMessage = "Your message could not be sent. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = `Error: ${error.message}`;
+        console.error("Error details:", error);
+      }
+      
       toast({
         title: "Something went wrong",
-        description: "Your message could not be sent. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
