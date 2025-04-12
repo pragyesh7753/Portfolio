@@ -50,7 +50,7 @@ const Home = () => {
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <a href="./src/assets/Pragyesh Kumar Seth resume.pdf" download>
+                <a href="/resume.pdf" download>
                   <Download className="mr-2 h-4 w-4" /> Download Resume
                 </a>
               </Button>
@@ -91,7 +91,7 @@ const Home = () => {
             >
               <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary/5 via-blue-500/10 to-purple-600/5 blur-2xl animate-pulse duration-5000" />
               <ProfileAvatar 
-                src="./src/assets/profile.jpg" 
+                src="/images/profile.jpg"
                 alt="Pragyesh Kumar Seth" 
                 size="xl"
                 className="shadow-xl"
