@@ -33,15 +33,15 @@ export function ProfileAvatar({
   
   // Map size to corresponding Tailwind classes
   const sizeClasses = {
-    sm: 'h-24 w-24',
-    md: 'h-32 w-32',
-    lg: 'h-48 w-48',
-    xl: 'h-64 w-64',
+    sm: 'h-28 w-28', // Increased from h-24 w-24
+    md: 'h-40 w-40', // Increased from h-32 w-32
+    lg: 'h-56 w-56', // Increased from h-48 w-48
+    xl: 'h-80 w-80', // Increased from h-64 w-64
   };
   
   // Calculate the gradient position based on mouse position
   const calculateGradientPosition = () => {
-    if (!isHovered) return '0% 0%';
+    if (!isHovered) return '50% 50%';
     
     // Get the center of the avatar
     const element = document.getElementById('profile-avatar');
@@ -72,9 +72,29 @@ export function ProfileAvatar({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6 }}
+      animate={{ 
+        opacity: 1, 
+        scale: isHovered ? 1.05 : 1, 
+        transition: { duration: isHovered ? 0.3 : 0.6 } 
+      }}
     >
+      {/* Enhanced glow effect */}
+      <motion.div 
+        className="absolute -inset-4 rounded-full blur-xl"
+        animate={{
+          opacity: isHovered ? 0.7 : 0,
+          scale: isHovered ? 1.1 : 0.9,
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
+          background: `radial-gradient(circle at ${gradientPosition}, 
+            rgba(var(--primary-rgb), 0.4) 0%, 
+            rgba(56, 182, 255, 0.4) 40%, 
+            rgba(124, 58, 237, 0.2) 70%, 
+            rgba(0,0,0,0) 100%)`,
+        }}
+      />
+      
       <div 
         className="absolute inset-0 rounded-full"
         style={{
@@ -87,14 +107,18 @@ export function ProfileAvatar({
       <div className="absolute inset-0 rounded-full border-2 border-primary/30" />
       
       <div className="h-full w-full rounded-full p-[3px] bg-gradient-to-r from-primary/20 via-blue-400/30 to-violet-500/20">
-        <div className="h-full w-full rounded-full overflow-hidden border border-primary/20">
+        <motion.div 
+          className="h-full w-full rounded-full overflow-hidden border border-primary/20"
+          animate={{ scale: isHovered ? 1.02 : 1 }}
+          transition={{ duration: 0.3 }}
+        >
           <img
             src={src}
             alt={alt}
             className="h-full w-full object-cover"
             loading="lazy"
           />
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
