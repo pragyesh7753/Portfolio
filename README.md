@@ -22,9 +22,9 @@ This portfolio serves as a comprehensive showcase of my work, skills, and profes
 - React
 - Tailwind CSS
 
-## Project Structure
+## Installation
 
-Brief explanation of how the project is organized.
+- npm install --legacy-peer-deps
 
 ## Deployment
 

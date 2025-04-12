@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, ArrowRight, Search, Code, Tags } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
@@ -48,6 +48,15 @@ const Projects = () => {
       category: "frontend",
       liveUrl: "https://viperrun.pragyesh.tech/",
       githubUrl: "https://github.com/pragyesh7753/Snake-game-project-miniproject",
+      featured: false
+    },
+    {
+      title: "Portfolio Website",
+      description: "Modern, Professional, and Feature-Rich Portfolio Website.",
+      tech: ["React", "Typescript", "Tailwind CSS", "Framer Motion", "Radix UI", "Shadcn", "EmailJs"],
+      category: "frontend",
+      liveUrl: "https://pragyesh.tech/",
+      githubUrl: "https://github.com/pragyesh7753/Portfolio",
       featured: true
     },
     
@@ -174,50 +183,7 @@ const Projects = () => {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     whileHover={{ y: -8, transition: { duration: 0.2 } }}
                   >
-                    <Card className="h-full overflow-hidden border-primary/10 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:border-primary/30">
-                      <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="flex items-center">
-                            <Code className="mr-2 h-5 w-5 text-primary" />
-                            {project.title}
-                          </CardTitle>
-                        </div>
-                        <CardDescription>{project.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="pb-3">
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {project.tech.map(tech => (
-                            <Badge key={tech} variant="outline" className="bg-primary/5">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex justify-between">
-                        <Button variant="ghost" size="sm" asChild>
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center group"
-                          >
-                            <ExternalLink className="mr-1 h-4 w-4 group-hover:text-primary transition-colors" />
-                            <span className="group-hover:text-primary transition-colors">Live Demo</span>
-                          </a>
-                        </Button>
-                        <Button variant="ghost" size="sm" asChild>
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center group"
-                          >
-                            <Github className="mr-1 h-4 w-4 group-hover:text-primary transition-colors" />
-                            <span className="group-hover:text-primary transition-colors">Source Code</span>
-                          </a>
-                        </Button>
-                      </CardFooter>
-                    </Card>
+                    <ProjectCard project={project} featured={true} />
                   </motion.div>
                 ))}
               </div>
@@ -259,34 +225,116 @@ const Projects = () => {
   );
 };
 
-const ProjectCard = ({ project }: { project: Project }) => {
+const ProjectIllumination = ({ isHovered }: { isHovered: boolean }) => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const illuminationRef = useRef<HTMLDivElement>(null);
+  
+  // Track mouse position within the card
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!illuminationRef.current) return;
+    
+    const rect = illuminationRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    setPosition({ x, y });
+  }, []);
+  
+  return (
+    <motion.div
+      ref={illuminationRef}
+      className="absolute inset-0 overflow-hidden z-0"
+      onMouseMove={handleMouseMove}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isHovered ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Gradient light effect that follows cursor */}
+      <motion.div 
+        className="absolute w-[200%] h-[200%] pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at ${position.x}% ${position.y}%, 
+            rgba(var(--primary-rgb), 0.15) 0%, 
+            rgba(var(--primary-rgb), 0.05) 25%, 
+            transparent 50%)`,
+          left: '-50%',
+          top: '-50%',
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ 
+          opacity: isHovered ? 1 : 0, 
+          scale: isHovered ? 1 : 0.8,
+        }}
+        transition={{
+          opacity: { duration: 0.4 },
+          scale: { duration: 0.3 }
+        }}
+      />
+      
+      {/* Subtle ambient glow */}
+      <motion.div 
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          background: `linear-gradient(135deg, 
+            rgba(var(--primary-rgb), 0.1) 0%, 
+            rgba(var(--primary-rgb), 0) 100%)`
+        }}
+        animate={{ 
+          opacity: isHovered ? 0.3 : 0
+        }}
+        transition={{ duration: 0.5 }}
+      />
+      
+      {/* Border highlight */}
+      <motion.div 
+        className="absolute inset-0 rounded-lg pointer-events-none"
+        style={{
+          boxShadow: 'inset 0 0 0 1px rgba(var(--primary-rgb), 0.2)'
+        }}
+        animate={{ 
+          opacity: isHovered ? 1 : 0
+        }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.div>
+  );
+};
+
+const ProjectCard = ({ project, featured = false }: { project: Project, featured?: boolean }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Card 
       className={cn(
-        "h-full overflow-hidden hover:shadow-md transition-all duration-300",
-        isHovered && "border-primary/30"
+        "h-full overflow-hidden transition-all duration-300 relative",
+        isHovered ? "shadow-lg border-primary/30" : "shadow-sm",
+        featured && "bg-card/50 backdrop-blur-sm"
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <CardHeader className="pb-3">
+      {/* Add the illumination effect */}
+      <ProjectIllumination isHovered={isHovered} />
+      
+      <CardHeader className="pb-3 relative z-10">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{project.title}</CardTitle>
+          <CardTitle className="text-lg">
+            {featured && <Code className="mr-2 h-5 w-5 text-primary inline" />}
+            {project.title}
+          </CardTitle>
         </div>
         <CardDescription className="line-clamp-2">{project.description}</CardDescription>
       </CardHeader>
-      <CardContent className="pb-2">
+      <CardContent className="pb-2 relative z-10">
         <div className="flex flex-wrap gap-1.5 mb-4">
           {project.tech.map(tech => (
-            <Badge key={tech} variant="secondary" className="text-xs">
+            <Badge key={tech} variant={featured ? "outline" : "secondary"} className={featured ? "bg-primary/5" : "text-xs"}>
               {tech}
             </Badge>
           ))}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between pt-2">
+      <CardFooter className="flex justify-between pt-2 relative z-10">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -299,12 +347,21 @@ const ProjectCard = ({ project }: { project: Project }) => {
             rel="noopener noreferrer"
             className="flex items-center gap-1"
           >
-            Live Demo 
-            <ArrowRight className={cn(
-              "h-3.5 w-3.5 transition-transform duration-300", 
-              isHovered ? "translate-x-1" : ""
-            )} />
-            {isHovered && (
+            {featured ? (
+              <>
+                <ExternalLink className="mr-1 h-4 w-4 group-hover:text-primary transition-colors" />
+                <span className="group-hover:text-primary transition-colors">Live Demo</span>
+              </>
+            ) : (
+              <>
+                Live Demo 
+                <ArrowRight className={cn(
+                  "h-3.5 w-3.5 transition-transform duration-300", 
+                  isHovered ? "translate-x-1" : ""
+                )} />
+              </>
+            )}
+            {isHovered && !featured && (
               <motion.span 
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" 
                 initial={{ width: 0 }} 
@@ -330,6 +387,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
               "h-3.5 w-3.5 transition-transform duration-300",
               isHovered ? "scale-110" : ""
             )} />
+            {featured && <span className="group-hover:text-primary transition-colors">Source Code</span>}
           </a>
         </Button>
       </CardFooter>

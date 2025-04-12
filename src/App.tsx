@@ -7,14 +7,12 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
-import { ParticlesBackground } from './components/ParticlesBackground';
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark">
       <Router>
         <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-          <ParticlesBackground />
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
