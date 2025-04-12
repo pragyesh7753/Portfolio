@@ -87,16 +87,24 @@ const Contact = () => {
 
     try {
       // Use the Email.js service to send emails
-      // First, load the SDK
       const emailjs = await import('@emailjs/browser');
       
-      // Initialize with your public key
-      emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+      // Make sure we're using the correct environment variables
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
       
-      // Send the email
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error("EmailJS configuration is missing");
+      }
+      
+      // Initialize with your public key
+      emailjs.init(publicKey);
+      
+      // Send the email using the updated method signature for EmailJS v3
+      const response = await emailjs.send(
+        serviceId,
+        templateId,
         {
           from_name: formData.name,
           from_email: formData.email,
@@ -104,6 +112,8 @@ const Contact = () => {
           message: formData.message,
         }
       );
+      
+      console.log("Email sent successfully:", response);
       
       toast({
         title: "Message sent!",
