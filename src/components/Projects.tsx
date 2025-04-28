@@ -15,14 +15,22 @@ interface Project {
   githubUrl: string;
   category: 'frontend' | 'backend' | 'fullstack';
   featured?: boolean;
-  image?: string;
 }
 
 const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-
+  
   const projects: Project[] = [
+    {
+      title: "InternAuto - Automate Your Future",
+      description: "Developed an automated internship application platform for Internshala using React and Python, featuring web scraping, AI-driven form filling, personalized career guidance, and resume generation.",
+      tech: ["React",  "JavaScript", "Framer-Motion", "Typewriter-Effect", "Tailwind CSS",  "Python", "Flask", "Selenium"],
+      category: "fullstack",
+      liveUrl: "https://internauto.pragyesh.tech/",
+      githubUrl: "https://github.com/pragyesh7753/InternAuto_project",
+      featured: true
+    },
     {
       title: "Todo App with Context API",
       description: "A feature-rich todo application built with React and Context API for state management.",
@@ -31,7 +39,6 @@ const Projects = () => {
       liveUrl: "https://todo.pragyesh.tech/",
       githubUrl: "https://github.com/pragyesh7753/Web_Development/tree/main/React/10-todoContextLocal",
       featured: true,
-      image: "/todo-app.jpg"
     },
     {
       title: "Password Manager",
@@ -53,7 +60,7 @@ const Projects = () => {
     {
       title: "Portfolio Website",
       description: "Modern, Professional, and Feature-Rich Portfolio Website.",
-      tech: ["React", "Typescript", "Tailwind CSS", "Framer Motion", "Radix UI", "Shadcn", "EmailJs"],
+      tech: ["React", "Typescript", "Tailwind CSS", "Framer-Motion", "Radix UI", "Shadcn", "EmailJs"],
       category: "frontend",
       liveUrl: "https://pragyesh.tech/",
       githubUrl: "https://github.com/pragyesh7753/Portfolio",
