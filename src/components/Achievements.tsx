@@ -21,55 +21,55 @@ const Achievements = () => {
 
   const certificates: Certificate[] = [
     {
-        id: "cert-1",
-        title: "MERN Stack Development",
-        issuedBy: "PW Skills",
-        date: "June 2023",
-        imageUrl: "/images/certificates/mern-stack.jpg",
-        driveUrl: "https://drive.google.com/file/d/your-file-id/view",
-        featured: true
+      id: "cert-1",
+      title: "Full Stack Web Development",
+      issuedBy: "PW Skills",
+      date: "April 2024",
+      imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.jpg",
+      driveUrl: "https://drive.google.com/file/d/10r9VEQ38AYSsVD9tE7D7fzHU5nPWo24t/view?usp=drive_link",
+      featured: true
     },
     {
-        id: "cert-2",
-        title: "Merit Performance Award",
-        issuedBy: "St. Andrews Institute of Technology and Management",
-        date: "November 2024",
-        imageUrl: "/images/certificates/merit-performance.jpg",
-        driveUrl: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view?usp=drive_link",
-        featured: true
+      id: "cert-2",
+      title: "Merit Performance Award",
+      issuedBy: "St. Andrews Institute of Technology and Management",
+      date: "November 2024",
+      imageUrl: "/images/certificates/merit-performance.jpg",
+      driveUrl: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view?usp=drive_link",
+      featured: true
     },
     {
-        id: "cert-3",
-        title: "Bapu Bazaar Samman Patra",
-        issuedBy: "Veer Bahadur Singh Purvanchal University",
-        date: "March 2023",
-        imageUrl: "/images/certificates/bapu-bazaar.jpg",
-        driveUrl: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view?usp=sharing",
-        featured: true
+      id: "cert-3",
+      title: "Java Programming",
+      issuedBy: "Great Learning",
+      date: "December 2024",
+      imageUrl: "/images/certificates/java-programming.jpg",
+      driveUrl: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view?usp=drive_link",
+      featured: true
     },
     {
-        id: "cert-4",
-        title: "Java Programming",
-        issuedBy: "Great Learning",
-        date: "December 2024",
-        imageUrl: "/images/certificates/java-programming.jpg",
-        driveUrl: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view?usp=drive_link",
-        featured: true
+      id: "cert-4",
+      title: "Bapu Bazaar Samman Patra",
+      issuedBy: "Veer Bahadur Singh Purvanchal University",
+      date: "March 2023",
+      imageUrl: "/images/certificates/bapu-bazaar.jpg",
+      driveUrl: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view?usp=sharing",
+      featured: true
     },
     {
-        id: "cert-5",
-        title: "Voter Awareness Campaign",
-        issuedBy: "Veer Bahadur Singh Purvanchal University",
-        date: "March 2023",
-        imageUrl: "/images/certificates/voter.jpg",
-        driveUrl: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view?usp=drive_link",
-        featured: false
+      id: "cert-5",
+      title: "Voter Awareness Campaign",
+      issuedBy: "Veer Bahadur Singh Purvanchal University",
+      date: "March 2023",
+      imageUrl: "/images/certificates/voter.jpg",
+      driveUrl: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view?usp=drive_link",
+      featured: false
     }
   ];
 
   // Filter certificates based on featured flag
-  const displayedCertificates = showAll 
-    ? certificates 
+  const displayedCertificates = showAll
+    ? certificates
     : certificates.filter(cert => cert.featured);
 
   const container = {
@@ -99,7 +99,7 @@ const Achievements = () => {
             <h2 className="text-3xl md:text-4xl font-bold">Achievements</h2>
           </div>
 
-          <motion.div 
+          <motion.div
             className="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             variants={container}
             initial="hidden"
@@ -107,8 +107,8 @@ const Achievements = () => {
             layout
           >
             {displayedCertificates.map((certificate, index) => (
-              <motion.div 
-                key={certificate.id} 
+              <motion.div
+                key={certificate.id}
                 variants={item}
                 className="transition-all duration-300"
                 layout
@@ -117,9 +117,9 @@ const Achievements = () => {
               </motion.div>
             ))}
           </motion.div>
-          
+
           {certificates.length > 4 && (
-            <motion.div 
+            <motion.div
               className="mt-8 flex justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -225,8 +225,8 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
           zIndex: -1
         }}
       />
-      
-      <Card 
+
+      <Card
         className={cn(
           "h-full overflow-hidden transition-all duration-300 relative",
           isHovered ? "shadow-lg border-primary/30 scale-[1.02]" : "shadow-sm scale-100",
@@ -234,22 +234,22 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
         )}
         ref={cardRef}
         onClick={handleClick}
-      >        
+      >
         {/* Permanent subtle gradient background */}
-        <div 
+        <div
           className={cn(
             "absolute inset-0 bg-gradient-to-br opacity-30",
             getGradientColor()
           )}
         />
-        
+
         <CardContent className={cn("p-3 transition-all relative z-10", isExpanded ? "pb-6" : "")}>
-          <AspectRatio 
-            ratio={isExpanded ? 16/9 : 4/3} 
+          <AspectRatio
+            ratio={isExpanded ? 16 / 9 : 4 / 3}
             className="bg-muted overflow-hidden rounded-md mb-3 transition-all duration-300"
           >
-            <img 
-              src={certificate.imageUrl} 
+            <img
+              src={certificate.imageUrl}
               alt={certificate.title}
               className={cn(
                 "object-cover w-full h-full transition-transform duration-300",
@@ -260,7 +260,7 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
               "absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity",
               isHovered ? "opacity-70" : "opacity-50"
             )} />
-            
+
             <div className="absolute bottom-0 left-0 p-3">
               <h3 className="font-semibold text-white">{certificate.title}</h3>
               <p className="text-xs text-white/80">
@@ -268,7 +268,7 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
               </p>
             </div>
           </AspectRatio>
-          
+
           {/* Add a subtle shine effect */}
           {isHovered && (
             <motion.div
@@ -291,42 +291,42 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
               }}
             />
           )}
-          
+
           {isExpanded && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               transition={{ duration: 0.3 }}
               className="mt-3"
             >
               <p className="text-sm text-muted-foreground">
-                This certificate validates expertise in {certificate.title.toLowerCase()} 
+                This certificate validates expertise in {certificate.title.toLowerCase()}
                 skills and demonstrates a commitment to professional development.
               </p>
             </motion.div>
           )}
         </CardContent>
-        
+
         {(isHovered || isExpanded) && (
           <CardFooter className="flex justify-center pt-0 pb-3 relative z-10">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="hover:text-primary relative overflow-hidden group text-primary"
               asChild
             >
-              <a 
-                href={certificate.driveUrl} 
-                target="_blank" 
+              <a
+                href={certificate.driveUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ExternalLink className="mr-1 h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="group-hover:text-primary transition-colors">View Certificate</span>
-                <motion.span 
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" 
-                  initial={{ width: 0 }} 
+                <motion.span
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                  initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 0.3 }}
                 />
