@@ -26,7 +26,7 @@ const Achievements = () => {
       issuedBy: "PW Skills",
       date: "April 2024",
       imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.jpg",
-      driveUrl: "https://drive.google.com/file/d/10r9VEQ38AYSsVD9tE7D7fzHU5nPWo24t/view?usp=drive_link",
+      driveUrl: "https://learn.pwskills.com/certificate/fce1fcfd-7e97-4b7d-ad54-5e62ed63911c",
       featured: true
     },
     {
