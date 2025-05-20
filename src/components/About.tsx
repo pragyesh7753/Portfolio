@@ -2,7 +2,7 @@ import { motion, useAnimation } from 'framer-motion';
 import { Code2, Server, Globe, Database, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const About = () => {
@@ -56,23 +56,104 @@ const About = () => {
     "Secured 1st position in semester examination",
   ];
 
+  // Updated testimonials - removed relationship and image, added 2 more testimonials
   const testimonials = [
     {
-      name: "Alex Johnson",
-      role: "Product Manager at TechCorp",
-      text: "Pragyesh built our company website with exceptional attention to detail. His technical expertise and communication skills made the project a success.",
+      name: "Hritik Sonkar",
+      text: "I've known Pragyesh since our college days and his coding skills have always been impressive. He helped me with my final year project and his attention to detail was amazing!"
     },
     {
-      name: "Sarah Williams",
-      role: "Startup Founder",
-      text: "Working with Pragyesh was a pleasure. He delivered our web application ahead of schedule and exceeded our expectations with the quality of his work.",
+      name: "Anand Raj Bind",
+      text: "Working with Pragyesh on our hackathon project was an incredible experience. His problem-solving abilities and creativity took our app to the next level. Definitely my go-to person for tech advice!"
     },
     {
-      name: "Michael Chen",
-      role: "CTO at WebSolutions",
-      text: "Pragyesh has a deep understanding of modern web technologies. His problem-solving abilities and clean code practices are truly impressive.",
+      name: "Anurag Singh",
+      text: "Pragyesh built an online portfolio for me in just two days when I urgently needed it for a job application. The design was clean, modern and impressed my interviewers. I got the job!"
+    },
+    {
+      name: "Leroy Vincient Serpis",
+      text: "As fellow members of our college coding club, I've seen Pragyesh tackle complex problems with ease. He's not only talented but also great at explaining technical concepts to beginners like me."
+    },
+    {
+      name: "Rishabh Rai",
+      text: "Living with Pragyesh, I've witnessed firsthand his dedication to coding. He helped me set up a small blog website and was patient enough to teach me how to maintain it myself. His work ethic is inspiring!"
+    },
+    {
+      name: "Dheeraj Sonkar",
+      text: "Pragyesh redesigned our local community website as a volunteer project. His technical skills combined with his understanding of user needs resulted in a website that everyone loves using now."
+    },
+    {
+      name: "Alok Maurya",
+      text: "I had a critical deadline for my startup's web application, and Pragyesh came through with an exceptional solution. His ability to understand requirements and deliver quality code under pressure is remarkable."
+    },
+    {
+      name: "Prajapati Saurabh Lalman",
+      text: "Pragyesh helped our team implement complex animations on our website that truly brought our brand to life. His attention to performance optimization made the site not just beautiful but incredibly fast too."
     }
   ];
+
+  // Ref for the testimonials container
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [duplicatedTestimonials] = useState([...testimonials, ...testimonials]);
+
+  // Automatic scrolling effect
+  useEffect(() => {
+    const scrollContainer = testimonialsRef.current;
+    if (!scrollContainer) return;
+
+    let animationFrameId: number;
+    let scrollPos = 0;
+    const scrollSpeed = 0.5; // Adjust speed as needed
+
+    const scroll = () => {
+      scrollPos += scrollSpeed;
+      
+      // Reset scroll position when we've scrolled through half the items
+      if (scrollPos >= scrollContainer.clientWidth / 2) {
+        scrollPos = 0;
+        scrollContainer.scrollLeft = 0;
+      } else {
+        scrollContainer.scrollLeft = scrollPos;
+      }
+      
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    // Start scrolling animation
+    animationFrameId = requestAnimationFrame(scroll);
+
+    // Pause scrolling when hovering
+    const pauseScroll = () => cancelAnimationFrame(animationFrameId);
+    const resumeScroll = () => {
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    scrollContainer.addEventListener('mouseenter', pauseScroll);
+    scrollContainer.addEventListener('mouseleave', resumeScroll);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('mouseenter', pauseScroll);
+        scrollContainer.removeEventListener('mouseleave', resumeScroll);
+      }
+    };
+  }, []);
+
+  // Random pastel color generator for avatar backgrounds
+  const getAvatarGradient = (index: number) => {
+    const gradients = [
+      "from-blue-400 to-violet-500",
+      "from-emerald-400 to-cyan-500", 
+      "from-amber-400 to-orange-500",
+      "from-pink-400 to-rose-500",
+      "from-indigo-400 to-blue-500",
+      "from-teal-400 to-emerald-500",
+      "from-fuchsia-400 to-pink-500",
+      "from-purple-400 to-indigo-500"
+    ];
+    return gradients[index % gradients.length];
+  };
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -83,10 +164,12 @@ const About = () => {
           transition={{ duration: 0.5 }}
           className="space-y-16"
         >
+          {/* About Me Section */}
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">About Me</h2>
             
             <div className="grid md:grid-cols-3 gap-8">
+              {/* Left column */}
               <div className="md:col-span-2 space-y-4">
                 <p className="text-lg text-muted-foreground">
                   I am a passionate Full Stack Developer with expertise in modern web technologies.
@@ -118,6 +201,7 @@ const About = () => {
                 </div>
               </div>
               
+              {/* Right column - Personal details */}
               <div>
                 <Card className="overflow-hidden border-primary/20 hover:border-primary/40 transition-colors">
                   <CardHeader className="bg-primary/5 pb-3">
@@ -146,6 +230,7 @@ const About = () => {
             </div>
           </div>
 
+          {/* Skills Section */}
           <div>
             <h2 className="text-2xl font-bold mb-8">Skills & Expertise</h2>
             
@@ -209,37 +294,112 @@ const About = () => {
             </Tabs>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-bold mb-8">Testimonials</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.2 }}
-                >
-                  <Card className="h-full hover:border-primary/30 transition-all duration-300">
-                    <CardContent className="pt-6">
-                      <div className="flex items-center mb-4">
-                        <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3">
-                          <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-medium">
-                            {testimonial.name.charAt(0)}
+          {/* Updated Testimonials Section with Enhanced Cards */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-8">What My Friends Say</h2>
+            
+            <div className="relative">
+              {/* Gradient fades on edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10"></div>
+              
+              {/* Scrolling testimonials container */}
+              <div 
+                ref={testimonialsRef}
+                className="flex overflow-x-scroll scrollbar-hide gap-6 py-4 px-2"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                <div className="flex gap-6 min-w-max">
+                  {duplicatedTestimonials.map((testimonial, index) => (
+                    <motion.div
+                      key={`${testimonial.name}-${index}`}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: (index % testimonials.length) * 0.1 }}
+                      className="w-[350px] flex-shrink-0"
+                    >
+                      <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/10 overflow-hidden group border-primary/10 hover:border-primary/30">
+                        <CardContent className="p-0 h-full">
+                          {/* Card top accent bar */}
+                          <div className={`h-2 w-full bg-gradient-to-r ${getAvatarGradient(index % testimonials.length)} group-hover:opacity-100 opacity-80 transition-opacity`}></div>
+                          
+                          {/* Content with padding */}
+                          <div className="p-6">
+                            {/* Avatar and name with improved styling */}
+                            <div className="flex items-center mb-6">
+                              <div 
+                                className={`relative h-14 w-14 rounded-full mr-4 bg-gradient-to-br ${getAvatarGradient(index % testimonials.length)} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-all duration-500 ease-out`}
+                              >
+                                <span className="font-bold text-xl">{testimonial.name.charAt(0)}</span>
+                                
+                                {/* Subtle animated ring */}
+                                <motion.div 
+                                  className="absolute inset-0 rounded-full border-2 border-white/20"
+                                  animate={{ 
+                                    scale: [1, 1.1, 1],
+                                  }}
+                                  transition={{
+                                    repeat: Infinity,
+                                    duration: 3,
+                                    ease: "easeInOut"
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <p className="font-bold text-lg tracking-tight">{testimonial.name}</p>
+                                <div className="flex mt-1">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <svg 
+                                      key={star} 
+                                      className="w-4 h-4 text-yellow-500 fill-current" 
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                    </svg>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Testimonial text with enhanced styling */}
+                            <div className="relative">
+                              <svg 
+                                className="absolute -top-3 -left-1 w-8 h-8 text-primary/10 group-hover:text-primary/20 transition-colors duration-300"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                              </svg>
+                              <p className="text-muted-foreground relative z-10 pl-7 pr-2 py-2 leading-relaxed text-base">
+                                {testimonial.text}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          <p className="font-medium">{testimonial.name}</p>
-                          <p className="text-xs text-muted-foreground">{testimonial.role}</p>
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <div className="absolute -top-2 -left-2 text-4xl text-primary/20">"</div>
-                        <p className="text-muted-foreground relative z-10 pl-3">{testimonial.text}</p>
-                        <div className="absolute -bottom-5 -right-2 text-4xl text-primary/20">"</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Indicator dots with enhanced animation */}
+            <div className="flex justify-center gap-2 mt-8">
+              {testimonials.map((_, index) => (
+                <motion.div 
+                  key={index}
+                  className={`h-2.5 w-2.5 rounded-full bg-gradient-to-r ${getAvatarGradient(index)}`}
+                  animate={{ 
+                    scale: [1, 1.3, 1],
+                    opacity: [0.4, 0.8, 0.4] 
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 2,
+                    delay: index * 0.3,
+                    ease: "easeInOut"
+                  }}
+                />
               ))}
             </div>
           </div>
@@ -312,5 +472,14 @@ const FloatingCard = ({
     </motion.div>
   );
 };
+
+// Add CSS for hiding scrollbar
+const style = document.createElement('style');
+style.textContent = `
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+`;
+document.head.appendChild(style);
 
 export default About;

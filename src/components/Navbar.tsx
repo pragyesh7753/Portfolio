@@ -28,6 +28,7 @@ const Navbar = () => {
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
     { path: "/projects", label: "Projects" },
+    { path: "/achievements", label: "Achievements" },
     { path: "/contact", label: "Contact" }
   ];
 
@@ -70,7 +71,12 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <motion.div 
-            className="md:hidden border-t border-gray-700 dark:border-gray-800 mt-2"
+            className={cn(
+              "md:hidden mt-2",
+              scrolled 
+                ? "border-t border-primary/20 bg-background" 
+                : "border-t border-gray-700 dark:border-gray-800"
+            )}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}

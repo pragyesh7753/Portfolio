@@ -46,7 +46,7 @@ body {
 }
 
 /* Allow default cursor on mobile or if JavaScript is disabled */
-@media (pointer: coarse) or (prefers-reduced-motion: reduce) {
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
   body {
     cursor: auto;
   }
@@ -195,5 +195,42 @@ button:focus-visible {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Navbar styling enhancement */
+.scrolled-navbar {
+  background-color: rgba(var(--background-rgb), 0.95);
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Loading animation styles */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.loading-gradient {
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6, #3B82F6);
+  background-size: 200% 100%;
+  animation: gradient-shift 2s infinite linear;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
   }
 }
