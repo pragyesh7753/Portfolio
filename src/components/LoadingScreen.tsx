@@ -38,60 +38,10 @@ const LoadingScreen = () => {
   }, []);
 
   // Staggered text animation
-  const nameContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.2,
-      },
-    },
-  };
 
-  const letterVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.5 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        type: "spring", 
-        stiffness: 200, 
-        damping: 15
-      }
-    },
-  };
 
   // Dynamic pattern animation
-  const patternVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: {
-        duration: 1,
-        ease: [0.25, 0.1, 0.25, 1.0],
-      }
-    },
-  };
 
-  const patternItemVariants = (i: number, total: number) => ({
-    hidden: { opacity: 0, x: 0, y: 0, rotate: 0 },
-    visible: { 
-      opacity: [0, 1, 1, 0.7],
-      x: Math.cos(2 * Math.PI * (i / total)) * 50,
-      y: Math.sin(2 * Math.PI * (i / total)) * 50,
-      rotate: 360,
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        repeatType: "reverse" as const,
-        ease: "easeInOut",
-        delay: i * 0.1,
-      }
-    },
-  });
 
   // Enhanced particle effect
   const particleVariants = (i: number, total: number) => ({
