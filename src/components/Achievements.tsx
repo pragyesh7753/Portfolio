@@ -25,7 +25,7 @@ const Achievements = () => {
       title: "Full Stack Web Development",
       issuedBy: "PW Skills",
       date: "April 2024",
-      imageUrl: "/images/certificates/mern-stack-pw skills-certificate.png",
+      imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.png",
       driveUrl: "https://learn.pwskills.com/certificate/fce1fcfd-7e97-4b7d-ad54-5e62ed63911c",
       featured: true
     },
