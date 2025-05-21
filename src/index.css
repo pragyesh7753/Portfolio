@@ -234,3 +234,30 @@ button:focus-visible {
     background-position: 200% 50%;
   }
 }
+
+/* Scroll behavior for smooth navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Disable smooth scrolling for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Fix for Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-rgb), 0.3) transparent;
+}
+
+/* Fix outline flicker in Chrome */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid rgba(var(--primary-rgb), 0.6);
+  outline-offset: 2px;
+}

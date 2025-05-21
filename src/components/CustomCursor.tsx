@@ -81,12 +81,13 @@ const CustomCursor = () => {
         'a:hover, button:hover, [role="button"]:hover, input:hover, label:hover, textarea:hover, select:hover'
       );
       setIsPointer(!!hoveredElement);
+      
+      // Save the time for both operations
       lastUpdateTime.current = now;
     }
     
-    // Add to trail with throttling
-    const trailNow = Date.now();
-    if (trailNow - lastUpdateTime.current > 30) { // Only update trail every 30ms
+    // Add to trail with separate throttling
+    if (now - lastUpdateTime.current <= 30) { // Only update trail every 30ms
       setTrailPositions(prev => {
         const newPositions = [...prev, { x: mouseX, y: mouseY }];
         return newPositions.slice(-8); // Keep 8 trail positions

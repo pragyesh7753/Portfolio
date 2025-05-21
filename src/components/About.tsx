@@ -180,7 +180,7 @@ const About = () => {
         return;
       }
       
-      // Increased scrolling speed from 0.5 to 0.8 for faster movement
+      // Increased scrolling speed for faster movement
       scrollPosition += 0.8; 
       
       // When we reach midpoint, reset without visual jump
@@ -248,6 +248,7 @@ const About = () => {
     // Ensure cleanup
     return () => {
       isComponentMounted = false;
+      
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }

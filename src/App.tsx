@@ -13,6 +13,7 @@ import LoadingScreen from './components/LoadingScreen';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
+import CustomCursor from './components/CustomCursor';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {loading ? (
           <LoadingScreen key="loading" />
         ) : (
@@ -36,7 +37,11 @@ function App() {
             <ScrollToTop />
             <div className="min-h-screen bg-background text-foreground">
               <Navbar />
-              <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+              <Suspense fallback={
+                <div className="min-h-screen flex items-center justify-center">
+                  <div className="loading-pulse">Loading...</div>
+                </div>
+              }>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/about" element={<About />} />

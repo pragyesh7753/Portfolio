@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 /**
  * Component that automatically scrolls the window to the top
- * whenever the route location changes.
+ * whenever the route location changes
  */
 export function ScrollToTop() {
   const { pathname } = useLocation();
@@ -12,7 +12,7 @@ export function ScrollToTop() {
     // Scroll to top when the pathname changes
     window.scrollTo({
       top: 0,
-      behavior: "instant" // Use instant instead of smooth for cleaner page transitions
+      behavior: "instant" // Use instant for cleaner transitions
     });
   }, [pathname]);
 
