@@ -247,10 +247,74 @@ html {
   }
 }
 
+/* Mobile responsive improvements */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2.5em;
+  }
+  
+  .mobile-py-adjust {
+    padding-top: 5rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  .mobile-card-adjust {
+    padding: 1rem !important;
+  }
+}
+
+/* Fix for better responsive tables */
+.responsive-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improved focus styles for accessibility */
+:focus {
+  outline: 2px solid rgba(var(--primary-rgb), 0.5);
+  outline-offset: 2px;
+}
+
+/* Fix for Safari on iOS */
+input, 
+textarea {
+  -webkit-appearance: none;
+  border-radius: 0.5rem;
+}
+
+/* Animation optimization for mobile devices */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Fix for Firefox scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--primary-rgb), 0.3) transparent;
+}
+
+/* Improved webkit scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-rgb), 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-rgb), 0.4);
 }
 
 /* Fix outline flicker in Chrome */

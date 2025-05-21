@@ -12,7 +12,7 @@ export function ScrollToTop() {
     // Scroll to top when the pathname changes
     window.scrollTo({
       top: 0,
-      behavior: "instant" // Use instant for cleaner transitions
+      behavior: "instant" // Use instant instead of smooth for cleaner transitions
     });
   }, [pathname]);
 

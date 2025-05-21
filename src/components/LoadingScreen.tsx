@@ -37,6 +37,26 @@ const LoadingScreen = () => {
     };
   }, []);
 
+  // Add responsive scaling for mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        // Adjust scale based on screen width
+        const scale = window.innerWidth < 640 ? 
+          Math.max(0.8, window.innerWidth / 640) : 1;
+        
+        containerRef.current.style.transform = `scale(${scale})`;
+      }
+    };
+    
+    handleResize(); // Initial call
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Staggered text animation
 
 
@@ -188,7 +208,7 @@ const LoadingScreen = () => {
             },
           }}
         >
-          <motion.h1 className="text-4xl sm:text-6xl font-bold mb-3 tracking-tighter overflow-hidden">
+          <motion.h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 tracking-tighter overflow-hidden">
             {fullName.split('').map((char, index) => (
               <motion.span
                 key={index}
