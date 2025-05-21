@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { motion } from 'framer-motion';
@@ -8,6 +8,12 @@ import { cn } from '@/lib/utils';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,7 +24,7 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -34,9 +40,9 @@ const Navbar = () => {
 
   return (
     <nav className={cn(
-      "fixed w-full z-50 transition-all duration-300",
+      "fixed w-full z-[100] transition-all duration-300",
       scrolled 
-        ? "bg-background/80 backdrop-blur-md shadow-md dark:shadow-gray-800/30" 
+        ? "bg-background/80 backdrop-blur-md shadow-md dark:shadow-gray-800/30 border-b border-primary/20" 
         : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,9 +57,20 @@ const Navbar = () => {
               <Link 
                 key={link.path} 
                 to={link.path}
-                className="font-medium hover:text-primary transition-colors"
+                className={cn(
+                  "font-medium transition-colors",
+                  location.pathname === link.path 
+                    ? "text-primary" 
+                    : "hover:text-primary"
+                )}
               >
                 {link.label}
+                {location.pathname === link.path && (
+                  <motion.div 
+                    className="h-0.5 bg-primary mt-0.5"
+                    layoutId="navbar-indicator"
+                  />
+                )}
               </Link>
             ))}
             <ThemeSwitcher />
@@ -62,7 +79,12 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2">
             <ThemeSwitcher />
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-md">
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
+              aria-expanded={isOpen}
+              aria-label="Toggle menu"
+            >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -87,7 +109,12 @@ const Navbar = () => {
                 <Link 
                   key={link.path}
                   to={link.path} 
-                  className="hover:text-primary transition-colors px-2" 
+                  className={cn(
+                    "px-2 transition-colors",
+                    location.pathname === link.path
+                      ? "text-primary font-medium"
+                      : "hover:text-primary text-foreground/80"
+                  )}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}

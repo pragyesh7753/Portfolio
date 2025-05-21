@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
-import About from './components/About';
-import Projects from './components/Projects';
-import Contact from './components/Contact';
-import Achievements from './components/Achievements';
+// Lazy load components for better initial load performance
+const About = lazy(() => import('./components/About'));
+const Projects = lazy(() => import('./components/Projects'));
+const Contact = lazy(() => import('./components/Contact'));
+const Achievements = lazy(() => import('./components/Achievements'));
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
+import { ScrollToTop } from './components/ScrollToTop';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -31,15 +33,18 @@ function App() {
           <LoadingScreen key="loading" />
         ) : (
           <Router>
+            <ScrollToTop />
             <div className="min-h-screen bg-background text-foreground">
               <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/achievements" element={<Achievements />} />
-              </Routes>
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/achievements" element={<Achievements />} />
+                </Routes>
+              </Suspense>
               <Footer />
               <Toaster />
             </div>

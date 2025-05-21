@@ -53,40 +53,44 @@ const CustomCursor = () => {
     cursorX.set(mouseX);
     cursorY.set(mouseY);
     
-    // Check for magnetic elements
-    const interactiveElements = findInteractiveElements();
-    let closestElement: MagneticElement | null = null;
-    let closestDistance = 100; // Max distance for magnetic effect
-    
-    interactiveElements.forEach(element => {
-      const rect = element.getBoundingClientRect();
-      const elementCenterX = rect.left + rect.width / 2;
-      const elementCenterY = rect.top + rect.height / 2;
+    // Throttle finding interactive elements to improve performance
+    const now = Date.now();
+    if (now - lastUpdateTime.current > 100) { // Only check every 100ms
+      // Check for magnetic elements
+      const interactiveElements = findInteractiveElements();
+      let closestElement: MagneticElement | null = null;
+      let closestDistance = 100; // Max distance for magnetic effect
       
-      const distance = Math.hypot(mouseX - elementCenterX, mouseY - elementCenterY);
+      interactiveElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
+        const elementCenterX = rect.left + rect.width / 2;
+        const elementCenterY = rect.top + rect.height / 2;
+        
+        const distance = Math.hypot(mouseX - elementCenterX, mouseY - elementCenterY);
+        
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestElement = { element, rect };
+        }
+      });
       
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestElement = { element, rect };
-      }
-    });
-    
-    setMagneticElement(closestElement);
-    
-    // Update cursor type based on hovered elements
-    const hoveredElement = document.querySelector(
-      'a:hover, button:hover, [role="button"]:hover, input:hover, label:hover, textarea:hover, select:hover'
-    );
-    setIsPointer(!!hoveredElement);
+      setMagneticElement(closestElement);
+      
+      // Update cursor type based on hovered elements
+      const hoveredElement = document.querySelector(
+        'a:hover, button:hover, [role="button"]:hover, input:hover, label:hover, textarea:hover, select:hover'
+      );
+      setIsPointer(!!hoveredElement);
+      lastUpdateTime.current = now;
+    }
     
     // Add to trail with throttling
-    const now = Date.now();
-    if (now - lastUpdateTime.current > 30) { // Only update trail every 30ms
+    const trailNow = Date.now();
+    if (trailNow - lastUpdateTime.current > 30) { // Only update trail every 30ms
       setTrailPositions(prev => {
         const newPositions = [...prev, { x: mouseX, y: mouseY }];
         return newPositions.slice(-8); // Keep 8 trail positions
       });
-      lastUpdateTime.current = now;
     }
   }, [cursorX, cursorY, findInteractiveElements]);
   

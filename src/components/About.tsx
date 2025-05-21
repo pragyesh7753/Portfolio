@@ -156,7 +156,7 @@ const About = () => {
     };
   }, [styleInjected]);
 
-  // Fix: Improved and more reliable testimonial scrolling with better reset handling
+  // Fix: Improved and more reliable testimonial scrolling with better memory management
   useEffect(() => {
     const scrollContainer = testimonialsRef.current;
     if (!scrollContainer) return;
@@ -164,6 +164,7 @@ const About = () => {
     let animationFrameId: number | null = null;
     let scrollPosition = 0;
     let isResetting = false;
+    let isComponentMounted = true; // Flag to prevent memory leaks
     
     // Calculate the midpoint for seamless looping
     const totalItems = testimonials.length;
@@ -172,8 +173,10 @@ const About = () => {
     
     // Enhanced scrolling algorithm with safety checks
     const scroll = () => {
-      if (!scrollContainer || scrollPaused || isResetting) {
-        animationFrameId = requestAnimationFrame(scroll);
+      if (!isComponentMounted || !scrollContainer || scrollPaused || isResetting) {
+        if (isComponentMounted) {
+          animationFrameId = requestAnimationFrame(scroll);
+        }
         return;
       }
       
@@ -186,7 +189,7 @@ const About = () => {
         
         // Set timeout to ensure scrollLeft update happens in a separate frame
         setTimeout(() => {
-          if (scrollContainer) {
+          if (scrollContainer && isComponentMounted) {
             scrollContainer.scrollLeft = 0;
             scrollPosition = 0;
             isResetting = false;
@@ -196,7 +199,9 @@ const About = () => {
         scrollContainer.scrollLeft = Math.floor(scrollPosition);
       }
       
-      animationFrameId = requestAnimationFrame(scroll);
+      if (isComponentMounted) {
+        animationFrameId = requestAnimationFrame(scroll);
+      }
     };
 
     // Start scrolling animation
@@ -242,6 +247,7 @@ const About = () => {
 
     // Ensure cleanup
     return () => {
+      isComponentMounted = false;
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
