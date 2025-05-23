@@ -4,13 +4,11 @@ import { useTheme } from './ThemeProvider';
 interface Particle {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
   size: number;
+  speedX: number;
+  speedY: number;
   color: string;
-  alpha: number;
-  life: number;
-  maxLife: number;
+  opacity: number;
 }
 
 export function ParticlesBackground() {
@@ -24,7 +22,7 @@ export function ParticlesBackground() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas size
+    // Set canvas to full screen
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -33,106 +31,55 @@ export function ParticlesBackground() {
     window.addEventListener('resize', handleResize);
     handleResize();
     
-    // Particle system
+    // Create particles
     const particles: Particle[] = [];
-    const particleCount = Math.min(window.innerWidth / 15, 100);
+    const particleCount = Math.min(window.innerWidth / 10, 80); // Responsive count
     
     const colors = theme === 'dark' 
-      ? ['#3b82f6', '#6366f1', '#8b5cf6', '#d946ef']
-      : ['#3b82f6', '#6366f1', '#8b5cf6', '#0ea5e9'];
+      ? ['#3b82f6', '#6366f1', '#8b5cf6', '#d946ef'] // Blue, indigo, violet, fuchsia
+      : ['#3b82f6', '#6366f1', '#8b5cf6', '#0ea5e9']; // Blue, indigo, violet, sky
     
-    function createParticle(): Particle {
-      return {
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 1,
+        size: Math.random() * 2 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
         color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.4 + 0.1,
-        life: 0,
-        maxLife: 150 + Math.random() * 100
-      };
+        opacity: Math.random() * 0.2 + 0.1
+      });
     }
-    
-    // Initialize particles
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(createParticle());
-    }
-    
-    // Mouse interaction
-    let mouse = { x: 0, y: 0, radius: 100 };
-    
-    canvas.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
     
     // Animation loop
-    function animate() {
+    const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      particles.forEach((particle, index) => {
-        // Update particle position
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.life++;
+      // Update and draw particles
+      for (const particle of particles) {
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
         
-        // Mouse repulsion
-        const dx = particle.x - mouse.x;
-        const dy = particle.y - mouse.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < mouse.radius) {
-          const force = (mouse.radius - distance) / mouse.radius;
-          particle.vx += (dx / distance) * force * 0.2;
-          particle.vy += (dy / distance) * force * 0.2;
+        // Bounce off edges
+        if (particle.x > canvas.width || particle.x < 0) {
+          particle.speedX = -particle.speedX;
         }
-        
-        // Boundaries check
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        if (particle.y > canvas.height) particle.y = 0;
-        
-        // Speed limit
-        const maxSpeed = 2;
-        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-        if (speed > maxSpeed) {
-          particle.vx = (particle.vx / speed) * maxSpeed;
-          particle.vy = (particle.vy / speed) * maxSpeed;
+        if (particle.y > canvas.height || particle.y < 0) {
+          particle.speedY = -particle.speedY;
         }
         
         // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `${particle.color}${Math.floor(particle.alpha * 255).toString(16).padStart(2, '0')}`;
+        ctx.fillStyle = `${particle.color}${Math.floor(particle.opacity * 255).toString(16).padStart(2, '0')}`;
         ctx.fill();
-        
-        // Connect nearby particles
-        particles.forEach((p2, j) => {
-          if (index === j) return;
-          const dx = particle.x - p2.x;
-          const dy = particle.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `${particle.color}${Math.floor((particle.alpha * (1 - distance / 100) * 0.5) * 255).toString(16).padStart(2, '0')}`;
-            ctx.stroke();
-          }
-        });
-        
-        // Regenerate particles
-        if (particle.life >= particle.maxLife) {
-          particles[index] = createParticle();
-        }
-      });
+      }
+      
+      // Connect particles with lines
+      connectParticles(ctx, particles, canvas.width, canvas.height);
       
       requestAnimationFrame(animate);
-    }
+    };
     
     animate();
     
@@ -140,6 +87,37 @@ export function ParticlesBackground() {
       window.removeEventListener('resize', handleResize);
     };
   }, [theme]);
+  
+  // Function to connect particles with lines
+  const connectParticles = (
+    ctx: CanvasRenderingContext2D, 
+    particles: Particle[], 
+    width: number, 
+    height: number
+  ) => {
+    const maxDistance = Math.min(width, height) * 0.07; // Responsive connection distance
+    
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < maxDistance) {
+          // Calculate opacity based on distance
+          const opacity = 1 - (distance / maxDistance);
+          
+          // Draw line between particles
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `${particles[i].color}${Math.floor(opacity * 20).toString(16).padStart(2, '0')}`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  };
   
   return (
     <canvas 

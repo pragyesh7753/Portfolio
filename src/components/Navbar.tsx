@@ -10,17 +10,24 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Close mobile menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const navLinks = [
@@ -35,22 +42,23 @@ const Navbar = () => {
     <nav className={cn(
       "fixed w-full z-[100] transition-all duration-300",
       scrolled 
-        ? "bg-background/80 backdrop-blur-lg shadow-lg border-b border-primary/10" 
+        ? "bg-background/90 backdrop-blur-md shadow-md dark:shadow-gray-800/30 border-b border-primary/20" 
         : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-500">
+          <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-500 flex-shrink-0">
             Pragyesh
           </Link>
           
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             {navLinks.map(link => (
               <Link 
                 key={link.path} 
                 to={link.path}
                 className={cn(
-                  "font-medium transition-colors text-sm lg:text-base relative group",
+                  "font-medium transition-colors text-sm lg:text-base",
                   location.pathname === link.path 
                     ? "text-primary" 
                     : "text-foreground/80 hover:text-primary"
@@ -59,21 +67,21 @@ const Navbar = () => {
                 {link.label}
                 {location.pathname === link.path && (
                   <motion.div 
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                    className="h-0.5 bg-primary mt-0.5"
                     layoutId="navbar-indicator"
                   />
                 )}
-                <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform" />
               </Link>
             ))}
             <ThemeSwitcher />
           </div>
           
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2">
             <ThemeSwitcher />
             <button 
               onClick={() => setIsOpen(!isOpen)} 
-              className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="p-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
               aria-expanded={isOpen}
               aria-label="Toggle menu"
             >
@@ -82,13 +90,14 @@ const Navbar = () => {
           </div>
         </div>
 
+        {/* Mobile Menu - Add animation and improved styling */}
         {isOpen && (
           <motion.div 
             className={cn(
               "md:hidden",
               scrolled 
-                ? "border-t border-primary/10 bg-background/95 backdrop-blur-sm" 
-                : "border-t border-primary/10 bg-background/80 backdrop-blur-sm"
+                ? "border-t border-primary/20 bg-background/95 backdrop-blur-sm" 
+                : "border-t border-gray-700/30 dark:border-gray-800/30 bg-background/80 backdrop-blur-sm"
             )}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
