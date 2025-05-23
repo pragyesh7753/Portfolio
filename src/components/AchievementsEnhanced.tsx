@@ -327,13 +327,13 @@ const AchievementsEnhanced = () => {
             </div>
             
             <div className="flex items-center flex-wrap gap-3">
-              {{
+              {[
                 { value: 'all', label: 'All Achievements', icon: '🏅' },
                 { value: 'development', label: 'Development', icon: '💻' },
                 { value: 'academic', label: 'Academic', icon: '🎓' },
                 { value: 'competition', label: 'Competition', icon: '🏆' },
                 { value: 'community', label: 'Community', icon: '🤝' }
-              }.map((filter) => (
+              ].map((filter) => (
                 <motion.div key={filter.value} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Badge 
                     variant={selectedCategory === filter.value ? 'default' : 'outline'} 
