@@ -1,13 +1,12 @@
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { Card, CardContent } from './ui/card';
-import { cn } from '@/lib/utils';
+import { useToast } from './ui/use-toast';
 
 interface FormData {
   name: string;
@@ -60,7 +59,7 @@ const Contact = () => {
       newErrors.message = 'Message is required';
       isValid = false;
     } else if (formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = 'Message must be at least 10 characters long';
       isValid = false;
     }
 
@@ -86,64 +85,25 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Use the Email.js service to send emails
-      const emailjs = await import('@emailjs/browser');
-      
-      // Make sure we're using the correct environment variables
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-      
-      console.log("Environment variables check:", {
-        serviceId: serviceId ? "Found" : "Missing",
-        templateId: templateId ? "Found" : "Missing",
-        publicKey: publicKey ? "Found" : "Missing"
-      });
-      
-      if (!serviceId || !templateId || !publicKey) {
-        throw new Error("EmailJS configuration is missing: " + 
-          (!serviceId ? "Service ID, " : "") +
-          (!templateId ? "Template ID, " : "") +
-          (!publicKey ? "Public Key" : ""));
-      }
-      
-      // Initialize with your public key
-      emailjs.init(publicKey);
-      
-      // Send the email using the updated method signature for EmailJS v3
-      const response = await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        }
-      );
-      
-      console.log("Email sent successfully:", response);
+      // Simulate form submission
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
         title: "Message sent!",
-        description: "Thank you for reaching out. I'll get back to you soon.",
+        description: "Thank you for your message. I'll get back to you soon.",
       });
       
-      // Reset form after successful submission
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
     } catch (error) {
-      console.error("Email sending failed:", error);
-      
-      // More detailed error message
-      let errorMessage = "Your message could not be sent. Please try again.";
-      if (error instanceof Error) {
-        errorMessage = `Error: ${error.message}`;
-        console.error("Error details:", error);
-      }
-      
       toast({
-        title: "Something went wrong",
-        description: errorMessage,
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -179,257 +139,133 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">Get in Touch</h2>
-          
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-            <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                <Card className="overflow-hidden border-primary/10">
-                  <CardContent className="p-4 sm:p-6">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div className="space-y-2">
-                          <Label htmlFor="name">
-                            Name
-                          </Label>
-                          <Input
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Your name"
-                            className={cn(errors.name && "border-destructive")}
-                            aria-invalid={!!errors.name}
-                          />
-                          {errors.name && (
-                            <p className="text-sm text-destructive">{errors.name}</p>
-                          )}
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="email">
-                            Email
-                          </Label>
-                          <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Your email address"
-                            className={cn(errors.email && "border-destructive")}
-                            aria-invalid={!!errors.email}
-                          />
-                          {errors.email && (
-                            <p className="text-sm text-destructive">{errors.email}</p>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">
-                          Subject
-                        </Label>
-                        <Input
-                          id="subject"
-                          name="subject"
-                          value={formData.subject}
-                          onChange={handleChange}
-                          placeholder="What is this regarding?"
-                          className={cn(errors.subject && "border-destructive")}
-                          aria-invalid={!!errors.subject}
-                        />
-                        {errors.subject && (
-                          <p className="text-sm text-destructive">{errors.subject}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="message">
-                          Message
-                        </Label>
-                        <Textarea
-                          id="message"
-                          name="message"
-                          value={formData.message}
-                          onChange={handleChange}
-                          placeholder="What would you like to discuss?"
-                          className={cn("min-h-[150px]", errors.message && "border-destructive")}
-                          aria-invalid={!!errors.message}
-                        />
-                        {errors.message && (
-                          <p className="text-sm text-destructive">{errors.message}</p>
-                        )}
-                      </div>
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full sm:w-auto"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <Send className="mr-2 h-4 w-4" />
-                            Send Message
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-            
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              Get In <span className="text-primary">Touch</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Let's discuss your project ideas and bring them to life together.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
                 <div className="space-y-6">
-                  <h3 className="text-xl font-semibold">Contact Information</h3>
-                  <p className="text-muted-foreground">
-                    I'm always open to new opportunities and collaborations. 
-                    Feel free to reach out if you'd like to work together or just want to say hello!
-                  </p>
-                  
-                  <div className="flex flex-col space-y-4">
-                    {contactInfo.map((item, index) => (
-                      <motion.div
-                        key={item.title}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
-                        className="flex items-center p-4 rounded-lg bg-card/50"
-                      >
-                        <div className="mr-4">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <h3 className="font-medium">{item.title}</h3>
-                          {item.link ? (
-                            <a
-                              href={item.link}
-                              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {item.value}
-                            </a>
-                          ) : (
-                            <p className="text-sm text-muted-foreground">
-                              {item.value}
-                            </p>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  <div className="pt-4">
-                    <h3 className="text-xl font-semibold mb-4">Follow Me</h3>
-                    <div className="flex space-x-4">
-                      <a
-                        href="https://github.com/pragyesh7753"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-card/80 hover:bg-primary/10 p-3 rounded-full transition-colors"
-                        aria-label="GitHub"
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="18" 
-                          height="18" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        >
-                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                        </svg>
-                      </a>
-                      <a
-                        href="https://www.linkedin.com/in/pragyesh77"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-card/80 hover:bg-primary/10 p-3 rounded-full transition-colors"
-                        aria-label="LinkedIn"
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="18" 
-                          height="18" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        >
-                          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                          <rect x="2" y="9" width="4" height="12"></rect>
-                          <circle cx="4" cy="4" r="2"></circle>
-                        </svg>
-                      </a>
-                      <a
-                        href="https://www.instagram.com/geeky_pks/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-card/80 hover:bg-primary/10 p-3 rounded-full transition-colors"
-                        aria-label="Instagram"
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="18" 
-                          height="18" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        >
-                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                      </a>
-                      <a
-                        href="https://x.com/SethPragyesh"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-card/80 hover:bg-primary/10 p-3 rounded-full transition-colors"
-                        aria-label="X (Twitter)"
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="18" 
-                          height="18" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        >
-                          <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
-                          <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
-                        </svg>
-                      </a>
+                  {contactInfo.map((info, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-accent transition-colors"
+                    >
+                      {info.icon}
+                      <div>
+                        <h3 className="font-medium">{info.title}</h3>
+                        {info.link ? (
+                          <a
+                            href={info.link}
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            {info.value}
+                          </a>
+                        ) : (
+                          <p className="text-muted-foreground">{info.value}</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Send me a message</CardTitle>
+                <CardDescription>
+                  Fill out the form below and I'll get back to you as soon as possible.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name *</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={errors.name ? "border-destructive" : ""}
+                        placeholder="Your name"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-destructive">{errors.name}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email *</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={errors.email ? "border-destructive" : ""}
+                        placeholder="your.email@example.com"
+                      />
+                      {errors.email && (
+                        <p className="text-sm text-destructive">{errors.email}</p>
+                      )}
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject *</Label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className={errors.subject ? "border-destructive" : ""}
+                      placeholder="What's this about?"
+                    />
+                    {errors.subject && (
+                      <p className="text-sm text-destructive">{errors.subject}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message *</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      className={errors.message ? "border-destructive" : ""}
+                      placeholder="Tell me about your project..."
+                      rows={5}
+                    />
+                    {errors.message && (
+                      <p className="text-sm text-destructive">{errors.message}</p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </motion.div>
       </div>

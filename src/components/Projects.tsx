@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, ArrowRight, Search, Code, Tags } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { motion, useInView, useAnimation } from 'framer-motion';
+import { ExternalLink, Github, ArrowRight, Search, Code, Tags, Star, Sparkles, Zap, Trophy } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -38,7 +38,7 @@ const Projects = () => {
       category: "frontend",
       liveUrl: "https://todo.pragyesh.tech/",
       githubUrl: "https://github.com/pragyesh7753/Web_Development/tree/main/React/10-todoContextLocal",
-      featured: true,
+      featured: true
     },
     {
       title: "Password Manager",
@@ -117,7 +117,7 @@ const Projects = () => {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
             <h2 className="text-3xl md:text-4xl font-bold">Projects</h2>
             <div className="mt-4 sm:mt-0">
-              <Button variant="outline" asChild>
+              <Button variant="outline" size="sm" asChild className="hover:bg-primary/10">
                 <a 
                   href="https://github.com/pragyesh7753" 
                   target="_blank" 
@@ -198,29 +198,32 @@ const Projects = () => {
           )}
 
           {filteredProjects.length === 0 ? (
-            <div className="py-16 text-center">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-8 text-center rounded-lg bg-muted/10 border border-dashed border-muted"
+            >
+              <p className="text-muted-foreground">No projects found matching your criteria.</p>
+              <Button 
+                variant="ghost" 
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="mt-2"
               >
-                <h3 className="text-xl font-medium mb-2">No projects found</h3>
-                <p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
-              </motion.div>
-            </div>
+                Clear filters
+              </Button>
+            </motion.div>
           ) : (
             <motion.div 
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
               variants={container}
               initial="hidden"
               animate="show"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {filteredProjects.map((project) => (
-                <motion.div 
-                  key={project.title} 
-                  variants={item}
-                  whileHover={{ y: -5 }}
-                >
+                <motion.div key={project.title} variants={item}>
                   <ProjectCard project={project} />
                 </motion.div>
               ))}
@@ -248,62 +251,17 @@ const ProjectIllumination = ({ isHovered }: { isHovered: boolean }) => {
   }, []);
   
   return (
-    <motion.div
+    <div 
       ref={illuminationRef}
-      className="absolute inset-0 overflow-hidden z-0"
       onMouseMove={handleMouseMove}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isHovered ? 1 : 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Gradient light effect that follows cursor */}
-      <motion.div 
-        className="absolute w-[200%] h-[200%] pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at ${position.x}% ${position.y}%, 
-            rgba(var(--primary-rgb), 0.15) 0%, 
-            rgba(var(--primary-rgb), 0.05) 25%, 
-            transparent 50%)`,
-          left: '-50%',
-          top: '-50%',
-        }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: isHovered ? 1 : 0, 
-          scale: isHovered ? 1 : 0.8,
-        }}
-        transition={{
-          opacity: { duration: 0.4 },
-          scale: { duration: 0.3 }
-        }}
-      />
-      
-      {/* Subtle ambient glow */}
-      <motion.div 
-        className="absolute inset-0 opacity-30 pointer-events-none"
-        style={{
-          background: `linear-gradient(135deg, 
-            rgba(var(--primary-rgb), 0.1) 0%, 
-            rgba(var(--primary-rgb), 0) 100%)`
-        }}
-        animate={{ 
-          opacity: isHovered ? 0.3 : 0
-        }}
-        transition={{ duration: 0.5 }}
-      />
-      
-      {/* Border highlight */}
-      <motion.div 
-        className="absolute inset-0 rounded-lg pointer-events-none"
-        style={{
-          boxShadow: 'inset 0 0 0 1px rgba(var(--primary-rgb), 0.2)'
-        }}
-        animate={{ 
-          opacity: isHovered ? 1 : 0
-        }}
-        transition={{ duration: 0.3 }}
-      />
-    </motion.div>
+      className={cn(
+        "absolute inset-0 z-0 transition-opacity duration-300 pointer-events-none",
+        isHovered ? "opacity-100" : "opacity-0"
+      )}
+      style={{
+        background: `radial-gradient(circle at ${position.x}% ${position.y}%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.05) 40%, transparent 70%)`
+      }}
+    />
   );
 };
 

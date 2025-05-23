@@ -1,54 +1,69 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ArrowUp } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 /**
- * Enhanced ScrollToTop with smooth scroll and floating button.
+ * Enhanced ScrollToTop with smooth scroll, floating button, and progress indicator.
  */
 export function ScrollToTop() {
   const { pathname } = useLocation();
   const [showButton, setShowButton] = useState(false);
-
-  // Scroll to top on route change with smooth animation
+  const [scrollProgress, setScrollProgress] = useState(0);
+  // Scroll to top on route change with immediate scroll
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
+    // Immediately scroll to top when route changes
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname]);
 
-  // Show floating button after scrolling down
+  // Show floating button and calculate scroll progress
   useEffect(() => {
     const handleScroll = () => {
-      setShowButton(window.scrollY > 200);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = scrollTop / docHeight;
+      setScrollProgress(scrollPercent * 100);
+      setShowButton(scrollTop > 300);
     };
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Handler for button click
+  // Enhanced handler for button click with easing
   const handleBackToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const scrollToTop = () => {
+      const c = document.documentElement.scrollTop || document.body.scrollTop;
+      if (c > 0) {
+        window.requestAnimationFrame(scrollToTop);
+        window.scrollTo(0, c - c / 8);
+      }
+    };
+    requestAnimationFrame(scrollToTop);
   };
-
+  
   return (
     <>
-      {/* Floating Back to Top Button */}
-      <AnimatePresence>
-        {showButton && (
-          <motion.button
-            key="scroll-to-top-btn"
-            initial={{ opacity: 0, y: 40, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            onClick={handleBackToTop}
-            aria-label="Back to top"
-            className="fixed bottom-6 right-6 z-[120] rounded-full bg-gradient-to-br from-blue-500 to-violet-600 shadow-lg hover:shadow-xl text-white p-3 md:p-4 transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary"
-            style={{ boxShadow: "0 4px 24px 0 rgba(56, 189, 248, 0.15)" }}
-          >
-            <ArrowUp className="h-6 w-6" />
-          </motion.button>
+      <Button
+        onClick={handleBackToTop}
+        className={cn(
+          "fixed bottom-8 right-8 h-10 w-10 rounded-full p-0 shadow-md transition-all duration-300 z-50",
+          showButton ? "scale-100 opacity-100" : "scale-75 opacity-0 pointer-events-none"
         )}
-      </AnimatePresence>
+        aria-label="Scroll to top"
+        variant="secondary"
+      >
+        <ArrowUp className="h-5 w-5" />
+      </Button>
+      
+      {/* Progress indicator */}
+      <div className="fixed bottom-0 left-0 h-1 bg-primary/20 w-full z-50">
+        <div 
+          className="h-full bg-primary transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }} 
+        />
+      </div>
     </>
   );
 }

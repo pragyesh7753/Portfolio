@@ -52,16 +52,17 @@ const CustomCursor = () => {
     
     cursorX.set(mouseX);
     cursorY.set(mouseY);
-    
-    // Throttle finding interactive elements to improve performance
+      // Throttle finding interactive elements to improve performance
     const now = Date.now();
-    if (now - lastUpdateTime.current > 100) { // Only check every 100ms
-      // Check for magnetic elements
+    if (now - lastUpdateTime.current > 150) { // Increased to 150ms for better performance
+      // Check for magnetic elements - simplified logic
       const interactiveElements = findInteractiveElements();
       let closestElement: MagneticElement | null = null;
-      let closestDistance = 100; // Max distance for magnetic effect
+      let closestDistance = 80; // Reduced magnetic range for performance
       
-      interactiveElements.forEach(element => {
+      // Limit the number of elements to check
+      for (let i = 0; i < Math.min(interactiveElements.length, 10); i++) {
+        const element = interactiveElements[i];
         const rect = element.getBoundingClientRect();
         const elementCenterX = rect.left + rect.width / 2;
         const elementCenterY = rect.top + rect.height / 2;
@@ -72,7 +73,7 @@ const CustomCursor = () => {
           closestDistance = distance;
           closestElement = { element, rect };
         }
-      });
+      }
       
       setMagneticElement(closestElement);
       
@@ -83,14 +84,13 @@ const CustomCursor = () => {
       setIsPointer(!!hoveredElement);
       
       // Save the time for both operations
-      lastUpdateTime.current = now;
-    }
+      lastUpdateTime.current = now;    }
     
-    // Add to trail with separate throttling
-    if (now - lastUpdateTime.current <= 30) { // Only update trail every 30ms
+    // Optimized trail with reduced frequency
+    if (now - lastUpdateTime.current <= 50) { // Reduced trail update frequency
       setTrailPositions(prev => {
         const newPositions = [...prev, { x: mouseX, y: mouseY }];
-        return newPositions.slice(-8); // Keep 8 trail positions
+        return newPositions.slice(-6); // Reduced trail length for performance
       });
     }
   }, [cursorX, cursorY, findInteractiveElements]);
@@ -171,7 +171,7 @@ const CustomCursor = () => {
           width: 32,
           height: 32,
           borderRadius: '50%',
-          border: '1.5px solid rgba(255, 255, 255, 0.8)',
+          border: '1.5px solid hsla(var(--primary), 0.8)',
           pointerEvents: 'none',
           zIndex: 9999,
           mixBlendMode: 'difference',
@@ -179,7 +179,7 @@ const CustomCursor = () => {
         animate={{
           scale: isHidden ? 0 : isPointer ? 1.5 : isActive ? 0.8 : 1,
           opacity: isHidden ? 0 : 1,
-          borderColor: isActive ? 'rgba(150, 255, 200, 0.9)' : isPointer ? 'rgba(200, 240, 255, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+          borderColor: isActive ? 'hsla(var(--primary), 0.9)' : isPointer ? 'hsla(var(--primary), 0.8)' : 'hsla(var(--primary), 0.7)',
         }}
         transition={{
           scale: {
@@ -205,7 +205,7 @@ const CustomCursor = () => {
           width: 8,
           height: 8,
           borderRadius: '50%',
-          backgroundColor: 'white',
+          backgroundColor: 'hsl(var(--primary))',
           pointerEvents: 'none',
           zIndex: 10000,
           mixBlendMode: 'difference',
@@ -213,7 +213,7 @@ const CustomCursor = () => {
         animate={{
           scale: isActive ? 1.8 : isPointer ? 1.4 : 1,
           opacity: isHidden ? 0 : 1,
-          backgroundColor: isActive ? 'rgba(150, 255, 200, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: isActive ? 'hsl(var(--primary))' : 'hsl(var(--primary))',
         }}
         transition={{
           type: 'spring',

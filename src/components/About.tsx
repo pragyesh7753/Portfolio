@@ -161,44 +161,37 @@ const About = () => {
     const scrollContainer = testimonialsRef.current;
     if (!scrollContainer) return;
 
+    // Set the initial scroll position to the first set
+    // so we can show seamless scrolling between duplicates
+    if (scrollContainer.scrollLeft === 0 && !scrollPaused) {
+      // Calculate width of one full set of testimonials
+      const cardWidth = 350 + 28; // card width + gap
+      const totalWidth = cardWidth * testimonials.length;
+      scrollContainer.scrollLeft = 0;
+    }
+
     let animationFrameId: number | null = null;
-    let scrollPosition = 0;
-    let isResetting = false;
-    let isComponentMounted = true; // Flag to prevent memory leaks
-    
-    // Calculate the midpoint for seamless looping
-    const totalItems = testimonials.length;
-    const singleCardWidth = 350 + 28; // card width (350px) + gap (28px)
-    const halfScrollWidth = totalItems * singleCardWidth;
-    
-    // Enhanced scrolling algorithm with safety checks
+    let isComponentMounted = true;
+
     const scroll = () => {
-      if (!isComponentMounted || !scrollContainer || scrollPaused || isResetting) {
+      if (!isComponentMounted || !scrollContainer || scrollPaused) {
         if (isComponentMounted) {
           animationFrameId = requestAnimationFrame(scroll);
         }
         return;
       }
+
+      // Slower, smoother scroll
+      scrollContainer.scrollLeft += 0.5;
+
+      // When we reach the end of the first set, jump back to start
+      const cardWidth = 350 + 28; // card width + gap
+      const totalWidth = cardWidth * testimonials.length;
       
-      // Increased scrolling speed for faster movement
-      scrollPosition += 0.8; 
-      
-      // When we reach midpoint, reset without visual jump
-      if (scrollPosition >= halfScrollWidth - 50) {
-        isResetting = true;
-        
-        // Set timeout to ensure scrollLeft update happens in a separate frame
-        setTimeout(() => {
-          if (scrollContainer && isComponentMounted) {
-            scrollContainer.scrollLeft = 0;
-            scrollPosition = 0;
-            isResetting = false;
-          }
-        }, 10);
-      } else {
-        scrollContainer.scrollLeft = Math.floor(scrollPosition);
+      if (scrollContainer.scrollLeft >= totalWidth) {
+        scrollContainer.scrollLeft = 0;
       }
-      
+
       if (isComponentMounted) {
         animationFrameId = requestAnimationFrame(scroll);
       }
@@ -229,7 +222,7 @@ const About = () => {
       pauseTimeout = setTimeout(() => {
         // Store current position before resuming
         if (scrollContainer) {
-          scrollPosition = scrollContainer.scrollLeft;
+          scrollContainer.scrollLeft = scrollContainer.scrollLeft;
           setScrollPaused(false);
           
           if (!animationFrameId) {

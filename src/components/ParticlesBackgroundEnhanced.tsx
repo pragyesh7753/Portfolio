@@ -14,7 +14,7 @@ interface Particle {
   trail: Array<{ x: number; y: number; opacity: number }>;
 }
 
-export function ParticlesBackground() {
+const ParticlesBackgroundEnhanced = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const { theme } = useTheme();
@@ -183,4 +183,6 @@ export function ParticlesBackground() {
       className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"
     />
   );
-}
+};
+
+export default ParticlesBackgroundEnhanced;

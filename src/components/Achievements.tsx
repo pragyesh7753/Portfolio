@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Award, Star } from 'lucide-react';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 import { AspectRatio } from './ui/aspect-ratio';
 import { cn } from '@/lib/utils';
 
@@ -13,64 +14,83 @@ interface Certificate {
   date: string;
   imageUrl: string;
   driveUrl: string;
-  featured: boolean;  // Add this new property
+  featured: boolean;
+  category?: string;  // Optional property for basic filtering
 }
 
 const Achievements = () => {
   const [showAll, setShowAll] = useState(false);
-
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  
+  // Updated certificates with corrected dates and image paths
   const certificates: Certificate[] = [
     {
       id: "cert-1",
       title: "Full Stack Web Development",
       issuedBy: "PW Skills",
-      date: "April 2024",
-      imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.png",
+      date: "April 2023",
+      imageUrl: "/certificates/mern-stack-pw-skills-certificate.png",
       driveUrl: "https://learn.pwskills.com/certificate/fce1fcfd-7e97-4b7d-ad54-5e62ed63911c",
-      featured: true
+      featured: true,
+      category: "development"
     },
     {
       id: "cert-2",
       title: "Merit Performance Award",
-      issuedBy: "St. Andrews Institute of Technology and Management",
-      date: "November 2024",
-      imageUrl: "/images/certificates/merit-performance.jpg",
+      issuedBy: "St. Andrews Institute of Technology",
+      date: "November 2023",
+      imageUrl: "/certificates/merit-performance.jpg",
       driveUrl: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view?usp=drive_link",
-      featured: true
+      featured: true,
+      category: "academic"
     },
     {
       id: "cert-3",
       title: "Java Programming",
       issuedBy: "Great Learning",
-      date: "December 2024",
-      imageUrl: "/images/certificates/java-programming.jpg",
+      date: "December 2023",
+      imageUrl: "/certificates/java-programming.jpg",
       driveUrl: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view?usp=drive_link",
-      featured: true
+      featured: true,
+      category: "development"
     },
     {
       id: "cert-4",
       title: "Bapu Bazaar Samman Patra",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
-      imageUrl: "/images/certificates/bapu-bazaar.jpg",
+      imageUrl: "/certificates/bapu-bazaar.jpg",
       driveUrl: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view?usp=sharing",
-      featured: true
+      featured: true,
+      category: "competition"
     },
     {
       id: "cert-5",
       title: "Voter Awareness Campaign",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
-      imageUrl: "/images/certificates/voter.jpg",
+      imageUrl: "/certificates/voter.jpg",
       driveUrl: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view?usp=drive_link",
-      featured: false
+      featured: false,
+      category: "community"
     }
   ];
 
-  // Filter certificates based on featured flag
-  const displayedCertificates = showAll
-    ? certificates
-    : certificates.filter(cert => cert.featured);
+  // Filter certificates based on featured flag and category
+  const filteredCertificates = certificates.filter(cert => {
+    const featuredMatch = showAll || cert.featured;
+    const categoryMatch = selectedCategory === 'all' || cert.category === selectedCategory;
+    return featuredMatch && categoryMatch;
+  });
+
+  // Add simple category filters
+  const categories = [
+    { id: 'all', label: 'All Certificates' },
+    { id: 'development', label: 'Development' },
+    { id: 'academic', label: 'Academic' },
+    { id: 'competition', label: 'Competition' },
+    { id: 'community', label: 'Community' }
+  ];
 
   const container = {
     hidden: { opacity: 0 },
@@ -87,6 +107,25 @@ const Achievements = () => {
     show: { opacity: 1, y: 0 }
   };
 
+  // Create a simple floating animation for header
+  const [floatingY, setFloatingY] = useState(0);
+  
+  useEffect(() => {
+    // Simple floating animation using sin wave
+    let frame = 0;
+    const animate = () => {
+      const y = Math.sin(Date.now() / 1000) * 5;
+      setFloatingY(y);
+      frame = requestAnimationFrame(animate);
+    };
+    
+    frame = requestAnimationFrame(animate);
+    
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,32 +134,96 @@ const Achievements = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold">Achievements</h2>
+          {/* Enhanced header with animation */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12 text-center">
+            <motion.div 
+              className="flex-1 relative mb-6 sm:mb-0" 
+              style={{ y: floatingY }}
+            >
+              <h2 className="text-3xl md:text-5xl font-bold relative inline-block">
+                Achievements
+                <div className="absolute -top-3 -right-3">
+                  <Star className="h-6 w-6 text-amber-500 opacity-70" />
+                </div>
+              </h2>
+              <div className="mt-2 max-w-2xl mx-auto">
+                <p className="text-muted-foreground">
+                  A showcase of certifications and recognition earned through continuous learning
+                </p>
+              </div>
+            </motion.div>
           </div>
 
-          <motion.div
-            className="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-            variants={container}
-            initial="hidden"
-            animate="show"
-            layout
-          >
-            {displayedCertificates.map((certificate, index) => (
-              <motion.div
-                key={certificate.id}
-                variants={item}
-                className="transition-all duration-300"
-                layout
+          {/* Category filter controls */}
+          <div className="mb-8">
+            <div className="flex flex-wrap gap-2 justify-center">
+              {categories.map(category => (
+                <Badge 
+                  key={category.id}
+                  variant={selectedCategory === category.id ? 'default' : 'outline'}
+                  className={cn(
+                    "cursor-pointer px-3 py-1.5 transition-all",
+                    selectedCategory === category.id ? "" : "hover:bg-primary/10"
+                  )}
+                  onClick={() => setSelectedCategory(category.id)}
+                >
+                  {category.label}
+                </Badge>
+              ))}
+              <Badge 
+                variant="secondary"
+                className="cursor-pointer px-3 py-1.5 transition-all ml-2"
+                onClick={() => setShowAll(!showAll)}
               >
-                <CertificateCard certificate={certificate} index={index} />
-              </motion.div>
-            ))}
-          </motion.div>
+                {showAll ? "Show Featured Only" : "Show All"}
+              </Badge>
+            </div>
+          </div>
+
+          {filteredCertificates.length === 0 ? (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-12 text-center mb-8"
+            >
+              <Award className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">No certificates found</h3>
+              <p className="text-muted-foreground mb-6">
+                No certificates match your current filter settings
+              </p>
+              <Button 
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setShowAll(true);
+                }}
+              >
+                Reset Filters
+              </Button>
+            </motion.div>
+          ) : (
+            <motion.div
+              className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
+              variants={container}
+              initial="hidden"
+              animate="show"
+              layout
+            >
+              {filteredCertificates.map((certificate, index) => (
+                <motion.div
+                  key={certificate.id}
+                  variants={item}
+                  className="transition-all duration-300"
+                  layout
+                >
+                  <CertificateCard certificate={certificate} index={index} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
 
           {certificates.length > 4 && (
             <motion.div
-              className="mt-8 flex justify-center"
+              className="mt-12 flex justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -133,14 +236,14 @@ const Achievements = () => {
               >
                 {showAll ? (
                   <span className="flex items-center gap-2">
-                    View Less
+                    View Featured Only
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="18 15 12 9 6 15"></polyline>
                     </svg>
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
-                    View All
+                    View All Certificates
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -159,6 +262,8 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -199,6 +304,16 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
       'from-rose-500/20 via-transparent to-transparent',
     ];
     return colors[index % colors.length];
+  };
+
+  // Handle image load status
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+  
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
   };
 
   return (
@@ -243,19 +358,54 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
           )}
         />
 
+        {/* Category badge if available */}
+        {certificate.category && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge variant="secondary" className="text-xs bg-background/80 backdrop-blur-sm">
+              {certificate.category}
+            </Badge>
+          </div>
+        )}
+
         <CardContent className={cn("p-3 transition-all relative z-10", isExpanded ? "pb-6" : "")}>
           <AspectRatio
-            ratio={isExpanded ? 16 / 9 : 4 / 3}
+            ratio={isExpanded ? 16 / 9 : 3 / 2}
             className="bg-muted overflow-hidden rounded-md mb-3 transition-all duration-300"
           >
-            <img
-              src={certificate.imageUrl}
-              alt={certificate.title}
-              className={cn(
-                "object-cover w-full h-full transition-transform duration-300",
-                (isHovered || isExpanded) ? "scale-105" : "scale-100"
+            <div className="w-full h-full bg-muted/30 relative">
+              {!imageError ? (
+                <>
+                  <img
+                    src={certificate.imageUrl}
+                    alt={certificate.title}
+                    className={cn(
+                      "object-cover w-full h-full transition-transform duration-300",
+                      (isHovered || isExpanded) ? "scale-105" : "scale-100",
+                      imageLoaded ? "opacity-100" : "opacity-0"
+                    )}
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                  />
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Award className="w-8 h-8 text-muted-foreground" />
+                      </motion.div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center p-4">
+                    <Award className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">{certificate.title}</p>
+                  </div>
+                </div>
               )}
-            />
+            </div>
             <div className={cn(
               "absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity",
               isHovered ? "opacity-70" : "opacity-50"

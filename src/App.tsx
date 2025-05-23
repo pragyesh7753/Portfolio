@@ -6,9 +6,11 @@ import Home from './components/Home';
 import About from './components/About';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
-import Achievements from './components/Achievements';
+import Achievements from './components/Achievements'; // Changed from AchievementsEnhanced
 import Footer from './components/Footer';
-import LoadingScreen from './components/LoadingScreen';
+import LoadingScreenEnhanced from './components/LoadingScreenEnhanced';
+import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
+import CustomCursor from './components/CustomCursor';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -17,10 +19,10 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time - in a real app, this could be based on actual resource loading
+    // Enhanced loading experience with realistic timing
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500); // Show loading screen for 2.5 seconds
+    }, 4000); // Extended for enhanced loading screen
 
     return () => clearTimeout(timer);
   }, []);
@@ -29,11 +31,13 @@ function App() {
     <ThemeProvider defaultTheme="dark">
       <AnimatePresence mode="wait">
         {loading ? (
-          <LoadingScreen key="loading" />
+          <LoadingScreenEnhanced key="loading" onLoadingComplete={() => setLoading(false)} />
         ) : (
           <Router>
             <ScrollToTop />
-            <div className="min-h-screen bg-background text-foreground">
+            <div className="min-h-screen bg-background text-foreground relative">
+              <ParticlesBackgroundEnhanced />
+              <CustomCursor />
               <Navbar />
               <Routes>
                 <Route path="/" element={<Home />} />

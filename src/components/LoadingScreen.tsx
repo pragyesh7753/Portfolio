@@ -1,67 +1,86 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { Code2, Rocket, Sparkles, Terminal, Coffee } from 'lucide-react';
 
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  
   const fullName = "Pragyesh Kumar Seth";
   const title = "Full Stack Developer";
+  const loadingPhases = [
+    { icon: Terminal, text: "Initializing workspace...", color: "from-blue-400 to-cyan-500" },
+    { icon: Code2, text: "Loading components...", color: "from-violet-400 to-purple-500" },
+    { icon: Coffee, text: "Brewing perfect code...", color: "from-amber-400 to-orange-500" },
+    { icon: Rocket, text: "Preparing for launch...", color: "from-green-400 to-emerald-500" },
+    { icon: Sparkles, text: "Almost ready!", color: "from-pink-400 to-rose-500" }
+  ];
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
 
+  // Create floating particles
+  useEffect(() => {
+    const newParticles = Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 2
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  // Progress and phase management
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 100) {
+        const newProgress = prev + 1.5;
+        
+        // Update phase based on progress
+        const phase = Math.floor((newProgress / 100) * loadingPhases.length);
+        setCurrentPhase(Math.min(phase, loadingPhases.length - 1));
+        
+        if (newProgress >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return prev + 2; // Slower progress for more animation time
+        return newProgress;
       });
-    }, 80);
+    }, 60);
 
-    // Add mouse move effect for 3D perspective
+    return () => clearInterval(interval);
+  }, [loadingPhases.length]);
+
+  // Typing animation for name
+  useEffect(() => {
+    if (progress > 20) {
+      const timer = setTimeout(() => {
+        if (currentTextIndex < fullName.length) {
+          setDisplayText(fullName.slice(0, currentTextIndex + 1));
+          setCurrentTextIndex(prev => prev + 1);
+        }
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [currentTextIndex, fullName, progress]);
+
+  // Mouse tracking for 3D effect
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) / 20;
-      const y = (e.clientY - rect.top - rect.height / 2) / 20;
+      const x = (e.clientX - rect.left - rect.width / 2) / 30;
+      const y = (e.clientY - rect.top - rect.height / 2) / 30;
       setMousePosition({ x, y });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
-  // Add responsive scaling for mobile
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        // Adjust scale based on screen width
-        const scale = window.innerWidth < 640 ? 
-          Math.max(0.8, window.innerWidth / 640) : 1;
-        
-        containerRef.current.style.transform = `scale(${scale})`;
-      }
-    };
-    
-    handleResize(); // Initial call
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Staggered text animation
-
-
-  // Dynamic pattern animation
-
 
   // Enhanced particle effect
   const particleVariants = (i: number, total: number) => ({

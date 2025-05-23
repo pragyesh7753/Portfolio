@@ -48,12 +48,16 @@ export function ProfileAvatar({
     if (!element) return '50% 50%';
     
     const rect = element.getBoundingClientRect();
+    if (!rect.width || !rect.height) return '50% 50%'; // Guard against zero values
+    
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
     // Calculate the angle of the mouse relative to the center
-    const angleX = ((mousePosition.x - centerX) / (rect.width / 2)) * 30;
-    const angleY = ((mousePosition.y - centerY) / (rect.height / 2)) * 30;
+    // Limit the maximum movement to avoid extreme gradient positions
+    const maxOffsetPercent = 20;
+    const angleX = Math.max(Math.min(((mousePosition.x - centerX) / (rect.width / 2)) * maxOffsetPercent, maxOffsetPercent), -maxOffsetPercent);
+    const angleY = Math.max(Math.min(((mousePosition.y - centerY) / (rect.height / 2)) * maxOffsetPercent, maxOffsetPercent), -maxOffsetPercent);
     
     return `${50 + angleX}% ${50 + angleY}%`;
   };
