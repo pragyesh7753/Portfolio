@@ -114,6 +114,7 @@ const Projects = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+          {/* Enhanced header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
             <h2 className="text-3xl md:text-4xl font-bold">Projects</h2>
             <div className="mt-4 sm:mt-0">
@@ -131,6 +132,7 @@ const Projects = () => {
             </div>
           </div>
 
+          {/* Search and Filter Controls */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
             <div className="relative w-full sm:max-w-xs">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -175,6 +177,7 @@ const Projects = () => {
             </div>
           </div>
 
+          {/* Featured Projects Section */}
           {featuredProjects.length > 0 && selectedCategory === 'all' && searchQuery === '' && (
             <div className="mb-16">
               <h3 className="text-xl font-semibold mb-6 flex items-center">
@@ -197,6 +200,7 @@ const Projects = () => {
             </div>
           )}
 
+          {/* Projects Grid */}
           {filteredProjects.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0 }}

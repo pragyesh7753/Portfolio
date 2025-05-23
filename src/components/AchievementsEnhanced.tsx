@@ -327,13 +327,13 @@ const AchievementsEnhanced = () => {
             </div>
             
             <div className="flex items-center flex-wrap gap-3">
-              {[
+              {{
                 { value: 'all', label: 'All Achievements', icon: '🏅' },
                 { value: 'development', label: 'Development', icon: '💻' },
                 { value: 'academic', label: 'Academic', icon: '🎓' },
                 { value: 'competition', label: 'Competition', icon: '🏆' },
                 { value: 'community', label: 'Community', icon: '🤝' }
-              ].map((filter) => (
+              }.map((filter) => (
                 <motion.div key={filter.value} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Badge 
                     variant={selectedCategory === filter.value ? 'default' : 'outline'} 
@@ -650,24 +650,34 @@ const EnhancedCertificateCard = ({ certificate, isHovered, colorMode }: {
 };
 
 // Helper function to get category color
-const getCategoryColor = (category: string) => {
+const getCategoryColor = (category: string): string => {
   switch (category) {
-    case 'development': return 'from-blue-500 to-cyan-500';
-    case 'academic': return 'from-green-500 to-emerald-500';
-    case 'competition': return 'from-amber-500 to-orange-500';
-    case 'community': return 'from-purple-500 to-pink-500';
-    default: return 'from-gray-500 to-slate-500';
+    case 'development': 
+      return 'from-blue-500 to-cyan-500';
+    case 'academic': 
+      return 'from-green-500 to-emerald-500';
+    case 'competition': 
+      return 'from-amber-500 to-orange-500';
+    case 'community': 
+      return 'from-purple-500 to-pink-500';
+    default: 
+      return 'from-gray-500 to-slate-500';
   }
 };
 
 // Helper function to get category icon
-const getCategoryIcon = (category: string) => {
+const getCategoryIcon = (category: string): string => {
   switch (category) {
-    case 'development': return '💻';
-    case 'academic': return '🎓';
-    case 'competition': return '🏆';
-    case 'community': return '🤝';
-    default: return '📜';
+    case 'development': 
+      return '💻';
+    case 'academic': 
+      return '🎓';
+    case 'competition': 
+      return '🏆';
+    case 'community': 
+      return '🤝';
+    default: 
+      return '📜';
   }
 };
 

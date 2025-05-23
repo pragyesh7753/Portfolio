@@ -51,7 +51,7 @@ const LoadingScreenEnhanced = ({ onLoadingComplete }: LoadingScreenProps) => {
         if (newProgress >= 100) {
           clearInterval(interval);
           if (onLoadingComplete) {
-            setTimeout(() => onLoadingComplete(), 500);
+            setTimeout(onLoadingComplete, 500);
           }
           return 100;
         }
@@ -59,10 +59,7 @@ const LoadingScreenEnhanced = ({ onLoadingComplete }: LoadingScreenProps) => {
       });
     }, 60);
 
-    // Fix: Properly clear interval on component unmount
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [loadingPhases.length, onLoadingComplete]);
 
   // Typing animation for name
