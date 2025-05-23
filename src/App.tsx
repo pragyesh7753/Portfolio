@@ -12,15 +12,15 @@ import LoadingScreen from './components/LoadingScreen';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
+import { ParticlesBackground } from './components/ParticlesBackground';
 
 function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time - in a real app, this could be based on actual resource loading
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500); // Show loading screen for 2.5 seconds
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -33,17 +33,22 @@ function App() {
         ) : (
           <Router>
             <ScrollToTop />
-            <div className="min-h-screen bg-background text-foreground">
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/achievements" element={<Achievements />} />
-              </Routes>
-              <Footer />
-              <Toaster />
+            <div className="min-h-screen bg-background text-foreground relative">
+              <ParticlesBackground />
+              <div className="relative z-10">
+                <Navbar />
+                <main className="pt-16"> {/* Added padding to prevent content overlap with navbar */}
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/achievements" element={<Achievements />} />
+                  </Routes>
+                </main>
+                <Footer />
+                <Toaster />
+              </div>
             </div>
           </Router>
         )}
