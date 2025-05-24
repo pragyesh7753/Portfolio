@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { Code2, Sparkles, Github, Linkedin, Mail, ArrowRight, Download } from 'lucide-react';
+import { Code2, Sparkles, Github, Linkedin, Mail,  Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { ProfileAvatar } from './ProfileAvatar';
