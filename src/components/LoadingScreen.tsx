@@ -1,328 +1,285 @@
-import { motion } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Code2, Rocket, Sparkles, Terminal, Coffee } from 'lucide-react';
 
+// Creative: Orbiting planets and animated rocket launch loading screen
+
+const planets = [
+	{ color: 'bg-blue-400', size: 16, orbit: 80, duration: 7, delay: 0 },
+	{ color: 'bg-violet-400', size: 10, orbit: 110, duration: 10, delay: 1 },
+	{ color: 'bg-pink-400', size: 7, orbit: 140, duration: 13, delay: 2 },
+	{ color: 'bg-amber-400', size: 5, orbit: 170, duration: 16, delay: 3 },
+];
+
 const LoadingScreen = () => {
-  const [progress, setProgress] = useState(0);
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  
-  const fullName = "Pragyesh Kumar Seth";
-  const title = "Full Stack Developer";
-  const loadingPhases = [
-    { icon: Terminal, text: "Initializing workspace...", color: "from-blue-400 to-cyan-500" },
-    { icon: Code2, text: "Loading components...", color: "from-violet-400 to-purple-500" },
-    { icon: Coffee, text: "Brewing perfect code...", color: "from-amber-400 to-orange-500" },
-    { icon: Rocket, text: "Preparing for launch...", color: "from-green-400 to-emerald-500" },
-    { icon: Sparkles, text: "Almost ready!", color: "from-pink-400 to-rose-500" }
-  ];
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	const [progress, setProgress] = useState(0);
+	const [rocketLaunched, setRocketLaunched] = useState(false);
+	const [showStars, setShowStars] = useState(false);
 
-  // Progress and phase management
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + 1.5;
-        
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return newProgress;
-      });
-    }, 60);
+	const fullName = 'Pragyesh Kumar Seth';
+	const title = 'Full Stack Developer';
+	const loadingPhases = [
+		{ icon: Terminal, text: 'Initializing workspace...' },
+		{ icon: Code2, text: 'Loading components...' },
+		{ icon: Coffee, text: 'Brewing perfect code...' },
+		{ icon: Rocket, text: 'Preparing for launch...' },
+		{ icon: Sparkles, text: 'Almost ready!' },
+	];
 
-    return () => clearInterval(interval);
-  }, [loadingPhases.length]);
+	// Progress and rocket launch
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setProgress((p) => {
+				const newProgress = Math.min(p + 1.5, 100);
+				if (newProgress >= 100) {
+					clearInterval(interval);
+					setTimeout(() => setRocketLaunched(true), 600);
+					setTimeout(() => setShowStars(true), 1200);
+				}
+				return newProgress;
+			});
+		}, 40);
 
-  // Typing animation for name
-  useEffect(() => {
-    if (progress > 20) {
-      const timer = setTimeout(() => {
-        if (currentTextIndex < fullName.length) {
-          setCurrentTextIndex(prev => prev + 1);
-        }
-      }, 80);
-      return () => clearTimeout(timer);
-    }
-  }, [currentTextIndex, fullName, progress]);
+		return () => clearInterval(interval);
+	}, []);
 
-  // Mouse tracking for 3D effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) / 30;
-      const y = (e.clientY - rect.top - rect.height / 2) / 30;
-      setMousePosition({ x, y });
-    };
+	// Determine current loading phase based on progress
+	const currentPhase = Math.min(
+		Math.floor((progress / 100) * loadingPhases.length),
+		loadingPhases.length - 1
+	);
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+	// Animated stars after rocket launch
+	const stars = Array.from({ length: 40 }).map(() => ({
+		left: Math.random() * 100,
+		top: Math.random() * 100,
+		size: 1 + Math.random() * 2,
+		delay: Math.random() * 1.5,
+	}));
 
-  // Enhanced particle effect
-  const particleVariants = (i: number, total: number) => ({
-    hidden: { opacity: 0, scale: 0 },
-    visible: { 
-      opacity: [0.3, 0.8, 0.3],
-      scale: [0.8, 1.2, 0.8],
-      x: Math.cos(2 * Math.PI * (i / total)) * (80 + Math.random() * 50),
-      y: Math.sin(2 * Math.PI * (i / total)) * (80 + Math.random() * 50),
-      transition: {
-        duration: 3 + Math.random() * 2,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: i * 0.2,
-      }
-    },
-  });
+	return (
+		<motion.div
+			className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#0a1026] via-[#1a1e2e] to-[#23243a] z-[100] overflow-hidden"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{
+				opacity: 0,
+				transition: {
+					duration: 0.8,
+					ease: [0.2, 0.65, 0.3, 0.9],
+				},
+			}}
+		>
+			{/* Animated stars after rocket launch */}
+			<AnimatePresence>
+				{showStars && (
+					<motion.div
+						className="absolute inset-0 pointer-events-none"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+					>
+						{stars.map((star, i) => (
+							<motion.div
+								key={i}
+								className="absolute rounded-full bg-white"
+								style={{
+									left: `${star.left}%`,
+									top: `${star.top}%`,
+									width: `${star.size}px`,
+									height: `${star.size}px`,
+									opacity: 0.7 + Math.random() * 0.3,
+								}}
+								initial={{ scale: 0 }}
+								animate={{ scale: [0, 1, 0.8, 1] }}
+								transition={{
+									delay: star.delay,
+									duration: 2.5 + Math.random(),
+									repeat: Infinity,
+									repeatType: 'reverse',
+									ease: 'easeInOut',
+								}}
+							/>
+						))}
+					</motion.div>
+				)}
+			</AnimatePresence>
 
-  return (
-    <motion.div
-      className="fixed inset-0 flex flex-col items-center justify-center bg-background z-[100] overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ 
-        opacity: 0,
-        transition: {
-          duration: 0.8,
-          ease: [0.2, 0.65, 0.3, 0.9],
-        }
-      }}
-    >
-      {/* Enhanced background with grid effect */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(var(--primary-rgb),0.1)_1px,transparent_1px)] bg-[size:24px_24px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(var(--primary-rgb),0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(var(--primary-rgb),0.05)_1px,transparent_1px)] bg-[size:80px_80px]" />
-        
-        {/* Gradient orbs */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
-          <div className="absolute -left-40 -top-40 w-80 h-80 rounded-full bg-blue-500/30 blur-3xl" />
-          <div className="absolute -right-40 -bottom-40 w-80 h-80 rounded-full bg-violet-500/30 blur-3xl" />
-          <div className="absolute right-1/3 top-1/4 w-60 h-60 rounded-full bg-indigo-500/20 blur-3xl" />
-        </div>
-      </div>
+			{/* Orbiting planets */}
+			<div className="relative flex items-center justify-center w-[340px] h-[340px] sm:w-[420px] sm:h-[420px]">
+				{/* Orbits */}
+				{planets.map((planet, i) => (
+					<motion.div
+						key={i}
+						className="absolute left-1/2 top-1/2"
+						style={{
+							width: `${planet.orbit * 2}px`,
+							height: `${planet.orbit * 2}px`,
+							marginLeft: `-${planet.orbit}px`,
+							marginTop: `-${planet.orbit}px`,
+							borderRadius: '50%',
+							border: '1px dashed rgba(255,255,255,0.08)',
+						}}
+					>
+						<motion.div
+							className={cn(
+								'absolute',
+								planet.color,
+								'rounded-full shadow-lg'
+							)}
+							style={{
+								width: `${planet.size}px`,
+								height: `${planet.size}px`,
+								left: `${planet.orbit - planet.size / 2}px`,
+								top: `${planet.orbit - planet.size / 2}px`,
+							}}
+							animate={{
+								rotate: [0, 360],
+							}}
+							transition={{
+								repeat: Infinity,
+								duration: planet.duration,
+								ease: 'linear',
+								delay: planet.delay,
+							}}
+						/>
+					</motion.div>
+				))}
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className={cn(
-              "absolute left-1/2 top-1/2 w-2 h-2 rounded-full",
-              i % 3 === 0 ? "bg-blue-400/60" : 
-              i % 3 === 1 ? "bg-violet-400/60" : "bg-indigo-400/60"
-            )}
-            variants={particleVariants(i, 20)}
-            initial="hidden"
-            animate="visible"
-          />
-        ))}
-      </div>
+				{/* Rocket */}
+				<motion.div
+					className="absolute left-1/2 top-1/2 z-10"
+					style={{
+						marginLeft: '-32px',
+						marginTop: '-32px',
+						width: '64px',
+						height: '64px',
+					}}
+					initial={false}
+					animate={
+						rocketLaunched
+							? {
+									y: -320,
+									scale: 0.7,
+									opacity: 0,
+									rotate: -10,
+									transition: { duration: 1.2, ease: 'easeIn' },
+							  }
+							: {
+									y: 0,
+									scale: 1,
+									opacity: 1,
+									rotate: 0,
+									transition: { type: 'spring', stiffness: 120, damping: 10 },
+							  }
+					}
+				>
+					<motion.div
+						className="flex flex-col items-center"
+						animate={
+							rocketLaunched
+								? { y: [0, -30, -60, -120], opacity: [1, 1, 0.8, 0] }
+								: { y: 0, opacity: 1 }
+						}
+						transition={{ duration: 1.2, ease: 'easeIn' }}
+					>
+						<Rocket className="w-16 h-16 text-white drop-shadow-lg" />
+						{/* Rocket flame */}
+						{!rocketLaunched && (
+							<motion.div
+								className="w-4 h-8 rounded-full bg-gradient-to-b from-yellow-300 via-orange-400 to-pink-500 blur-sm mt-[-8px]"
+								animate={{
+									scaleY: [1, 1.3, 1],
+									opacity: [0.7, 1, 0.7],
+								}}
+								transition={{
+									repeat: Infinity,
+									duration: 0.5,
+									ease: 'easeInOut',
+								}}
+							/>
+						)}
+					</motion.div>
+				</motion.div>
+			</div>
 
-      {/* Main content with 3D effect */}
-      <motion.div 
-        ref={containerRef}
-        className="relative flex flex-col items-center z-10"
-        style={{
-          perspective: "1000px",
-          transformStyle: "preserve-3d",
-        }}
-        animate={{
-          rotateX: -mousePosition.y,
-          rotateY: mousePosition.x,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 75,
-          damping: 15,
-          mass: 0.5
-        }}
-      >
-        {/* Enhanced logo mark animation */}
-        <motion.div 
-          className="mb-8 relative"
-          initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
-            rotateY: 0,
-            transition: { duration: 0.8, delay: 0.1, type: "spring" }
-          }}
-        >
-          <div className="h-24 w-24 rounded-full bg-gradient-to-r from-blue-400 to-violet-500 flex items-center justify-center shadow-lg shadow-blue-500/20 dark:shadow-blue-800/20">
-            <div className="text-5xl font-bold text-white">P</div>
-          </div>
-          
-          {/* Multiple pulse rings */}
-          {[1, 2, 3].map((i) => (
-            <motion.div 
-              key={i}
-              className="absolute inset-0 rounded-full border border-primary/20"
-              initial={{ opacity: 0, scale: 1 }}
-              animate={{ 
-                opacity: [0, 0.3, 0],
-                scale: [1, 1 + (i * 0.3)],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.5,
-                ease: "easeOut"
-              }}
-            />
-          ))}
-          
-          {/* Orbiting dot */}
-          <motion.div
-            className="absolute w-3 h-3 rounded-full bg-blue-400 shadow-md shadow-blue-500/50"
-            animate={{
-              x: [0, 40, 0, -40, 0],
-              y: [40, 0, -40, 0, 40],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        </motion.div>
+			{/* Name and title */}
+			<motion.div
+				className="flex flex-col items-center mt-10"
+				initial={{ opacity: 0, y: 30 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.5 }}
+			>
+				<motion.h1
+					className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 tracking-tighter text-white"
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.7 }}
+				>
+					<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-violet-400 to-pink-400">
+						{fullName}
+					</span>
+				</motion.h1>
+				<motion.p
+					className="text-lg text-white/70 tracking-wide mb-4"
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 1 }}
+				>
+					{title}
+				</motion.p>
+			</motion.div>
 
-        {/* Name with enhanced animated letters */}
-        <motion.div
-          className="flex flex-col items-center mb-12"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.05,
-                delayChildren: 0.8,
-              },
-            },
-          }}
-        >
-          <motion.h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 tracking-tighter overflow-hidden">
-            {fullName.split('').map((char, index) => (
-              <motion.span
-                key={index}
-                className={cn(
-                  "inline-block",
-                  char === " " ? "mr-2" : "",
-                  index === 0 || index === 9 || index === 15 ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-500" : ""
-                )}
-                variants={{
-                  hidden: { 
-                    opacity: 0, 
-                    y: 40, 
-                    rotateX: -90,
-                  },
-                  visible: { 
-                    opacity: 1, 
-                    y: 0,
-                    rotateX: 0,
-                    transition: {
-                      type: "spring", 
-                      stiffness: 200, 
-                      damping: 12
-                    }
-                  },
-                }}
-              >
-                {char}
-              </motion.span>
-            ))}
-          </motion.h1>
-          
-          <motion.div 
-            className="h-px w-48 bg-gradient-to-r from-transparent via-primary/30 to-transparent mb-3"
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ 
-              scaleX: 1, 
-              opacity: 1,
-              transition: { delay: 1.5, duration: 1 }
-            }}
-          />
-          
-          <motion.p 
-            className="text-lg text-muted-foreground tracking-wide"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0,
-              transition: { delay: 1.6, duration: 0.8 }
-            }}
-          >
-            {title}
-          </motion.p>
-        </motion.div>
+			{/* Progress bar and loading phase */}
+			<div className="w-64 sm:w-80 mt-6">
+				<div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+					<motion.div
+						className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-400 via-violet-500 to-pink-400 rounded-full"
+						initial={{ width: "0%" }}
+						animate={{ width: `${progress}%` }}
+						transition={{ duration: 0.3, ease: "easeOut" }}
+					/>
+				</div>
+				<motion.div
+					className="flex items-center gap-2 text-sm text-white/80 mt-3"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.7 }}
+				>
+					{loadingPhases[currentPhase] && loadingPhases[currentPhase].icon && (
+						<span className="flex items-center">
+							{React.createElement(loadingPhases[currentPhase].icon, { className: "w-4 h-4 mr-1" })}
+						</span>
+					)}
+					<span>{loadingPhases[currentPhase]?.text}</span>
+					<span className="ml-auto">{Math.round(progress)}%</span>
+				</motion.div>
+			</div>
 
-        {/* Enhanced progress bar */}
-        <div className="relative w-56 sm:w-72 h-1.5 bg-primary/10 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
-          <motion.div 
-            className="h-full bg-gradient-to-r from-blue-400 via-violet-500 to-blue-400"
-            style={{ backgroundSize: "200% 100%" }}
-            initial={{ width: 0 }}
-            animate={{ 
-              width: `${progress}%`,
-              backgroundPosition: ["0% center", "100% center"],
-            }}
-            transition={{ 
-              width: { duration: 0.5 },
-              backgroundPosition: { duration: 2, repeat: Infinity, ease: "linear" }
-            }}
-          />
-          
-          {/* Shimmer effect */}
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-            animate={{ 
-              x: ["-100%", "100%"],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 1.5,
-              ease: "easeInOut",
-            }}
-          />
-        </div>
-        
-        {/* Loading text with enhanced animation */}
-        <motion.p 
-          className="mt-4 text-sm text-muted-foreground flex items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <span>Loading</span>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <motion.span
-              key={i}
-              className="inline-block overflow-hidden w-2"
-              animate={{ 
-                y: [0, -5, 0], 
-                opacity: [0.3, 1, 0.3],
-                color: i === 0 ? ["#60a5fa", "#8b5cf6"] : i === 1 ? ["#8b5cf6", "#60a5fa"] : ["#818cf8", "#60a5fa"]
-              }}
-              transition={{
-                y: { duration: 0.6, repeat: Infinity, delay: i * 0.2 },
-                opacity: { duration: 0.6, repeat: Infinity, delay: i * 0.2 },
-                color: { duration: 3, repeat: Infinity, delay: i * 0.2 }
-              }}
-            >
-              .
-            </motion.span>
-          ))}
-        </motion.p>
-      </motion.div>
-    </motion.div>
-  );
+			{/* Animated "Launching..." text after rocket launch */}
+			<AnimatePresence>
+				{rocketLaunched && (
+					<motion.div
+						className="absolute bottom-16 left-0 right-0 flex justify-center"
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: 30 }}
+						transition={{ duration: 0.7 }}
+					>
+						<motion.span
+							className="text-xl font-semibold text-white bg-gradient-to-r from-blue-400 via-violet-400 to-pink-400 bg-clip-text text-transparent"
+							animate={{ opacity: [1, 0.5, 1] }}
+							transition={{ duration: 1.2, repeat: Infinity }}
+						>
+							Launching...
+						</motion.span>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</motion.div>
+	);
 };
 
 export default LoadingScreen;
