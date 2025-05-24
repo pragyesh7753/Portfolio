@@ -48,9 +48,9 @@ const Home = () => {
       const timer = setInterval(() => {
         const progress = step / steps;
         setStats({
-          projects: Math.floor(progress * 15),
-          experience: Math.floor(progress * 2),
-          technologies: Math.floor(progress * 25)
+          projects: Math.floor(progress * 5),
+          experience: Math.floor(progress * 1),
+          technologies: Math.floor(progress * 10)
         });
         
         step++;
@@ -166,22 +166,39 @@ const Home = () => {
 
             {/* Enhanced buttons with hover effects */}
             <motion.div variants={item} className="flex flex-wrap gap-4 mb-8">
+              {/* "Get in Touch" button with client-side navigation */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button className="bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 text-white px-6 py-3 h-auto">
-                  <span>View My Work</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button
+                  className="bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 text-white px-6 py-3 h-auto"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/contact');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                >
+                  <span>Get in Touch</span>
+                  <Mail className="ml-2 h-4 w-4" />
                 </Button>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button variant="outline" className="px-6 py-3 h-auto">
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Download CV</span>
+                <Button
+                  variant="outline"
+                  className="px-6 py-3 h-auto"
+                  asChild
+                >
+                  <a
+                    href="/resume.pdf"
+                    download="Pragyesh_Kumar_Seth_Resume.pdf"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    <span>Download CV</span>
+                  </a>
                 </Button>
               </motion.div>
             </motion.div>
