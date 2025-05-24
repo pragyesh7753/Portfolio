@@ -1,10 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
-import { ExternalLink, Github, ArrowRight, Search, Code, Tags, Star, Sparkles, Zap, Trophy, Rocket, TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Project {
@@ -20,9 +16,8 @@ interface Project {
 }
 
 const ProjectsEnhanced = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [searchQuery] = useState('');
+  const [selectedCategory] = useState('all');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const controls = useAnimation();
@@ -189,7 +184,7 @@ const ProjectsEnhanced = () => {
               variants={itemVariants}
               className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-3xl mx-auto"
             >
-              {Object.entries(projectStats).map(([key, value], index) => (
+              {Object.entries(projectStats).map(([key, value]) => (
                 <motion.div
                   key={key}
                   variants={itemVariants}
@@ -203,11 +198,27 @@ const ProjectsEnhanced = () => {
             </motion.div>
           </motion.div>
 
-          {/* Rest of the component implementation */}
-          <motion.div variants={itemVariants}>
-            <p className="text-center text-muted-foreground">
-              More enhanced features coming soon...
-            </p>
+          {/* Projects grid */}
+          <motion.div variants={itemVariants} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project) => (
+              <motion.div
+                key={project.title}
+                variants={itemVariants}
+                className="p-6 rounded-xl bg-card/50 backdrop-blur-sm border border-primary/10 hover:border-primary/30 transition-all"
+              >
+                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                <p className="text-muted-foreground mb-4">{project.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((tech) => (
+                    <span key={tech} className={cn(
+                      "px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                    )}>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </motion.div>
       </div>

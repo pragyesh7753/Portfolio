@@ -1,5 +1,5 @@
 import { motion, useAnimation, useInView } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Loader2, MessageCircle, User, Calendar, Clock, CheckCircle, Star, Sparkles, Heart } from 'lucide-react';
+import { Mail, MapPin, Send, Loader2, MessageCircle, User, Clock, CheckCircle, Star, Sparkles, Heart } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from './ui/button';
@@ -334,7 +334,7 @@ const ContactEnhanced = () => {
               variants={itemVariants}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto"
             >
-              {collaborationStats.map((stat, index) => (
+              {collaborationStats.map((stat) => (
                 <motion.div
                   key={stat.label}
                   variants={itemVariants}
@@ -359,7 +359,7 @@ const ContactEnhanced = () => {
                 </h3>
                 
                 <div className="space-y-6">
-                  {contactInfo.map((info, index) => (
+                  {contactInfo.map((info) => (
                     <motion.div
                       key={info.title}
                       variants={itemVariants}

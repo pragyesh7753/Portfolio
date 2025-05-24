@@ -1,10 +1,9 @@
-import { Github, Linkedin, Mail, ArrowRight, Download, Sparkles, Code2, Rocket } from 'lucide-react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { Code2, Sparkles, Github, Linkedin, Mail, ArrowRight, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { ProfileAvatar } from './ProfileAvatar';
-import { useRef, useState, useEffect } from 'react';
 
 const Home = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -61,6 +60,7 @@ const Home = () => {
       return () => clearInterval(timer);
     }
   }, [isInView]);
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -144,7 +144,7 @@ const Home = () => {
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={isInView ? { scale: 1 } : { scale: 0 }}
-                  transition={{ delay: 0.7, type: "spring" }}
+                  transition={{ delay: 0.6, type: "spring" }}
                   className="text-2xl font-bold text-violet-400"
                 >
                   {stats.experience}+
@@ -155,7 +155,7 @@ const Home = () => {
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={isInView ? { scale: 1 } : { scale: 0 }}
-                  transition={{ delay: 0.9, type: "spring" }}
+                  transition={{ delay: 0.7, type: "spring" }}
                   className="text-2xl font-bold text-purple-400"
                 >
                   {stats.technologies}+
@@ -170,23 +170,18 @@ const Home = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button asChild className="bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <Link to="/contact">
-                    <Rocket className="mr-2 h-4 w-4" />
-                    Get in Touch 
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                <Button className="bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 text-white px-6 py-3 h-auto">
+                  <span>View My Work</span>
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button variant="outline" asChild className="border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300">
-                  <a href="/resume.pdf" download>
-                    <Download className="mr-2 h-4 w-4" /> 
-                    Download Resume
-                  </a>
+                <Button variant="outline" className="px-6 py-3 h-auto">
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download CV</span>
                 </Button>
               </motion.div>
             </motion.div>
@@ -201,14 +196,14 @@ const Home = () => {
                 <motion.a
                   key={label}
                   href={href}
-                  target={href.startsWith('http') ? "_blank" : undefined}
-                  rel={href.startsWith('http') ? "noopener noreferrer" : undefined}
-                  className={`text-foreground/80 ${color} transition-all duration-300 hover:scale-110`}
-                  whileHover={{ y: -2 }}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className={`p-3 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground ${color} transition-all duration-300 group`}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label={label}
                 >
-                  <span className="sr-only">{label}</span>
-                  <Icon size={24} />
+                  <Icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
                 </motion.a>
               ))}
             </motion.div>
@@ -222,7 +217,6 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              {/* Animated background rings */}
               <motion.div 
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -246,7 +240,6 @@ const Home = () => {
                 className="shadow-2xl ring-4 ring-primary/20 relative z-10"
               />
               
-              {/* Floating elements around profile */}
               <motion.div
                 animate={{ 
                   y: [0, -20, 0],
@@ -283,67 +276,22 @@ const Home = () => {
             
             <TabsContent value="skills" className="mt-6 space-y-6">
               <div className="grid md:grid-cols-2 gap-8">
-                <motion.div 
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-                  transition={{ delay: 1.4, duration: 0.6 }}
-                  className="space-y-4"
-                >
-                  <h3 className="text-lg font-medium flex items-center gap-2">
-                    <Code2 className="h-5 w-5 text-blue-400" />
-                    Frontend
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['React', 'TypeScript', 'Tailwind CSS', 'HTML', 'CSS', 'JavaScript'].map((skill, index) => (
-                      <motion.div 
-                        key={skill} 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                        transition={{ delay: 1.6 + index * 0.1, duration: 0.4 }}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        className="flex items-center bg-gradient-to-r from-blue-500/5 to-violet-500/5 hover:from-blue-500/10 hover:to-violet-500/10 transition-all duration-300 p-3 rounded-lg border border-blue-500/10 hover:border-blue-500/20 backdrop-blur-sm group cursor-pointer"
-                      >
-                        <motion.span 
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
-                          className="h-2 w-2 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full mr-2"
-                        />
-                        <span className="text-sm group-hover:text-blue-400 transition-colors">{skill}</span>
-                      </motion.div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Frontend Development</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {['React', 'TypeScript', 'Tailwind CSS', 'JavaScript'].map((skill) => (
+                      <span key={skill} className="px-3 py-1 bg-muted rounded-full text-sm">{skill}</span>
                     ))}
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-                  transition={{ delay: 1.4, duration: 0.6 }}
-                  className="space-y-4"
-                >
-                  <h3 className="text-lg font-medium flex items-center gap-2">
-                    <Rocket className="h-5 w-5 text-violet-400" />
-                    Backend
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Node.js', 'Express', 'Python', 'MongoDB', 'MySQL', 'RESTful APIs'].map((skill, index) => (
-                      <motion.div 
-                        key={skill} 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                        transition={{ delay: 1.6 + index * 0.1, duration: 0.4 }}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        className="flex items-center bg-gradient-to-r from-violet-500/5 to-purple-500/5 hover:from-violet-500/10 hover:to-purple-500/10 transition-all duration-300 p-3 rounded-lg border border-violet-500/10 hover:border-violet-500/20 backdrop-blur-sm group cursor-pointer"
-                      >
-                        <motion.span 
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
-                          className="h-2 w-2 bg-gradient-to-r from-violet-400 to-purple-500 rounded-full mr-2"
-                        />
-                        <span className="text-sm group-hover:text-violet-400 transition-colors">{skill}</span>
-                      </motion.div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Backend Development</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {['Node.js', 'Express', 'Python', 'MongoDB'].map((skill) => (
+                      <span key={skill} className="px-3 py-1 bg-muted rounded-full text-sm">{skill}</span>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               </div>
             </TabsContent>
             
@@ -355,20 +303,10 @@ const Home = () => {
                 className="relative"
               >
                 <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 via-violet-500 to-purple-600 rounded-full" />
-                <div className="border-l-2 border-primary/60 pl-6 py-4 ml-2 relative">
-                  <motion.div 
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute -left-2 top-6 w-4 h-4 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full border-2 border-background"
-                  />
-                  <h3 className="font-semibold text-lg">Developed and Deployed Personal Projects</h3>
-                  <p className="text-sm mt-2 text-muted-foreground">Showcasing full-stack development expertise through innovative web applications</p>
-                  <motion.p 
-                    className="text-sm mt-2 text-blue-400 hover:text-violet-400 transition-colors cursor-pointer"
-                    whileHover={{ x: 5 }}
-                  >
-                    → You can see more in Projects Section
-                  </motion.p>
+                <div className="pl-8 pb-8">
+                  <h3 className="text-lg font-semibold">Full Stack Developer</h3>
+                  <p className="text-sm text-muted-foreground">Self-taught | 2023 - Present</p>
+                  <p className="text-sm mt-2">Building modern web applications with React and Node.js</p>
                 </div>
               </motion.div>
             </TabsContent>
@@ -380,43 +318,10 @@ const Home = () => {
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="space-y-6"
               >
-                <div className="relative">
-                  <div className="absolute left-0 top-0 bottom-12 w-0.5 bg-gradient-to-b from-blue-400 to-violet-500 rounded-full" />
-                  <div className="border-l-2 border-primary pl-6 py-4 ml-2 relative">
-                    <motion.div 
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      className="absolute -left-2 top-6 w-4 h-4 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full border-2 border-background"
-                    />
-                    <h3 className="font-semibold">Master of Computer Applications</h3>
-                    <p className="text-sm text-muted-foreground">St. Andrews Institute of Technology and Management • 2024-2026</p>
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={isInView ? { width: "90%" } : { width: 0 }}
-                      transition={{ delay: 1, duration: 1 }}
-                      className="mt-2 h-1 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full"
-                    />
-                    <p className="text-sm mt-2 text-blue-400 font-medium">Grade: A+</p>
-                  </div>
-                </div>
-                
-                <div className="relative">
-                  <div className="border-l-2 border-primary pl-6 py-4 ml-2 relative">
-                    <motion.div 
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                      className="absolute -left-2 top-6 w-4 h-4 bg-gradient-to-r from-violet-400 to-purple-500 rounded-full border-2 border-background"
-                    />
-                    <h3 className="font-semibold">Bachelor of Computer Applications</h3>
-                    <p className="text-sm text-muted-foreground">Veer Bahadur Singh Puravchal University • 2021-2024</p>
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={isInView ? { width: "100%" } : { width: 0 }}
-                      transition={{ delay: 1.5, duration: 1 }}
-                      className="mt-2 h-1 bg-gradient-to-r from-violet-400 to-purple-500 rounded-full"
-                    />
-                    <p className="text-sm mt-2 text-violet-400 font-medium">Grade: A+</p>
-                  </div>
+                <div className="border-l-2 border-primary/20 pl-6">
+                  <h3 className="text-lg font-semibold">Bachelor of Technology</h3>
+                  <p className="text-sm text-muted-foreground">Computer Science Engineering</p>
+                  <p className="text-sm text-muted-foreground">St. Andrews Institute of Technology | 2021 - 2025</p>
                 </div>
               </motion.div>
             </TabsContent>

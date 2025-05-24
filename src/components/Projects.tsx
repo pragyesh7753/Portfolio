@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, useInView, useAnimation } from 'framer-motion';
-import { ExternalLink, Github, ArrowRight, Search, Code, Tags, Star, Sparkles, Zap, Trophy } from 'lucide-react';
+import { useState, useCallback, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Github, ArrowRight, Search, Code, Tags } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';

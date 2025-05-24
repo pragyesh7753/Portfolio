@@ -1,12 +1,10 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Code2, Rocket, Sparkles, Terminal, Coffee } from 'lucide-react';
 
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
-  const [currentPhase, setCurrentPhase] = useState(0);
-  const [displayText, setDisplayText] = useState('');
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   
   const fullName = "Pragyesh Kumar Seth";
@@ -21,28 +19,12 @@ const LoadingScreen = () => {
   
   const containerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
-
-  // Create floating particles
-  useEffect(() => {
-    const newParticles = Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 2
-    }));
-    setParticles(newParticles);
-  }, []);
 
   // Progress and phase management
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
         const newProgress = prev + 1.5;
-        
-        // Update phase based on progress
-        const phase = Math.floor((newProgress / 100) * loadingPhases.length);
-        setCurrentPhase(Math.min(phase, loadingPhases.length - 1));
         
         if (newProgress >= 100) {
           clearInterval(interval);
@@ -60,7 +42,6 @@ const LoadingScreen = () => {
     if (progress > 20) {
       const timer = setTimeout(() => {
         if (currentTextIndex < fullName.length) {
-          setDisplayText(fullName.slice(0, currentTextIndex + 1));
           setCurrentTextIndex(prev => prev + 1);
         }
       }, 80);

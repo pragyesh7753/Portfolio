@@ -165,8 +165,6 @@ const About = () => {
     // so we can show seamless scrolling between duplicates
     if (scrollContainer.scrollLeft === 0 && !scrollPaused) {
       // Calculate width of one full set of testimonials
-      const cardWidth = 350 + 28; // card width + gap
-      const totalWidth = cardWidth * testimonials.length;
       scrollContainer.scrollLeft = 0;
     }
 
@@ -186,9 +184,8 @@ const About = () => {
 
       // When we reach the end of the first set, jump back to start
       const cardWidth = 350 + 28; // card width + gap
-      const totalWidth = cardWidth * testimonials.length;
       
-      if (scrollContainer.scrollLeft >= totalWidth) {
+      if (scrollContainer.scrollLeft >= cardWidth * testimonials.length) {
         scrollContainer.scrollLeft = 0;
       }
 

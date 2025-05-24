@@ -6,7 +6,6 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { AspectRatio } from './ui/aspect-ratio';
 import { cn } from '@/lib/utils';
-import { useTheme } from './ThemeProvider';
 
 interface Certificate {
   id: string;
@@ -34,7 +33,6 @@ const AchievementsEnhanced = () => {
   const [showAll, setShowAll] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const { theme } = useTheme();
   
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -181,26 +179,6 @@ const AchievementsEnhanced = () => {
         stiffness: 100,
         damping: 12
       }
-    }
-  };
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'development': return '💻';
-      case 'academic': return '🎓';
-      case 'competition': return '🏆';
-      case 'community': return '🤝';
-      default: return '📜';
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'development': return 'from-blue-500 to-cyan-500';
-      case 'academic': return 'from-green-500 to-emerald-500';
-      case 'competition': return 'from-amber-500 to-orange-500';
-      case 'community': return 'from-purple-500 to-pink-500';
-      default: return 'from-gray-500 to-slate-500';
     }
   };
 
@@ -403,8 +381,7 @@ const AchievementsEnhanced = () => {
                   >
                     <EnhancedCertificateCard 
                       certificate={certificate} 
-                      isHovered={hoveredCard === certificate.id} 
-                      colorMode={theme}
+                      isHovered={hoveredCard === certificate.id}
                     />
                   </motion.div>
                 ))}
@@ -440,10 +417,12 @@ const AchievementsEnhanced = () => {
 };
 
 // Enhanced Certificate Card Component
-const EnhancedCertificateCard = ({ certificate, isHovered, colorMode }: { 
-  certificate: Certificate, 
-  isHovered: boolean,
-  colorMode?: string
+const EnhancedCertificateCard = ({
+  certificate,
+  isHovered,
+}: {
+  certificate: Certificate;
+  isHovered: boolean;
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -457,11 +436,6 @@ const EnhancedCertificateCard = ({ certificate, isHovered, colorMode }: {
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
-
-  // Use a placeholder image if the actual image doesn't load
-  const fallbackImage = colorMode === 'dark' 
-    ? '/placeholders/certificate-dark.svg' 
-    : '/placeholders/certificate-light.svg';
 
   return (
     <Card 
