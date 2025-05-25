@@ -121,9 +121,11 @@ const Navbar = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 }}
-              className="ml-1 sm:ml-2 lg:ml-3 pl-1 sm:pl-2 lg:pl-3 border-l border-primary/20"
+              className="ml-1 sm:ml-2 lg:ml-3 pl-1 sm:pl-2 lg:pl-3 border-l border-foreground/20 dark:border-white/20"
             >
-              <ThemeSwitcher />
+              <div className="relative p-1 rounded-full bg-gradient-to-br from-slate-100/80 to-slate-200/60 dark:from-slate-800/80 dark:to-slate-700/60 border border-slate-300/50 dark:border-slate-600/50 shadow-lg backdrop-blur-sm">
+                <ThemeSwitcher />
+              </div>
             </motion.div>
           </div>
           
@@ -131,10 +133,12 @@ const Navbar = () => {
           <div className="md:hidden flex items-center justify-between w-full">
             <div className="flex-1" />
             <div className="flex items-center space-x-1 sm:space-x-2">
-              <ThemeSwitcher />
+              <div className="relative p-0.5 sm:p-1 rounded-full bg-gradient-to-br from-slate-100/80 to-slate-200/60 dark:from-slate-800/80 dark:to-slate-700/60 border border-slate-300/50 dark:border-slate-600/50 shadow-lg backdrop-blur-sm">
+                <ThemeSwitcher />
+              </div>
               <motion.button 
                 onClick={() => setIsOpen(!isOpen)} 
-                className="p-1 sm:p-1.5 focus:outline-none focus:ring-2 focus:ring-primary rounded-md sm:rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
+                className="p-1 sm:p-1.5 focus:outline-none focus:ring-2 focus:ring-primary rounded-md sm:rounded-lg bg-gradient-to-br from-slate-100/80 to-slate-200/60 dark:from-slate-800/80 dark:to-slate-700/60 border border-slate-300/50 dark:border-slate-600/50 hover:from-primary/20 hover:to-primary/10 dark:hover:from-primary/20 dark:hover:to-primary/10 transition-all duration-200 shadow-lg backdrop-blur-sm"
                 aria-expanded={isOpen}
                 aria-label="Toggle menu"
                 whileTap={{ scale: 0.95 }}
@@ -143,7 +147,10 @@ const Navbar = () => {
                   animate={{ rotate: isOpen ? 90 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {isOpen ? <X size={16} className="sm:w-5 sm:h-5" /> : <Menu size={16} className="sm:w-5 sm:h-5" />}
+                  {isOpen ? 
+                    <X size={16} className="sm:w-5 sm:h-5 text-slate-700 dark:text-slate-300" /> : 
+                    <Menu size={16} className="sm:w-5 sm:h-5 text-slate-700 dark:text-slate-300" />
+                  }
                 </motion.div>
               </motion.button>
             </div>

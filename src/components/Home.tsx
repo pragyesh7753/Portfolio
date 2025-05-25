@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Button } from './ui/button';
 import { ProfileAvatar } from './ProfileAvatar';
@@ -34,15 +34,16 @@ const Home = () => {
   // Enhanced stats animation
   const [stats, setStats] = useState({ projects: 0, experience: 0, technologies: 0 });
   
-  // Mouse move handler for interactive effects
-  const handleMouseMove = (e: React.MouseEvent) => {
+  // Mouse move handler for interactive effects - memoized to prevent unnecessary re-renders
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) {
+    if (rect && rect.width > 0 && rect.height > 0) {
       mouseX.set((e.clientX - rect.left - rect.width / 2) / 20);
       mouseY.set((e.clientY - rect.top - rect.height / 2) / 20);
     }
-  };
+  }, [mouseX, mouseY]);
 
+  // Fixed typing animation with proper cleanup
   useEffect(() => {
     if (isInView && currentIndex < fullName.length) {
       const timer = setTimeout(() => {
@@ -52,8 +53,9 @@ const Home = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, fullName, isInView]);
+  }, [currentIndex, fullName.length, isInView]); // Fixed: added fullName.length dependency
   
+  // Fixed stats animation with proper cleanup
   useEffect(() => {
     if (isInView) {
       const duration = 2500;
@@ -78,8 +80,8 @@ const Home = () => {
     }
   }, [isInView]);
 
-  // Animation variants
-  const container = {
+  // Memoized animation variants to prevent recreation on each render
+  const container = useMemo(() => ({
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -88,9 +90,9 @@ const Home = () => {
         delayChildren: 0.2
       }
     }
-  };
+  }), []);
 
-  const item = {
+  const item = useMemo(() => ({
     hidden: { opacity: 0, y: 30, scale: 0.9 },
     show: { 
       opacity: 1, 
@@ -102,25 +104,14 @@ const Home = () => {
         damping: 15
       }
     }
-  };
+  }), []);
 
-  const floatingItem = {
-    animate: {
-      y: [0, -10, 0],
-      rotate: [0, 2, 0],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const socialLinks = [
+  // Memoized social links to prevent recreation
+  const socialLinks = useMemo(() => [
     { 
       href: "https://github.com/pragyesh7753", 
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full" aria-hidden="true">
           <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
         </svg>
       ),
@@ -131,7 +122,7 @@ const Home = () => {
     { 
       href: "https://www.linkedin.com/in/pragyesh77", 
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full" aria-hidden="true">
           <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
         </svg>
       ),
@@ -142,7 +133,7 @@ const Home = () => {
     { 
       href: "mailto:spragyesh86@gmail.com", 
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full" aria-hidden="true">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
           <polyline points="22,6 12,13 2,6"/>
         </svg>
@@ -151,52 +142,298 @@ const Home = () => {
       color: "hover:text-violet-400",
       hoverColor: "hover:bg-violet-500/20"
     }
-  ];
+  ], []);
 
-  const statsData = [
+  // Memoized stats data to prevent recreation
+  const statsData = useMemo(() => [
     { value: stats.projects, label: "Projects", color: "text-blue-400", delay: 0.5 },
     { value: stats.experience, label: "Years", color: "text-violet-400", delay: 0.6 },
     { value: stats.technologies, label: "Technologies", color: "text-purple-400", delay: 0.7 }
-  ];
+  ], [stats.projects, stats.experience, stats.technologies]);
 
-  const handleContactClick = () => {
-    window.history.pushState({}, '', '/contact');
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
+  const handleContactClick = useCallback(() => {
+    try {
+      window.history.pushState({}, '', '/contact');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to location change
+      window.location.href = '/contact';
+    }
+  }, []);
+
+  // Memoized particle positions to prevent recalculation
+  const particlePositions = useMemo(() => 
+    Array.from({ length: 12 }, () => ({
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+    }))
+  , []);
+
+  // Memoized floating element positions
+  const floatingPositions = useMemo(() => 
+    Array.from({ length: 8 }, (_, i) => ({
+      top: 20 + (i * 10),
+      left: 15 + (i * 8),
+    }))
+  , []);
+
+  // Memoized profile particles
+  const profileParticles = useMemo(() => 
+    Array.from({ length: 6 }, (_, i) => ({
+      top: 20 + Math.sin(i * 60) * 35,
+      left: 20 + Math.cos(i * 60) * 35,
+    }))
+  , []);
 
   return (
     <div 
       ref={containerRef}
       onMouseMove={handleMouseMove}
       className="flex items-center justify-center w-full min-h-screen relative overflow-hidden"
+      role="main"
+      aria-label="Home page"
     >
-      {/* Animated background */}
+      {/* Enhanced theme-adaptive animated background */}
       <motion.div 
         style={{ y: backgroundY, opacity }}
         className="absolute inset-0"
+        aria-hidden="true"
       >
-        {/* Background gradients */}
-        <div className="absolute top-10 left-1/6 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-blue-400/20 to-purple-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-10 right-1/6 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-violet-400/15 to-pink-600/15 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72 bg-gradient-to-r from-cyan-400/12 to-blue-600/12 rounded-full blur-3xl animate-pulse delay-2000" />
+        {/* Base theme-adaptive gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/80 to-violet-50/60 dark:from-slate-950 dark:via-blue-950/50 dark:to-violet-950/30" />
         
-        {/* Floating elements */}
+        {/* Secondary gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-100/40 via-transparent to-purple-100/30 dark:from-indigo-900/20 dark:via-transparent dark:to-purple-900/15" />
+        
+        {/* Radial spotlight effect */}
+        <div className="absolute inset-0 bg-gradient-radial from-white/60 via-transparent to-transparent dark:from-slate-900/40 dark:via-transparent dark:to-transparent" />
+        
+        {/* Dynamic theme-adaptive gradient orbs */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 0.8, 1],
+            rotate: [0, 180, 360],
+            x: [0, 50, -30, 0],
+            y: [0, -40, 20, 0]
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/6 left-1/6 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-blue-200/60 via-cyan-200/40 to-purple-200/50 dark:from-blue-400/30 dark:via-cyan-500/20 dark:to-purple-600/25 rounded-full blur-3xl"
+        />
+        
+        <motion.div 
+          animate={{ 
+            scale: [0.8, 1.5, 1, 1.3, 0.8],
+            rotate: [360, 180, 0],
+            x: [0, -60, 40, 0],
+            y: [0, 30, -50, 0]
+          }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+          className="absolute bottom-1/6 right-1/6 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-violet-200/40 via-fuchsia-200/30 to-pink-200/40 dark:from-violet-400/20 dark:via-fuchsia-500/15 dark:to-pink-600/20 rounded-full blur-3xl"
+        />
+        
+        <motion.div 
+          animate={{ 
+            scale: [1.2, 0.6, 1.4, 1.2],
+            rotate: [0, -270, -360],
+            x: [0, 70, -50, 0],
+            y: [0, -20, 40, 0]
+          }}
+          transition={{ duration: 35, repeat: Infinity, ease: "easeInOut", delay: 10 }}
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72 bg-gradient-to-r from-cyan-200/30 via-emerald-200/20 to-blue-200/30 dark:from-cyan-400/15 dark:via-emerald-400/10 dark:to-blue-600/15 rounded-full blur-3xl"
+        />
+        
+        {/* Additional theme-adaptive gradient layers */}
+        <motion.div 
+          animate={{ 
+            scale: [0.5, 1.8, 0.7, 1.2, 0.5],
+            rotate: [0, 90, 270, 360],
+            opacity: [0.2, 0.6, 0.3, 0.5, 0.2]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute top-1/4 right-1/3 w-56 h-56 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-indigo-200/40 via-purple-200/30 to-pink-200/40 dark:from-indigo-400/20 dark:via-purple-500/15 dark:to-pink-400/20 rounded-full blur-3xl"
+        />
+        
+        <motion.div 
+          animate={{ 
+            scale: [1.5, 0.4, 1.8, 0.8, 1.5],
+            rotate: [180, 0, 360, 180],
+            opacity: [0.15, 0.5, 0.25, 0.4, 0.15]
+          }}
+          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 8 }}
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-teal-200/36 via-cyan-200/24 to-blue-200/36 dark:from-teal-400/18 dark:via-cyan-500/12 dark:to-blue-500/18 rounded-full blur-3xl"
+        />
+        
+        {/* Floating geometric shapes with theme adaptation */}
         <motion.div 
           style={{ x: springX, y: springY }}
-          className="absolute top-1/4 right-1/4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-emerald-400/6 to-teal-600/6 rounded-full blur-2xl"
-          animate={floatingItem.animate}
-        />
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.2, 0.8, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute top-1/5 right-1/4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24"
+        >
+          <div className="w-full h-full bg-gradient-to-br from-emerald-200/20 to-teal-300/30 dark:from-emerald-400/8 dark:to-teal-600/12 rounded-lg backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl" />
+        </motion.div>
+        
         <motion.div 
           style={{ x: springXTransform, y: springYTransform }}
-          className="absolute bottom-1/4 left-1/3 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 bg-gradient-to-r from-orange-400/8 to-red-600/8 rounded-full blur-2xl"
-          animate={{
-            ...floatingItem.animate,
-            transition: { ...floatingItem.animate.transition, delay: 1 }
+          animate={{ 
+            rotate: [360, 0],
+            scale: [0.8, 1.5, 1, 0.8],
+            borderRadius: ["20%", "50%", "30%", "20%"]
+          }}
+          transition={{ 
+            rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+            scale: { duration: 12, repeat: Infinity, ease: "easeInOut", delay: 3 },
+            borderRadius: { duration: 15, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute bottom-1/4 left-1/3 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-orange-200/25 via-red-200/20 to-pink-300/30 dark:from-orange-400/10 dark:via-red-500/8 dark:to-pink-600/12 backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl"
+        />
+        
+        <motion.div 
+          style={{ x: profileSpringX, y: profileSpringY }}
+          animate={{ 
+            rotate: [0, -360],
+            scale: [1.2, 0.6, 1.4, 1.2],
+            skewX: [0, 10, -10, 0]
+          }}
+          transition={{ 
+            rotate: { duration: 30, repeat: Infinity, ease: "linear" },
+            scale: { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
+            skewX: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute top-2/3 right-1/5 w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 bg-gradient-to-br from-violet-200/30 via-purple-200/20 to-fuchsia-300/30 dark:from-violet-400/12 dark:via-purple-500/8 dark:to-fuchsia-600/12 rounded-full backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl"
+        />
+        
+        {/* Theme-adaptive particle system */}
+        {particlePositions.map((position, i) => (
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute w-2 h-2 bg-gradient-to-r from-blue-300/60 to-violet-300/60 dark:from-blue-400/40 dark:to-violet-500/40 rounded-full shadow-sm"
+            style={{
+              top: `${position.top}%`,
+              left: `${position.left}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, Math.sin(i) * 50, 0],
+              opacity: [0, 0.8, 0],
+              scale: [0.5, 1.5, 0.5]
+            }}
+            transition={{
+              duration: 8 + i * 0.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.8
+            }}
+          />
+        ))}
+        
+        {/* Theme-adaptive interactive floating elements */}
+        {floatingPositions.map((position, i) => (
+          <motion.div
+            key={`float-${i}`}
+            className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-gradient-to-r from-cyan-300/80 to-blue-300/80 dark:from-cyan-400/60 dark:to-blue-500/60 rounded-full shadow-lg"
+            style={{
+              top: `${position.top}%`,
+              left: `${position.left}%`,
+              x: springX,
+              y: springY
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, Math.cos(i * 45) * 20, 0],
+              opacity: [0.3, 1, 0.3],
+              scale: [0.8, 1.4, 0.8]
+            }}
+            transition={{
+              duration: 6 + i * 0.3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.4
+            }}
+          />
+        ))}
+        
+        {/* Enhanced theme-adaptive grid pattern overlay */}
+        <motion.div 
+          animate={{ 
+            opacity: [0.05, 0.15, 0.05],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(99, 102, 241, 0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            filter: 'contrast(1.2) brightness(0.9)',
           }}
         />
         
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-transparent" />
+        {/* Theme-adaptive radial gradient overlay with animation */}
+        <motion.div 
+          animate={{ 
+            background: [
+              "radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 dark:opacity-70"
+        />
+        
+        {/* Theme-adaptive depth layers */}
+        <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/20 dark:from-background/20 dark:via-transparent dark:to-background/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-50/20 to-transparent dark:from-transparent dark:via-primary/3 dark:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-blue-100/10 to-transparent dark:from-transparent dark:via-blue-500/5 dark:to-transparent" />
+        
+        {/* Subtle texture overlay that adapts to theme */}
+        <motion.div 
+          animate={{ 
+            opacity: [0.03, 0.08, 0.03]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 opacity-20 dark:opacity-10 mix-blend-overlay"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+        
+        {/* Light theme specific elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/30 dark:hidden" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/40 via-transparent to-violet-50/20 dark:hidden" />
+        
+        {/* Dark theme specific elements */}
+        <div className="hidden dark:block absolute inset-0 bg-gradient-to-br from-slate-900/80 via-transparent to-slate-800/40" />
+        <div className="hidden dark:block absolute inset-0 bg-gradient-to-tl from-blue-900/30 via-transparent to-purple-900/20" />
+        
+        {/* Theme-adaptive dotted pattern */}
+        <motion.div 
+          animate={{ 
+            opacity: [0.1, 0.3, 0.1],
+            scale: [1, 1.05, 1]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.3) 1px, transparent 0)',
+            backgroundSize: '40px 40px',
+            backgroundPosition: '20px 20px',
+          }}
+        />
+        
+        {/* Final overlay for perfect theme integration */}
+        <div className="absolute inset-0 bg-white/10 dark:bg-slate-900/10 backdrop-blur-[0.5px]" />
       </motion.div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 sm:py-20 lg:py-24 relative z-10">
@@ -215,6 +452,8 @@ const Home = () => {
               className="inline-flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 py-1.5 sm:py-2 px-3 sm:px-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-primary text-xs font-medium shadow-2xl"
               whileHover={{ scale: 1.05, y: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              role="status"
+              aria-label="Professional status"
             >
               {/* Sparkle icon */}
               <motion.svg 
@@ -249,12 +488,19 @@ const Home = () => {
             </motion.div>
 
             {/* Main heading */}
-            <motion.h1 variants={item} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 sm:mb-8 tracking-tight leading-none">
-              <span className="block text-foreground/90">Hi, I'm {displayText}
+            <motion.h1 
+              variants={item} 
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 sm:mb-8 tracking-tight leading-none"
+              role="heading"
+              aria-level={1}
+            >
+              <span className="block text-foreground/90">
+                Hi, I'm {displayText}
                 <motion.span
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
                   className="inline-block w-0.5 h-6 sm:h-8 md:h-10 lg:h-12 bg-gradient-to-b from-blue-400 to-violet-500 ml-1 rounded-full"
+                  aria-hidden="true"
                 />
               </span>
             </motion.h1>
@@ -308,6 +554,8 @@ const Home = () => {
             <motion.div 
               variants={item} 
               className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl"
+              role="region"
+              aria-label="Statistics"
             >
               {statsData.map((stat) => (
                 <motion.div 
@@ -321,6 +569,7 @@ const Home = () => {
                     animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
                     transition={{ delay: stat.delay, type: "spring", stiffness: 200, damping: 15 }}
                     className={`text-xl sm:text-2xl lg:text-3xl font-black ${stat.color} mb-1`}
+                    aria-label={`${stat.value} ${stat.label}`}
                   >
                     {stat.value}+
                   </motion.div>
@@ -427,7 +676,7 @@ const Home = () => {
                     stiffness: 400, 
                     damping: 25 
                   }}
-                  aria-label={social.label}
+                  aria-label={`Visit my ${social.label} profile`}
                 >
                   <motion.div
                     className="absolute inset-0 rounded-lg sm:rounded-xl bg-gradient-to-r from-current/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -540,14 +789,14 @@ const Home = () => {
                 </motion.span>
               </motion.div>
               
-              {/* Floating particles */}
-              {[...Array(6)].map((_, i) => (
+              {/* Optimized floating particles */}
+              {profileParticles.map((particle, i) => (
                 <motion.div
-                  key={i}
+                  key={`profile-particle-${i}`}
                   className="absolute w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full"
                   style={{
-                    top: `${20 + Math.sin(i * 60) * 35}%`,
-                    left: `${20 + Math.cos(i * 60) * 35}%`,
+                    top: `${particle.top}%`,
+                    left: `${particle.left}%`,
                   }}
                   animate={{
                     y: [0, -8, 0],
