@@ -8,12 +8,12 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Achievements from './components/Achievements';
 import Footer from './components/Footer';
-import LoadingScreen from './components/LoadingScreen'; // Changed to use the new cosmic loading screen
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
 import EmojiCursor from './components/CustomCursor';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
+import GeometricLoadingScreen from './components/GeometricLoadingScreen';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ function App() {
     <ThemeProvider defaultTheme="dark">
       <AnimatePresence mode="wait">
         {loading ? (
-          <LoadingScreen key="loading" />
+          <GeometricLoadingScreen key="loading" />
         ) : (
           <Router>
             <ScrollToTop />
