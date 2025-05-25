@@ -10,7 +10,7 @@ import Achievements from './components/Achievements'; // Changed from Achievemen
 import Footer from './components/Footer';
 import LoadingScreenEnhanced from './components/LoadingScreenEnhanced';
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
-import CustomCursor from './components/CustomCursor';
+import EmojiCursor from './components/CustomCursor';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -37,7 +37,7 @@ function App() {
             <ScrollToTop />
             <div className="min-h-screen bg-background text-foreground relative">
               <ParticlesBackgroundEnhanced />
-              <CustomCursor />
+              <EmojiCursor />
               <Navbar />
               <Routes>
                 <Route path="/" element={<Home />} />

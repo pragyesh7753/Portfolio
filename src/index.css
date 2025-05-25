@@ -42,7 +42,7 @@ body {
   background-attachment: fixed;
   /* Remove flex display and place-items that may cause layout issues */
   min-height: 100vh;
-  cursor: none; /* Hide the default cursor */
+  cursor: none; /* Hide default cursor for custom cursor */
 }
 
 /* Allow default cursor on mobile or if JavaScript is disabled */
@@ -50,42 +50,16 @@ body {
   body {
     cursor: auto;
   }
-  .cursor-main, .cursor-dot {
-    display: none !important;
+}
+
+/* Hide cursor for all elements when using custom cursor */
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
   }
 }
 
-.cursor-main {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1.5px solid rgba(var(--primary-rgb), 0.3);
-  mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.25);
-  backdrop-filter: blur(1px);
-}
-
-.cursor-dot {
-  position: fixed;
-  z-index: 99999;
-  pointer-events: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: hsl(var(--primary));
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 8px hsl(var(--primary));
-}
-
-/* Don't show custom cursor for specific elements */
-a, button, [role="button"], input, label, textarea, select, details, [tabindex]:not([tabindex="-1"]) {
-  cursor: none;
-}
+/* Removed cursor: none overrides for interactive elements */
 
 #root {
   min-height: 100vh;
@@ -107,7 +81,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
-  cursor: pointer;
+  cursor: none; /* Hide cursor for custom cursor */
   transition: border-color 0.25s;
 }
 
