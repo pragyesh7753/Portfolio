@@ -6,9 +6,9 @@ import Home from './components/Home';
 import About from './components/About';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
-import Achievements from './components/Achievements'; // Changed from AchievementsEnhanced
+import Achievements from './components/Achievements';
 import Footer from './components/Footer';
-import LoadingScreenEnhanced from './components/LoadingScreenEnhanced';
+import LoadingScreen from './components/LoadingScreen'; // Changed to use the new cosmic loading screen
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
 import EmojiCursor from './components/CustomCursor';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -22,7 +22,7 @@ function App() {
     // Enhanced loading experience with realistic timing
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 4000); // Extended for enhanced loading screen
+    }, 5000); // Extended for cosmic loading experience
 
     return () => clearTimeout(timer);
   }, []);
@@ -31,7 +31,7 @@ function App() {
     <ThemeProvider defaultTheme="dark">
       <AnimatePresence mode="wait">
         {loading ? (
-          <LoadingScreenEnhanced key="loading" onLoadingComplete={() => setLoading(false)} />
+          <LoadingScreen key="loading" />
         ) : (
           <Router>
             <ScrollToTop />
