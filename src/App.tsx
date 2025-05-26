@@ -9,7 +9,6 @@ import Contact from './components/Contact';
 import Achievements from './components/Achievements';
 import Footer from './components/Footer';
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
-import EmojiCursor from './components/CustomCursor';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -37,7 +36,6 @@ function App() {
             <ScrollToTop />
             <div className="min-h-screen bg-background text-foreground relative">
               <ParticlesBackgroundEnhanced />
-              <EmojiCursor />
               <Navbar />
               <Routes>
                 <Route path="/" element={<Home />} />

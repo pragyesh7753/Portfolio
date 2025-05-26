@@ -105,69 +105,6 @@ body {
   background-attachment: fixed;
   /* Remove flex display and place-items that may cause layout issues */
   min-height: 100vh;
-  cursor: none; /* Hide default cursor for custom cursor */
-}
-
-/* Allow default cursor on mobile or if JavaScript is disabled */
-@media (pointer: coarse), (prefers-reduced-motion: reduce) {
-  body {
-    cursor: auto;
-  }
-}
-
-/* Hide cursor for all elements when using custom cursor */
-@media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after {
-    cursor: none !important;
-  }
-}
-
-/* Removed cursor: none overrides for interactive elements */
-
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  width: 100%; /* Ensure root element takes full width */
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: none; /* Hide cursor for custom cursor */
-  transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
 
 /* Navbar styling enhancement */
@@ -296,4 +233,37 @@ textarea {
 *:focus-visible {
   outline: 2px solid rgba(var(--primary-rgb), 0.6);
   outline-offset: 2px;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
 }
