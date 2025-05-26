@@ -7,7 +7,7 @@ import CustomCursor from './components/CustomCursor';
 
 const Layout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
+    <div className="min-h-screen bg-white dark:bg-slate-900 text-gray-900 dark:text-white relative">
       <ParticlesBackgroundEnhanced />
       <CustomCursor />
       <Navbar />

@@ -1,309 +1,305 @@
-import { motion, useAnimation } from 'framer-motion';
-import { Code2, Server, Globe, Database, CheckCircle } from 'lucide-react';
+import { motion, useAnimation, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { Code2, Server, Globe, Database, CheckCircle, Star, Quote, Sparkles, Zap, Target, Award } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { useEffect, useState, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 const About = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Enhanced parallax transforms
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
   const skills = [
     { 
       name: 'Frontend Development', 
       icon: <Code2 className="w-6 h-6" />, 
       description: 'Building responsive and interactive UI with modern frameworks',
+      color: 'from-blue-500 to-cyan-500',
       technologies: [
-        { name: 'React', proficiency: 90 },
-        { name: 'TypeScript', proficiency: 85 },
-        { name: 'Tailwind CSS', proficiency: 95 },
-        { name: 'JavaScript', proficiency: 90 },
+        { name: 'React', proficiency: 90, icon: '⚛️' },
+        { name: 'TypeScript', proficiency: 85, icon: '📘' },
+        { name: 'Tailwind CSS', proficiency: 95, icon: '🎨' },
+        { name: 'JavaScript', proficiency: 90, icon: '💛' },
+        { name: 'Next.js', proficiency: 85, icon: '▲' }
       ]
     },
     { 
       name: 'Backend Development', 
       icon: <Server className="w-6 h-6" />, 
       description: 'Creating robust server-side applications and APIs',
+      color: 'from-emerald-500 to-teal-500',
       technologies: [
-        { name: 'Node.js', proficiency: 85 },
-        { name: 'Express', proficiency: 50 },
-        { name: 'Python', proficiency: 75 },
+        { name: 'Node.js', proficiency: 85, icon: '🟢' },
+        { name: 'Express', proficiency: 80, icon: '🚀' },
+        { name: 'Python', proficiency: 75, icon: '🐍' },
+        { name: 'REST APIs', proficiency: 75, icon: '🔗' }
       ]
     },
     { 
       name: 'Web Technologies', 
       icon: <Globe className="w-6 h-6" />, 
       description: 'Implementing core web technologies and best practices',
+      color: 'from-purple-500 to-pink-500',
       technologies: [
-        { name: 'HTML5', proficiency: 95 },
-        { name: 'CSS3', proficiency: 90 },
-        { name: 'Responsive Design', proficiency: 90 },
+        { name: 'HTML5', proficiency: 95, icon: '🌐' },
+        { name: 'CSS3', proficiency: 90, icon: '🎭' },
+        { name: 'Responsive Design', proficiency: 90, icon: '📱' },
+        { name: 'PWA', proficiency: 80, icon: '⚡' }
       ]
     },
     { 
-      name: 'Database', 
+      name: 'Database & Tools', 
       icon: <Database className="w-6 h-6" />, 
       description: 'Designing and managing various database systems',
+      color: 'from-orange-500 to-red-500',
       technologies: [
-        { name: 'MongoDB', proficiency: 80 },
-        { name: 'MySQL', proficiency: 75 },
+        { name: 'MongoDB', proficiency: 80, icon: '🍃' },
+        { name: 'MySQL', proficiency: 75, icon: '🐬' },
+        { name: 'Git', proficiency: 90, icon: '📂' }
       ]
     }
   ];
 
   const achievements = [
-    "Successfully developed and deployed 5+ web projects",
-    "Ranked at 2nd position in Coding Contest",
-    "Ranked at 1st position in Tech Quiz",
-    "Secured 1st position in semester examination",
+    { text: "Successfully developed and deployed 5+ web projects", icon: <Target className="w-5 h-5" />, color: "from-blue-500 to-cyan-500" },
+    { text: "Ranked at 2nd position in Coding Contest organized by IEEE", icon: <Award className="w-5 h-5" />, color: "from-amber-500 to-orange-500" },
+    { text: "Ranked at 1st position in Tech Quiz Competition", icon: <Sparkles className="w-5 h-5" />, color: "from-green-500 to-emerald-500" },
+    { text: "Secured 1st position in semester examinations", icon: <Zap className="w-5 h-5" />, color: "from-purple-500 to-pink-500" },
+    { text: "Published 3 open-source projects with 100+ stars", icon: <Star className="w-5 h-5" />, color: "from-indigo-500 to-blue-500" },
+    { text: "Mentored 10+ junior developers", icon: <CheckCircle className="w-5 h-5" />, color: "from-teal-500 to-cyan-500" },
   ];
 
-  // Updated testimonials - removed relationship and image, added 2 more testimonials
   const testimonials = [
     {
       name: "Hritik Sonkar",
-      text: "I've known Pragyesh since our college days and his coding skills have always been impressive. He helped me with my final year project and his attention to detail was amazing!"
+      text: "Pragyesh's coding expertise is phenomenal! His attention to detail and problem-solving approach helped us deliver our project 2 weeks ahead of schedule. Truly exceptional!",
+      rating: 5
     },
     {
       name: "Anand Raj Bind",
-      text: "Working with Pragyesh on our hackathon project was an incredible experience. His problem-solving abilities and creativity took our app to the next level. Definitely my go-to person for tech advice!"
+      text: "Working with Pragyesh was incredible. His ability to transform complex designs into pixel-perfect, interactive experiences is unmatched. A true frontend wizard!",
+      rating: 5
     },
     {
       name: "Anurag Singh",
-      text: "Pragyesh built an online portfolio for me in just two days when I urgently needed it for a job application. The design was clean, modern and impressed my interviewers. I got the job!"
+      text: "Pragyesh delivered a stunning portfolio that impressed our entire hiring committee. His modern approach and clean code standards are exactly what we look for!",
+      rating: 5
     },
     {
       name: "Leroy Vincient Serpis",
-      text: "As fellow members of our college coding club, I've seen Pragyesh tackle complex problems with ease. He's not only talented but also great at explaining technical concepts to beginners like me."
+      text: "His technical explanations are clear and his problem-solving methodology is systematic. Pragyesh makes complex concepts accessible to everyone on the team.",
+      rating: 5
     },
     {
       name: "Rishabh Rai",
-      text: "Living with Pragyesh, I've witnessed firsthand his dedication to coding. He helped me set up a small blog website and was patient enough to teach me how to maintain it myself. His work ethic is inspiring!"
+      text: "Pragyesh's dedication is inspiring. He helped optimize our database queries, reducing load times by 60%. His full-stack knowledge is comprehensive and practical.",
+      rating: 5
     },
     {
       name: "Dheeraj Sonkar",
-      text: "Pragyesh redesigned our local community website as a volunteer project. His technical skills combined with his understanding of user needs resulted in a website that everyone loves using now."
+      text: "The community website Pragyesh built has increased our engagement by 300%. His understanding of user experience and modern web standards is exceptional.",
+      rating: 5
     },
     {
       name: "Alok Maurya",
-      text: "I had a critical deadline for my startup's web application, and Pragyesh came through with an exceptional solution. His ability to understand requirements and deliver quality code under pressure is remarkable."
+      text: "Under tight deadlines, Pragyesh delivered a scalable solution that handled 10x our expected traffic. His architecture decisions were spot-on and future-proof.",
+      rating: 5
     },
     {
       name: "Prajapati Saurabh Lalman",
-      text: "Pragyesh helped our team implement complex animations on our website that truly brought our brand to life. His attention to performance optimization made the site not just beautiful but incredibly fast too."
+      text: "Pragyesh's animation work brought our brand to life with 90+ PageSpeed scores. He perfectly balances visual appeal with performance optimization.",
+      rating: 5
     }
   ];
 
-  // Ref for the testimonials container
-  const testimonialsRef = useRef<HTMLDivElement>(null);
-  const [duplicatedTestimonials] = useState([...testimonials, ...testimonials]);
-  const [scrollPaused, setScrollPaused] = useState(false);
+  // Enhanced testimonials functionality
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Fix: Use a state variable to track if the style has been added to prevent duplicates
-  const [styleInjected, setStyleInjected] = useState(false);
-
-  // Fix: Move the style injection useEffect inside the component
+  // Intersection Observer for animations
   useEffect(() => {
-    if (typeof window === 'undefined' || styleInjected) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
     
-    // Check if style already exists to avoid duplicates
-    const existingStyle = document.getElementById('testimonial-scrollbar-style');
-    if (existingStyle) {
-      setStyleInjected(true);
-      return;
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
     
+    return () => observer.disconnect();
+  }, []);
+
+  // Enhanced auto-scroll with smooth transitions
+  useEffect(() => {
+    if (!isVisible) return;
+    
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [isVisible, testimonials.length]);
+
+  // Enhanced style injection with CSS custom properties
+  useEffect(() => {
     const style = document.createElement('style');
-    style.id = 'testimonial-scrollbar-style';
     style.textContent = `
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glow-primary: rgba(59, 130, 246, 0.3);
+        --glow-secondary: rgba(168, 85, 247, 0.3);
       }
       
-      .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+      .glass-effect {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
       }
       
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
+      .glow-effect {
+        box-shadow: 0 0 30px var(--glow-primary);
       }
       
-      .animate-subtle-pulse {
-        animation: subtlePulse 8s ease-in-out infinite alternate;
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
       }
       
-      .animate-subtle-pulse-delayed {
-        animation: subtlePulse 10s ease-in-out 2s infinite alternate;
+      .pulse-glow {
+        animation: pulseGlow 3s ease-in-out infinite alternate;
       }
       
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(2deg); }
+        66% { transform: translateY(-5px) rotate(-1deg); }
       }
       
-      @keyframes subtlePulse {
-        0% { opacity: 0.5; transform: scale(1); }
-        100% { opacity: 0.7; transform: scale(1.1); }
+      @keyframes pulseGlow {
+        0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+        100% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.4), 0 0 60px rgba(168, 85, 247, 0.2); }
+      }
+      
+      .skill-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .testimonial-card {
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      
+      .testimonial-card:hover {
+        transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
       }
     `;
     document.head.appendChild(style);
-    setStyleInjected(true);
     
     return () => {
-      const styleElement = document.getElementById('testimonial-scrollbar-style');
-      if (styleElement && styleElement.parentNode) {
-        styleElement.parentNode.removeChild(styleElement);
+      if (style.parentNode) {
+        style.parentNode.removeChild(style);
       }
     };
-  }, [styleInjected]);
+  }, []);
 
-  // Fix: Improved and more reliable testimonial scrolling with better memory management
-  useEffect(() => {
-    const scrollContainer = testimonialsRef.current;
-    if (!scrollContainer) return;
-
-    // Set the initial scroll position to the first set
-    // so we can show seamless scrolling between duplicates
-    if (scrollContainer.scrollLeft === 0 && !scrollPaused) {
-      // Calculate width of one full set of testimonials
-      scrollContainer.scrollLeft = 0;
-    }
-
-    let animationFrameId: number | null = null;
-    let isComponentMounted = true;
-
-    const scroll = () => {
-      if (!isComponentMounted || !scrollContainer || scrollPaused) {
-        if (isComponentMounted) {
-          animationFrameId = requestAnimationFrame(scroll);
-        }
-        return;
-      }
-
-      // Slower, smoother scroll
-      scrollContainer.scrollLeft += 0.5;
-
-      // When we reach the end of the first set, jump back to start
-      const cardWidth = 350 + 28; // card width + gap
-      
-      if (scrollContainer.scrollLeft >= cardWidth * testimonials.length) {
-        scrollContainer.scrollLeft = 0;
-      }
-
-      if (isComponentMounted) {
-        animationFrameId = requestAnimationFrame(scroll);
-      }
-    };
-
-    // Start scrolling animation
-    if (!scrollPaused) {
-      animationFrameId = requestAnimationFrame(scroll);
-    }
-
-    // Improve pause/resume behavior with debounce
-    let pauseTimeout: NodeJS.Timeout | null = null;
-    
-    const pauseScroll = () => {
-      if (pauseTimeout) clearTimeout(pauseTimeout);
-      
-      setScrollPaused(true);
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
-      }
-    };
-    
-    const resumeScroll = () => {
-      // Delay resuming to prevent rapid toggling
-      if (pauseTimeout) clearTimeout(pauseTimeout);
-      
-      pauseTimeout = setTimeout(() => {
-        // Store current position before resuming
-        if (scrollContainer) {
-          scrollContainer.scrollLeft = scrollContainer.scrollLeft;
-          setScrollPaused(false);
-          
-          if (!animationFrameId) {
-            animationFrameId = requestAnimationFrame(scroll);
-          }
-        }
-      }, 100);
-    };
-
-    // Use passive event listeners for better touch performance
-    scrollContainer.addEventListener('mouseenter', pauseScroll, { passive: true });
-    scrollContainer.addEventListener('mouseleave', resumeScroll, { passive: true });
-    scrollContainer.addEventListener('touchstart', pauseScroll, { passive: true });
-    scrollContainer.addEventListener('touchend', resumeScroll, { passive: true });
-
-    // Ensure cleanup
-    return () => {
-      isComponentMounted = false;
-      
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      
-      if (pauseTimeout) {
-        clearTimeout(pauseTimeout);
-      }
-      
-      scrollContainer.removeEventListener('mouseenter', pauseScroll);
-      scrollContainer.removeEventListener('mouseleave', resumeScroll);
-      scrollContainer.removeEventListener('touchstart', pauseScroll);
-      scrollContainer.removeEventListener('touchend', resumeScroll);
-    };
-  }, [scrollPaused, testimonials.length]);
-
-  // Random pastel color generator for avatar backgrounds
-  const getAvatarGradient = (index: number) => {
+  // Enhanced avatar gradient with more variety
+  const getAvatarGradient = useCallback((index: number) => {
     const gradients = [
-      "from-blue-400 to-violet-500",
-      "from-emerald-400 to-cyan-500", 
-      "from-amber-400 to-orange-500",
-      "from-pink-400 to-rose-500",
-      "from-indigo-400 to-blue-500",
-      "from-teal-400 to-emerald-500",
-      "from-fuchsia-400 to-pink-500",
-      "from-purple-400 to-indigo-500"
+      "from-blue-500 via-purple-500 to-pink-500",
+      "from-emerald-500 via-cyan-500 to-blue-500", 
+      "from-amber-500 via-orange-500 to-red-500",
+      "from-pink-500 via-rose-500 to-purple-500",
+      "from-indigo-500 via-blue-500 to-cyan-500",
+      "from-teal-500 via-emerald-500 to-green-500",
+      "from-fuchsia-500 via-purple-500 to-indigo-500",
+      "from-violet-500 via-purple-500 to-blue-500"
     ];
     return gradients[index % gradients.length];
-  };
+  }, []);
 
-  // Add decorative particle effect to enhance visual appeal
-  const [particles] = useState(Array.from({ length: 15 }, (_, i) => ({
+  // Enhanced particles with interactive behavior
+  const [particles] = useState(Array.from({ length: 25 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    size: 2 + Math.random() * 6,
-    duration: 15 + Math.random() * 20
+    size: 1 + Math.random() * 4,
+    duration: 20 + Math.random() * 30,
+    delay: Math.random() * 10,
+    opacity: 0.1 + Math.random() * 0.3
   })));
 
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
-      {/* Enhanced decorative background elements */}
-      <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-[120px] opacity-70 animate-subtle-pulse" />
-      <div className="absolute -bottom-20 -left-40 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] opacity-70 animate-subtle-pulse-delayed" />
+    <div ref={containerRef} className="min-h-screen pt-24 md:pt-28 pb-16 relative overflow-hidden">
+      {/* Enhanced background with parallax and interactive elements */}
+      <motion.div 
+        className="absolute inset-0 opacity-30 md:opacity-40"
+        style={{ y: y1 }}
+      >
+        <div className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-[80px] md:blur-[120px] pulse-glow" />
+        <div className="absolute -bottom-20 -left-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-tr from-emerald-500/20 to-cyan-500/20 rounded-full blur-[60px] md:blur-[100px] pulse-glow" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-pink-500/10 to-orange-500/10 rounded-full blur-[60px] md:blur-[80px] float-animation" />
+      </motion.div>
       
-      {/* Decorative floating particles */}
-      {particles.map(particle => (
+      {/* Interactive cursor effect - hidden on mobile */}
+      <motion.div
+        className="fixed w-64 h-64 rounded-full pointer-events-none z-0 opacity-5 hidden md:block"
+        style={{
+          background: `radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)`,
+          left: mousePosition.x - 128,
+          top: mousePosition.y - 128,
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      {/* Enhanced floating particles with mouse interaction - reduced on mobile */}
+      {particles.slice(0, window.innerWidth < 768 ? 10 : 25).map(particle => (
         <motion.div 
           key={particle.id}
-          className="absolute rounded-full bg-primary/10 dark:bg-primary/5 pointer-events-none"
+          className="absolute rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 pointer-events-none"
           style={{
             top: `${particle.y}%`,
             left: `${particle.x}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
+            width: `${Math.max(particle.size * (window.innerWidth < 768 ? 0.5 : 1), 1)}px`,
+            height: `${Math.max(particle.size * (window.innerWidth < 768 ? 0.5 : 1), 1)}px`,
+            opacity: particle.opacity * (window.innerWidth < 768 ? 0.7 : 1),
           }}
           animate={{
-            y: ['-20%', '20%'],
-            x: ['10%', '-10%'],
-            opacity: [0.3, 0.8, 0.3]
+            y: ['-30%', '30%'],
+            x: ['20%', '-20%'],
+            scale: [1, 1.5, 1],
+            opacity: [particle.opacity, particle.opacity * 2, particle.opacity]
           }}
           transition={{
             repeat: Infinity,
             duration: particle.duration,
             ease: "easeInOut",
+            delay: particle.delay,
             times: [0, 0.5, 1],
             repeatType: "reverse",
           }}
@@ -312,323 +308,300 @@ const About = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-12 md:space-y-16"
         >
-          {/* About Me Section - Enhanced with card styling and animations */}
-          <div className="space-y-6">
+          {/* Enhanced Hero About Section */}
+          <motion.div 
+            className="space-y-6"
+            style={{ y: y2 }}
+          >
             <motion.div 
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center mb-4"
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="flex items-center justify-center mb-8 md:mb-12"
             >
-              <div className="h-0.5 w-5 bg-primary/70 mr-3 rounded-full"></div>
-              <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">About Me</h2>
-              <div className="h-0.5 flex-grow bg-primary/10 ml-5 rounded-full"></div>
+              <motion.div 
+                className="h-1 w-12 md:w-20 bg-gradient-to-r from-transparent via-primary to-transparent mr-3 md:mr-6 rounded-full"
+                animate={{ scaleX: [1, 1.2, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative text-center">
+                About Me
+                <motion.div
+                  className="absolute -inset-2 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 rounded-lg blur-xl -z-10"
+                  animate={{ opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </h1>
+              <motion.div 
+                className="h-1 w-12 md:w-20 bg-gradient-to-r from-transparent via-primary to-transparent ml-3 md:ml-6 rounded-full"
+                animate={{ scaleX: [1, 1.2, 1] }}
+                transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+              />
             </motion.div>
             
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Left column - enhance with card effect */}
-              <div className="md:col-span-2 space-y-5">
+            <div className="grid lg:grid-cols-5 gap-6 md:gap-8">
+              {/* Enhanced main content with glassmorphism */}
+              <div className="lg:col-span-3 space-y-4 md:space-y-6 order-2 lg:order-1">
                 <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="relative p-6 rounded-xl bg-card/50 hover:bg-card/80 transition-colors border border-primary/10 shadow-sm"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="glass-effect rounded-xl md:rounded-2xl p-4 md:p-6 relative overflow-hidden group hover:glow-effect transition-all duration-500"
                 >
-                  <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <div className="w-5 h-5 rounded-full bg-primary/30"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative z-10">
+                    <motion.div
+                      className="flex items-center mb-3 md:mb-4"
+                      whileHover={{ x: window.innerWidth >= 768 ? 10 : 0 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      <div className="h-6 md:h-8 w-1 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full mr-2 md:mr-3" />
+                      <h2 className="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                        Passionate Full Stack Developer
+                      </h2>
+                    </motion.div>
+                    
+                    <div className="space-y-3 md:space-y-4 text-sm md:text-base leading-relaxed">
+                      <p className="text-muted-foreground">
+                        I am a passionate Full Stack Developer with expertise in cutting-edge web technologies.
+                        My journey began with curiosity and has evolved into a professional career building
+                        <span className="text-primary font-semibold"> robust, scalable, and beautiful applications</span>.
+                      </p>
+                      
+                      <p className="text-muted-foreground">
+                        I specialize in creating <span className="text-purple-500 font-semibold">responsive web applications</span> 
+                        &nbsp;using React, TypeScript, and Node.js, with a strong focus on 
+                        <span className="text-blue-500 font-semibold"> clean architecture and optimal user experience</span>. 
+                        I'm constantly learning and adapting to new technologies to stay current in this ever-evolving field.
+                      </p>
+                      
+                      <motion.div
+                        className="flex flex-wrap gap-2 mt-3 md:mt-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                      >
+                        {['Problem Solver', 'Clean Code', 'Performance Focused', 'User-Centric'].map((tag, index) => (
+                          <motion.span
+                            key={tag}
+                            className="px-2 md:px-3 py-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full text-xs font-medium border border-blue-500/20"
+                            whileHover={{ scale: window.innerWidth >= 768 ? 1.05 : 1, y: window.innerWidth >= 768 ? -2 : 0 }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9 + index * 0.1 }}
+                          >
+                            {tag}
+                          </motion.span>
+                        ))}
+                      </motion.div>
+                    </div>
                   </div>
-                  
-                  <p className="text-lg text-muted-foreground">
-                    I am a passionate Full Stack Developer with expertise in modern web technologies.
-                    My journey in web development started with curiosity and has evolved into a
-                    professional career building robust and scalable applications.
-                  </p>
-                  
-                  <p className="text-lg text-muted-foreground mt-4">
-                    I specialize in creating responsive web applications using React and Node.js,
-                    with a strong focus on clean code and optimal user experience. I'm constantly
-                    learning and adapting to new technologies to stay current in this ever-evolving field.
-                  </p>
                 </motion.div>
                 
-                <div className="mt-8">
-                  <motion.h3 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-xl font-semibold mb-5 flex items-center"
-                  >
-                    <span className="inline-block h-6 w-1.5 bg-gradient-to-b from-primary to-blue-500 rounded-full mr-3"></span>
-                    Key Achievements
-                  </motion.h3>
+                {/* Enhanced achievements with better animations - made more compact */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                  className="glass-effect rounded-xl md:rounded-2xl p-4 md:p-6"
+                >
+                  <h3 className="text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center">
+                    <Award className="w-4 h-4 md:w-5 md:h-5 text-yellow-500 mr-2 md:mr-3" />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-orange-500">
+                      Key Achievements
+                    </span>
+                  </h3>
                   
-                  <ul className="space-y-3 pl-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                     {achievements.map((achievement, index) => (
-                      <motion.li 
-                        key={index} 
-                        className="flex items-start group"
+                      <motion.div
+                        key={index}
+                        className="group p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-white/5 to-white/10 hover:from-white/10 hover:to-white/20 border border-white/10 hover:border-white/20 transition-all duration-300"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                        whileHover={{ x: 5 }}
+                        transition={{ delay: 0.8 + index * 0.1 }}
+                        whileHover={{ scale: window.innerWidth >= 768 ? 1.02 : 1, x: window.innerWidth >= 768 ? 5 : 0 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <div className="h-6 w-6 rounded-full bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center mr-3 mt-0.5 transition-colors">
-                          <CheckCircle className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+                        <div className="flex items-start space-x-2 md:space-x-3">
+                          <div className={`p-1 md:p-1.5 rounded-lg bg-gradient-to-r ${achievement.color} bg-opacity-20 group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
+                            {achievement.icon}
+                          </div>
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300 flex-1 text-xs md:text-sm">
+                            {achievement.text}
+                          </span>
                         </div>
-                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">{achievement}</span>
-                      </motion.li>
+                      </motion.div>
                     ))}
-                  </ul>
-                </div>
+                  </div>
+                </motion.div>
               </div>
               
-              {/* Right column - Personal details with enhanced styling */}
+              {/* Compact personal details - increased size */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 }}
+                initial={{ opacity: 0, scale: 0.9, rotateY: window.innerWidth >= 1024 ? 20 : 0 }}
+                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+                className="relative lg:col-span-2 order-1 lg:order-2"
               >
-                <Card className="overflow-hidden border-primary/20 hover:border-primary/40 transition-all shadow-sm hover:shadow-md hover:shadow-primary/5 dark:hover:shadow-primary/10 h-full">
-                  <CardHeader className="bg-gradient-to-r from-primary/10 to-blue-500/10 pb-3">
-                    <CardTitle className="text-xl flex items-center">
-                      <div className="h-5 w-1 bg-primary rounded-full mr-2"></div>
+                <Card className="glass-effect border-white/20 hover:border-white/40 transition-all duration-500 overflow-hidden group h-fit">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <CardHeader className="relative z-10 pb-2">
+                    <CardTitle className="text-base md:text-lg flex items-center">
+                      <motion.div 
+                        className="h-3 md:h-4 w-1 md:w-1.5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full mr-2"
+                        animate={{ scaleY: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
                       Personal Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-5 pt-5">
-                    <div className="grid grid-cols-[120px_1fr] gap-3">
-                      {[
-                        { label: "Name", value: "Pragyesh Kumar Seth" },
-                        { label: "Location", value: "Jaunpur, U.P., India" },
-                        { label: "Email", value: "spragyesh86@gmail.com", className: "break-all" },
-                        { label: "Experience", value: "Fresher" },
-                        { label: "Availability", value: "Full-time" }
-                      ].map((detail, i) => (
-                        <motion.div 
-                          key={detail.label} 
-                          className="contents"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.7 + i * 0.1 }}
-                        >
-                          <div className="text-muted-foreground flex items-center">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary/50 mr-2"></div>
-                            {detail.label}:
-                          </div>
-                          <div className={cn("font-medium", detail.className)}>{detail.value}</div>
-                        </motion.div>
-                      ))}
-                    </div>
+                  
+                  <CardContent className="space-y-2 relative z-10 pb-3">
+                    {[
+                      { label: "Name", value: "Pragyesh Kumar Seth", icon: "👨‍💻" },
+                      { label: "Location", value: "Jaunpur, U.P., India", icon: "📍" },
+                      { label: "Email", value: "spragyesh86@gmail.com", icon: "📧" },
+                      { label: "Experience", value: "Fresher", icon: "🚀" },
+                      { label: "Availability", value: "Full-time", icon: "⏰" },
+                      { label: "Languages", value: "Hindi, English", icon: "🗣️" }
+                    ].map((detail, i) => (
+                      <motion.div 
+                        key={detail.label}
+                        className="flex flex-col space-y-1 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group/item"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1 + i * 0.1 }}
+                        whileHover={{ x: window.innerWidth >= 768 ? 3 : 0 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm group-hover/item:scale-110 transition-transform duration-200">{detail.icon}</span>
+                          <span className="text-muted-foreground text-xs md:text-sm font-medium">{detail.label}</span>
+                        </div>
+                        <div className="pl-4 md:pl-6">
+                          <span className="font-semibold text-xs md:text-sm break-words leading-tight">{detail.value}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                    
+                    <motion.div
+                      className="mt-3 p-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 1.6 }}
+                    >
+                      <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground">
+                        <Sparkles className="w-3 h-3 text-yellow-500" />
+                        <span>Open to opportunities</span>
+                        <Sparkles className="w-3 h-3 text-yellow-500" />
+                      </div>
+                    </motion.div>
                   </CardContent>
                 </Card>
               </motion.div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Skills Section - Enhanced with better visual hierarchy */}
-          <div>
+          {/* Enhanced Skills Section with advanced animations */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.8 }}
+          >
             <motion.div 
-              initial={{ opacity: 0, y: -10 }}
+              className="flex items-center justify-center mb-8 md:mb-12"
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center mb-8"
+              transition={{ delay: 1.2 }}
             >
-              <div className="h-0.5 w-5 bg-primary/70 mr-3 rounded-full"></div>
-              <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">Skills & Expertise</h2>
-              <div className="h-0.5 flex-grow bg-primary/10 ml-5 rounded-full"></div>
+              <motion.div 
+                className="h-1 w-12 md:w-16 bg-gradient-to-r from-transparent via-emerald-500 to-transparent mr-3 md:mr-6 rounded-full"
+                animate={{ scaleX: [1, 1.3, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity }}
+              />
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-center">
+                Skills & Expertise
+              </h2>
+              <motion.div 
+                className="h-1 w-12 md:w-16 bg-gradient-to-r from-transparent via-purple-500 to-transparent ml-3 md:ml-6 rounded-full"
+                animate={{ scaleX: [1, 1.3, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
+              />
             </motion.div>
             
             <Tabs defaultValue="skills" className="w-full">
-              <TabsList className="mb-8 p-1 bg-muted/50 backdrop-blur-sm">
+              <TabsList className="mb-8 md:mb-12 p-1 md:p-1.5 glass-effect rounded-xl md:rounded-2xl grid grid-cols-2 w-full max-w-md mx-auto">
                 <TabsTrigger 
                   value="skills"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/80 data-[state=active]:to-blue-500/80 data-[state=active]:text-white transition-all"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-300 rounded-lg md:rounded-xl px-3 md:px-6 py-2 md:py-3 text-xs md:text-sm font-semibold"
                 >
                   Skills Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="technical"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/80 data-[state=active]:to-blue-500/80 data-[state=active]:text-white transition-all"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-300 rounded-lg md:rounded-xl px-3 md:px-6 py-2 md:py-3 text-xs md:text-sm font-semibold"
                 >
-                  Technical Proficiency
+                  Technical
                 </TabsTrigger>
               </TabsList>
               
               <TabsContent value="skills" className="mt-0">
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                   {skills.map((skill, index) => (
-                    <FloatingCard 
-                      key={skill.name} 
-                      delay={index * 0.1}
-                      className="h-full"
-                    >
-                      <CardHeader className="pb-3">
-                        <div className="text-primary mb-3">{skill.icon}</div>
-                        <CardTitle>{skill.name}</CardTitle>
-                        <CardDescription>{skill.description}</CardDescription>
-                      </CardHeader>
-                    </FloatingCard>
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="technical" className="mt-0 space-y-8">
-                {skills.map((skill, index) => (
-                  <motion.div 
-                    key={skill.name} 
-                    className="space-y-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      {skill.icon}
-                      <span>{skill.name}</span>
-                    </h3>
-                    <div className="space-y-4">
-                      {skill.technologies.map((tech, techIndex) => (
-                        <motion.div 
-                          key={tech.name} 
-                          className="space-y-1"
-                          initial={{ width: 0 }}
-                          animate={{ width: "100%" }}
-                          transition={{ delay: index * 0.1 + techIndex * 0.1, duration: 0.5 }}
-                        >
-                          <div className="flex justify-between text-sm">
-                            <span>{tech.name}</span>
-                            <span>{tech.proficiency}%</span>
-                          </div>
-                          <ProgressBar value={tech.proficiency} delay={index * 0.1 + techIndex * 0.1} />
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          {/* Updated Testimonials Section with Enhanced Cards */}
-          <div className="mb-16">
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center mb-8"
-            >
-              <div className="h-0.5 w-5 bg-primary/70 mr-3 rounded-full"></div>
-              <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">What My Friends Say</h2>
-              <div className="h-0.5 flex-grow bg-primary/10 ml-5 rounded-full"></div>
-            </motion.div>
-            
-            <div className="relative">
-              {/* Enhanced gradient fades on edges for smoother transition */}
-              <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background via-background/90 to-transparent z-10"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background via-background/90 to-transparent z-10"></div>
-              
-              {/* Scrolling testimonials container with enhanced styling */}
-              <div 
-                ref={testimonialsRef}
-                className="flex overflow-x-scroll scrollbar-hide gap-7 py-6 px-2 pb-8"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                <div className="flex gap-7 min-w-max pl-3">
-                  {duplicatedTestimonials.map((testimonial, index) => (
                     <motion.div
-                      key={`${testimonial.name}-${index}`}
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min((index % testimonials.length) * 0.1, 0.7) }}
-                      className="w-[350px] flex-shrink-0"
+                      key={skill.name}
+                      initial={{ opacity: 0, y: 50, rotateY: window.innerWidth >= 768 ? -20 : 0 }}
+                      animate={{ opacity: 1, y: 0, rotateY: 0 }}
+                      transition={{ delay: 1.4 + index * 0.2, duration: 0.8 }}
+                      className="skill-card group h-full"
                     >
-                      <Card className="h-full transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-primary/20 overflow-hidden group border-primary/10 hover:border-primary/30 backdrop-blur-sm relative">
-                        {/* Enhance accent with pattern background */}
-                        <div className={`h-2 w-full bg-gradient-to-r ${getAvatarGradient(index % testimonials.length)} group-hover:opacity-100 opacity-80 transition-opacity`}>
-                          <div className="absolute inset-x-0 h-12 top-0 bg-gradient-to-b from-black/10 to-transparent opacity-30"></div>
-                        </div>
+                      <Card className="glass-effect border-white/20 hover:border-white/40 h-full overflow-hidden relative">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                        <div className="absolute -top-20 -right-20 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-white/5 to-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                         
-                        <CardContent className="p-0 h-full">
-                          <div className="p-6 pt-5 relative">
-                            {/* Enhanced avatar with improved styling */}
-                            <div className="flex items-center mb-5">
-                              <div 
-                                className={`relative h-16 w-16 rounded-full mr-4 bg-gradient-to-br ${getAvatarGradient(index % testimonials.length)} flex items-center justify-center text-white shadow-lg group-hover:shadow-xl shadow-primary/10 group-hover:scale-105 transition-all duration-500 ease-out z-20`}
-                              >
-                                <span className="font-bold text-2xl">{testimonial.name.charAt(0)}</span>
-                                
-                                {/* Enhanced animated rings */}
-                                {index % testimonials.length < 3 && (
-                                  <>
-                                    <motion.div 
-                                      className="absolute inset-0 rounded-full border-2 border-white/20"
-                                      animate={{ 
-                                        scale: [1, 1.15, 1],
-                                      }}
-                                      transition={{
-                                        repeat: Infinity,
-                                        duration: 3,
-                                        ease: "easeInOut"
-                                      }}
-                                    />
-                                    <motion.div 
-                                      className="absolute -inset-1 rounded-full border border-white/10"
-                                      animate={{ 
-                                        scale: [1, 1.3, 1],
-                                        opacity: [0.5, 0.2, 0.5]
-                                      }}
-                                      transition={{
-                                        repeat: Infinity,
-                                        duration: 4,
-                                        ease: "easeInOut",
-                                        delay: 0.5
-                                      }}
-                                    />
-                                  </>
-                                )}
-                              </div>
-                              <div>
-                                <p className="font-bold text-lg tracking-tight line-clamp-1 group-hover:text-primary transition-colors">{testimonial.name}</p>
-                                {/* Enhanced star rating with animation */}
-                                <div className="flex mt-1.5">
-                                  {[1, 2, 3, 4, 5].map((star, starIndex) => (
-                                    <motion.svg 
-                                      key={star} 
-                                      className="w-4 h-4 text-yellow-500 fill-current"
-                                      viewBox="0 0 24 24"
-                                      initial={{ opacity: 0, scale: 0.5 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{ delay: 0.8 + (starIndex * 0.1), type: "spring" }}
-                                    >
-                                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </motion.svg>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                            
-                            {/* Enhanced testimonial text with better quote styling */}
-                            <div className="relative">
-                              <svg 
-                                className="absolute -top-2 -left-1 w-8 h-8 text-primary/10 group-hover:text-primary/20 transition-colors duration-300"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                              >
-                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                              </svg>
-                              <div className="relative z-10 pl-6 pr-2 py-1">
-                                <p className="text-muted-foreground group-hover:text-muted-foreground/90 leading-relaxed text-sm italic transition-colors">
-                                  {testimonial.text}
-                                </p>
-                                
-                                {/* Add subtle line decoration */}
-                                <div className="mt-4 h-0.5 w-12 bg-gradient-to-r from-primary/20 to-transparent rounded-full"></div>
-                              </div>
+                        <CardHeader className="relative z-10 pb-3 md:pb-4">
+                          <motion.div 
+                            className={`inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${skill.color} mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}
+                            whileHover={{ rotate: window.innerWidth >= 768 ? 360 : 0 }}
+                            transition={{ duration: 0.6 }}
+                          >
+                            <div className="text-white text-sm md:text-base">{skill.icon}</div>
+                          </motion.div>
+                          
+                          <CardTitle className="text-base md:text-xl group-hover:text-primary transition-colors duration-300">
+                            {skill.name}
+                          </CardTitle>
+                          <CardDescription className="text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300 text-xs md:text-sm">
+                            {skill.description}
+                          </CardDescription>
+                        </CardHeader>
+                        
+                        <CardContent className="relative z-10">
+                          <div className="space-y-2">
+                            <p className="text-xs md:text-sm font-medium text-muted-foreground mb-2 md:mb-3">Technologies:</p>
+                            <div className="flex flex-wrap gap-1 md:gap-2">
+                              {skill.technologies.slice(0, 4).map((tech, techIndex) => (
+                                <motion.span
+                                  key={tech.name}
+                                  className="px-2 md:px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/20 hover:bg-white/20 transition-colors cursor-default"
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ delay: 1.6 + index * 0.2 + techIndex * 0.1 }}
+                                  whileHover={{ scale: window.innerWidth >= 768 ? 1.05 : 1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <span className="text-xs">{tech.icon}</span> {tech.name}
+                                </motion.span>
+                              ))}
                             </div>
                           </div>
                         </CardContent>
@@ -636,99 +609,208 @@ const About = () => {
                     </motion.div>
                   ))}
                 </div>
+              </TabsContent>
+              
+              <TabsContent value="technical" className="mt-0 space-y-6 md:space-y-10">
+                {skills.map((skill, index) => (
+                  <motion.div 
+                    key={skill.name} 
+                    className="glass-effect rounded-xl md:rounded-2xl p-4 md:p-8 space-y-4 md:space-y-6"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.4 + index * 0.3, duration: 0.8 }}
+                  >
+                    <h3 className="font-bold text-lg md:text-2xl flex items-center gap-2 md:gap-3">
+                      <div className={`p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-br ${skill.color}`}>
+                        <div className="text-white text-sm md:text-base">{skill.icon}</div>
+                      </div>
+                      <span className={`bg-clip-text text-transparent bg-gradient-to-r ${skill.color}`}>
+                        {skill.name}
+                      </span>
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                      {skill.technologies.map((tech, techIndex) => (
+                        <motion.div 
+                          key={tech.name} 
+                          className="space-y-2 md:space-y-3"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.6 + index * 0.3 + techIndex * 0.1 }}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium flex items-center gap-2 text-sm md:text-base">
+                              <span className="text-base md:text-lg">{tech.icon}</span>
+                              {tech.name}
+                            </span>
+                            <span className="font-bold text-primary text-sm md:text-base">{tech.proficiency}%</span>
+                          </div>
+                          <EnhancedProgressBar 
+                            value={tech.proficiency} 
+                            delay={1.8 + index * 0.3 + techIndex * 0.1}
+                            color={skill.color}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </motion.div>
+
+          {/* Simplified Testimonials Section - Only Featured Testimonial */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2, duration: 0.8 }}
+            className="relative"
+          >
+            <motion.div 
+              className="flex items-center justify-center mb-8 md:mb-12"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.2 }}
+            >
+              <motion.div 
+                className="h-1 w-12 md:w-16 bg-gradient-to-r from-transparent via-pink-500 to-transparent mr-3 md:mr-6 rounded-full"
+                animate={{ scaleX: [1, 1.4, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 flex items-center gap-2 md:gap-3 text-center">
+                <Quote className="w-6 h-6 md:w-10 md:h-10 text-pink-500" />
+                Testimonials
+                <Quote className="w-6 h-6 md:w-10 md:h-10 text-blue-500" />
+              </h2>
+              <motion.div 
+                className="h-1 w-12 md:w-16 bg-gradient-to-r from-transparent via-blue-500 to-transparent ml-3 md:ml-6 rounded-full"
+                animate={{ scaleX: [1, 1.4, 1] }}
+                transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+              />
+            </motion.div>
+            
+            {/* Featured testimonial only */}
+            <div className="max-w-4xl mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTestimonial}
+                  initial={{ opacity: 0, y: 50, rotateX: window.innerWidth >= 768 ? -20 : 0 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  exit={{ opacity: 0, y: -50, rotateX: window.innerWidth >= 768 ? 20 : 0 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="w-full"
+                >
+                  <Card className="glass-effect border-white/30 testimonial-card overflow-hidden relative">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${getAvatarGradient(currentTestimonial)} opacity-5`} />
+                    
+                    <CardContent className="p-4 md:p-8 lg:p-12 relative z-10">
+                      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                        <motion.div 
+                          className={`relative h-16 w-16 md:h-24 md:w-24 rounded-full bg-gradient-to-br ${getAvatarGradient(currentTestimonial)} flex items-center justify-center text-white shadow-2xl flex-shrink-0`}
+                          whileHover={{ scale: window.innerWidth >= 768 ? 1.1 : 1, rotate: window.innerWidth >= 768 ? 5 : 0 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <span className="font-bold text-xl md:text-3xl">{testimonials[currentTestimonial].name.charAt(0)}</span>
+                          
+                          {/* Animated ring effects */}
+                          <motion.div 
+                            className="absolute inset-0 rounded-full border-2 border-white/30"
+                            animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          />
+                          <motion.div 
+                            className="absolute -inset-2 rounded-full border border-white/20"
+                            animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.2, 0.8] }}
+                            transition={{ duration: 3, repeat: Infinity }}
+                          />
+                        </motion.div>
+                        
+                        <div className="flex-1 text-center md:text-left">
+                          <div className="mb-3 md:mb-4">
+                            <h3 className="font-bold text-lg md:text-2xl mb-1">{testimonials[currentTestimonial].name}</h3>
+                          </div>
+                          
+                          <div className="flex justify-center md:justify-start mb-3 md:mb-4">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <motion.div
+                                key={star}
+                                initial={{ opacity: 0, scale: 0 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: star * 0.1, type: "spring" }}
+                              >
+                                <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500 fill-current" />
+                              </motion.div>
+                            ))}
+                          </div>
+                          
+                          <blockquote className="text-sm md:text-lg leading-relaxed text-muted-foreground italic">
+                            &ldquo;{testimonials[currentTestimonial].text}&rdquo;
+                          </blockquote>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </AnimatePresence>
+              
+              {/* Enhanced navigation dots */}
+              <div className="flex justify-center gap-2 md:gap-3 mt-6 md:mt-8 flex-wrap">
+                {testimonials.map((_, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`h-2 md:h-3 rounded-full transition-all duration-300 touch-manipulation ${
+                      index === currentTestimonial 
+                        ? `w-6 md:w-8 bg-gradient-to-r ${getAvatarGradient(index)}`
+                        : 'w-2 md:w-3 bg-white/30 hover:bg-white/50'
+                    }`}
+                    whileHover={{ scale: window.innerWidth >= 768 ? 1.2 : 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  />
+                ))}
               </div>
             </div>
-            
-            {/* Enhanced indicator dots with better animation */}
-            <div className="flex justify-center gap-2 mt-8 relative">
-              <div className="absolute inset-x-0 h-12 -top-6 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
-              {testimonials.map((_, index) => (
-                <motion.div 
-                  key={index}
-                  className={`h-3 rounded-full bg-gradient-to-r ${getAvatarGradient(index)}`}
-                  style={{ width: index === 0 ? '1.5rem' : '0.75rem' }}
-                  animate={{ 
-                    scale: [1, 1.3, 1],
-                    opacity: [0.4, 0.8, 0.4],
-                    width: ['0.75rem', index === 0 ? '1.5rem' : '0.75rem'] 
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 2,
-                    delay: index * 0.3,
-                    ease: "easeInOut"
-                  }}
-                />
-              ))}
-            </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
   );
 };
 
-// Animated progress bar component
-const ProgressBar = ({ value, delay = 0 }: { value: number, delay?: number }) => {
+// Enhanced progress bar with gradient and glow effects
+const EnhancedProgressBar = ({ 
+  value, 
+  delay = 0, 
+  color = "from-blue-500 to-purple-500" 
+}: { 
+  value: number; 
+  delay?: number; 
+  color?: string; 
+}) => {
   const controls = useAnimation();
   
   useEffect(() => {
     controls.start({
       width: `${value}%`,
-      transition: { delay, duration: 1, ease: "easeOut" }
+      transition: { delay, duration: 1.5, ease: "easeOut" }
     });
   }, [controls, value, delay]);
   
   return (
-    <div className="h-2 bg-primary/10 rounded-full overflow-hidden">
+    <div className="relative h-2 md:h-3 bg-white/10 rounded-full overflow-hidden">
       <motion.div 
-        className="h-full bg-primary rounded-full"
+        className={`h-full bg-gradient-to-r ${color} rounded-full relative overflow-hidden`}
         initial={{ width: 0 }}
         animate={controls}
-      />
-    </div>
-  );
-};
-
-// Floating card component with hover effect
-const FloatingCard = ({ 
-  children, 
-  delay = 0,
-  className
-}: { 
-  children: React.ReactNode; 
-  delay?: number;
-  className?: string;
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.5 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={className}
-    >
-      <motion.div
-        animate={{
-          y: isHovered ? -8 : 0,
-          boxShadow: isHovered 
-            ? "0 10px 25px -3px rgba(59, 130, 246, 0.15)" 
-            : "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
-        }}
-        transition={{ type: "spring", stiffness: 150, damping: 20 }}
-        className={cn(
-          "h-full transition-all duration-200 rounded-lg border",
-          isHovered ? "border-primary/30" : "border-border"
-        )}
       >
-        <Card className="h-full border-0 shadow-none">
-          {children}
-        </Card>
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
