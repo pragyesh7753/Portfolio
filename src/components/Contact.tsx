@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, Save, Clock, Instagram, Sparkles, Zap, Heart, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
@@ -36,8 +36,8 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [formProgress, setFormProgress] = useState(0);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true });
   
@@ -49,14 +49,29 @@ const Contact = () => {
 
   const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);
 
+  // Track window size for particles
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    // Set initial size
+    if (typeof window !== 'undefined') {
+      updateWindowSize();
+      window.addEventListener('resize', updateWindowSize);
+      return () => window.removeEventListener('resize', updateWindowSize);
+    }
+  }, []);
+
   // Track mouse movement for interactive effects
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        setMousePosition({ x, y });
+        const x = e.clientX - containerRef.current.getBoundingClientRect().left;
+        const y = e.clientY - containerRef.current.getBoundingClientRect().top;
         mouseX.set(x);
         mouseY.set(y);
       }
@@ -75,22 +90,35 @@ const Contact = () => {
 
   // Auto-save functionality
   useEffect(() => {
-    const savedData = localStorage.getItem('contact-form-draft');
-    if (savedData) {
-      try {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const savedData = localStorage.getItem('contact-form-draft');
+      if (savedData) {
         const parsed = JSON.parse(savedData);
         setFormData(parsed);
         const savedTime = localStorage.getItem('contact-form-saved-time');
         if (savedTime) {
           setLastSaved(new Date(savedTime));
         }
-      } catch (error) {
-        console.error('Error loading saved form data:', error);
+      }
+    } catch (error) {
+      console.error('Error loading saved form data:', error);
+      // Clear corrupted data
+      try {
+        localStorage.removeItem('contact-form-draft');
+        localStorage.removeItem('contact-form-saved-time');
+      } catch (e) {
+        console.error('Error clearing corrupted data:', e);
       }
     }
   }, []);
 
   useEffect(() => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return;
+    
     const hasContent = Object.values(formData).some(value => value.trim() !== '');
     if (hasContent) {
       const timer = setTimeout(() => {
@@ -153,7 +181,7 @@ const Contact = () => {
     
     // Add haptic feedback for mobile (with error handling)
     try {
-      if (navigator.vibrate) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
         navigator.vibrate(10);
       }
     } catch (error) {
@@ -222,6 +250,10 @@ const Contact = () => {
       subject: '',
       message: ''
     });
+    
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return;
+    
     try {
       localStorage.removeItem('contact-form-draft');
       localStorage.removeItem('contact-form-saved-time');
@@ -321,6 +353,47 @@ const Contact = () => {
     />
   );
 
+  // Enhanced floating particle component
+  const EnhancedFloatingParticle = ({ delay }: { delay: number }) => {
+    // Use useMemo to prevent recalculation on each render
+    const initialX = useMemo(() => Math.random() * windowSize.width, [windowSize.width]);
+    const initialY = useMemo(() => Math.random() * windowSize.height, [windowSize.height]);
+    const randomScale = useMemo(() => Math.random() * 2 + 1, []);
+    const randomDuration = useMemo(() => Math.random() * 10 + 10, []);
+    
+    return (
+      <motion.div
+        className="absolute w-1 h-1 bg-primary/40 rounded-full"
+        initial={{ 
+          opacity: 0, 
+          scale: 0,
+          x: initialX,
+          y: initialY
+        }}
+        animate={{
+          opacity: [0, 1, 0],
+          scale: [0, randomScale, 0],
+          x: [
+            initialX,
+            initialX + (Math.random() - 0.5) * 400,
+            initialX + (Math.random() - 0.5) * 400
+          ],
+          y: [
+            initialY,
+            initialY + (Math.random() - 0.5) * 300,
+            initialY + (Math.random() - 0.5) * 300
+          ],
+        }}
+        transition={{
+          duration: randomDuration,
+          delay,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+    );
+  };
+
   const messageCharCount = formData.message.length;
   const messageMaxLength = 1000;
 
@@ -329,26 +402,143 @@ const Contact = () => {
       ref={containerRef}
       className="relative min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Animated Background */}
+      {/* Creative Animated Background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 animate-pulse" />
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+        
+        {/* Animated radial gradients */}
         <motion.div 
           className="absolute inset-0"
           animate={{
             background: [
-              "radial-gradient(600px circle at 0% 0%, rgba(120, 119, 198, 0.3), transparent 50%)",
-              "radial-gradient(600px circle at 100% 100%, rgba(120, 119, 198, 0.3), transparent 50%)",
-              "radial-gradient(600px circle at 0% 100%, rgba(120, 119, 198, 0.3), transparent 50%)",
-              "radial-gradient(600px circle at 100% 0%, rgba(120, 119, 198, 0.3), transparent 50%)",
+              "radial-gradient(600px circle at 0% 0%, rgba(120, 119, 198, 0.15), transparent 50%)",
+              "radial-gradient(600px circle at 100% 100%, rgba(120, 119, 198, 0.15), transparent 50%)",
+              "radial-gradient(600px circle at 0% 100%, rgba(255, 107, 107, 0.1), transparent 50%)",
+              "radial-gradient(600px circle at 100% 0%, rgba(78, 205, 196, 0.1), transparent 50%)",
+              "radial-gradient(600px circle at 50% 50%, rgba(199, 146, 234, 0.12), transparent 50%)",
             ]
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
         
-        {/* Floating particles with proper keys */}
+        {/* Geometric shapes */}
+        <motion.div
+          className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full blur-xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        
+        <motion.div
+          className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-tr from-secondary/15 to-primary/15 rounded-lg blur-lg"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.4, 0.7, 0.4],
+            rotate: [0, -180, -360],
+          }}
+          transition={{ duration: 10, repeat: Infinity, delay: 1 }}
+        />
+        
+        <motion.div
+          className="absolute bottom-32 left-1/4 w-40 h-40 bg-gradient-to-bl from-purple-400/10 to-pink-400/10 rounded-full blur-2xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.5, 0.2],
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{ duration: 12, repeat: Infinity, delay: 2 }}
+        />
+        
+        {/* Floating geometric elements */}
+        <motion.div
+          className="absolute top-60 left-1/3 w-4 h-4 bg-primary/30 rotate-45"
+          animate={{
+            y: [0, -100, 0],
+            opacity: [0, 1, 0],
+            rotate: [45, 225, 45],
+          }}
+          transition={{ duration: 6, repeat: Infinity, delay: 0.5 }}
+        />
+        
+        <motion.div
+          className="absolute top-80 right-1/3 w-6 h-6 border-2 border-secondary/40 rounded-full"
+          animate={{
+            y: [0, -80, 0],
+            opacity: [0, 1, 0],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{ duration: 7, repeat: Infinity, delay: 1.5 }}
+        />
+        
+        <motion.div
+          className="absolute bottom-60 right-1/4 w-3 h-8 bg-gradient-to-t from-primary/40 to-transparent"
+          animate={{
+            y: [0, -60, 0],
+            opacity: [0, 0.8, 0],
+            scaleY: [1, 1.3, 1],
+          }}
+          transition={{ duration: 5, repeat: Infinity, delay: 2.5 }}
+        />
+        
+        {/* Grid pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(120, 119, 198, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(120, 119, 198, 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}
+        />
+        
+        {/* Animated mesh gradient */}
+        <motion.div
+          className="absolute inset-0 opacity-20"
+          animate={{
+            background: [
+              "conic-gradient(from 0deg at 20% 50%, transparent, rgba(120, 119, 198, 0.1), transparent)",
+              "conic-gradient(from 90deg at 80% 50%, transparent, rgba(255, 107, 107, 0.1), transparent)",
+              "conic-gradient(from 180deg at 50% 80%, transparent, rgba(78, 205, 196, 0.1), transparent)",
+              "conic-gradient(from 270deg at 50% 20%, transparent, rgba(199, 146, 234, 0.1), transparent)",
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+        />
+        
+        {/* Enhanced floating particles */}
+        {Array.from({ length: 20 }).map((_, i) => (
+          <EnhancedFloatingParticle key={`enhanced-particle-${i}`} delay={i * 0.3} />
+        ))}
+        
+        {/* Floating particles with proper keys - keeping original */}
         {Array.from({ length: 15 }).map((_, i) => (
           <FloatingParticle key={`floating-particle-${i}`} delay={i * 0.5} index={i} />
         ))}
+        
+        {/* Parallax lines */}
+        <motion.div
+          className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+          animate={{
+            scaleX: [0, 1, 0],
+            opacity: [0, 0.5, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, delay: 3 }}
+        />
+        
+        <motion.div
+          className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent"
+          animate={{
+            scaleX: [0, 1, 0],
+            opacity: [0, 0.5, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, delay: 5 }}
+        />
       </div>
 
       {/* Interactive cursor follow effect */}
@@ -647,6 +837,7 @@ const Contact = () => {
                           onChange={handleChange}
                           className={`transition-all duration-300 ${errors.name ? "border-destructive" : formData.name ? "border-green-500" : "focus:border-primary"}`}
                           placeholder="Your full name"
+                          autoComplete="name"
                         />
                         {errors.name && (
                           <motion.p 
@@ -676,6 +867,7 @@ const Contact = () => {
                           onChange={handleChange}
                           className={`transition-all duration-300 ${errors.email ? "border-destructive" : (formData.email && !errors.email) ? "border-green-500" : "focus:border-primary"}`}
                           placeholder="your.email@example.com"
+                          autoComplete="email"
                         />
                         {errors.email && (
                           <motion.p 
