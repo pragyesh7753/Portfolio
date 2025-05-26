@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ExternalLink, Github, Search, Code, Star, TrendingUp, Eye, Share2, X, Grid, List, BarChart3, Sparkles, Zap, Layers, Cpu, Globe, Database } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
@@ -39,7 +39,8 @@ const Projects = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showStats, setShowStats] = useState(true);
 
-  const projects: Project[] = [
+  // Memoize projects data to prevent unnecessary recalculations
+  const projects = useMemo<Project[]>(() => [
     {
       id: "internauto",
       title: "InternAuto - Automate Your Future",
@@ -157,18 +158,18 @@ const Projects = () => {
         "Performance optimized"
       ]
     }
-  ];
+  ], []);
 
-  // Get unique technologies
+  // Optimize technology calculation with memoization
   const allTechnologies = useMemo(() => {
     const techSet = new Set<string>();
     projects.forEach(project => {
       project.tech.forEach(tech => techSet.add(tech));
     });
     return Array.from(techSet).sort();
-  }, []);
+  }, [projects]);
 
-  // Calculate project statistics
+  // Memoize project statistics calculation
   const projectStats = useMemo(() => {
     const totalProjects = projects.length;
     const completedProjects = projects.filter(p => p.status === 'completed').length;
@@ -186,76 +187,101 @@ const Projects = () => {
     };
   }, [projects, allTechnologies]);
 
-  // Enhanced filtering and sorting
+  // Optimize filtering and sorting with better memoization
   const filteredAndSortedProjects = useMemo(() => {
-    const filtered = projects.filter(project => {
-      const matchesSearch = searchQuery === '' ||
-        project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.tech.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+    let filtered = projects;
 
-      const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
-      const matchesTech = selectedTech === 'all' || project.tech.includes(selectedTech);
+    // Apply filters only if needed
+    if (searchQuery || selectedCategory !== 'all' || selectedTech !== 'all') {
+      filtered = projects.filter(project => {
+        const matchesSearch = !searchQuery || 
+          project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          project.tech.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+          
+        const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
+        const matchesTech = selectedTech === 'all' || project.tech.includes(selectedTech);
+        
+        return matchesSearch && matchesCategory && matchesTech;
+      });
+    }
 
-      return matchesSearch && matchesCategory && matchesTech;
-    });
-
-    // Sort projects
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'featured':
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return 0;
-        case 'stars':
-          return (b.stars || 0) - (a.stars || 0);
-        case 'title':
-          return a.title.localeCompare(b.title);
-        default:
-          return 0;
-      }
-    });
+    // Apply sorting
+    if (sortBy !== 'featured') {
+      filtered = [...filtered].sort((a, b) => {
+        switch (sortBy) {
+          case 'stars':
+            return (b.stars || 0) - (a.stars || 0);
+          case 'title':
+            return a.title.localeCompare(b.title);
+          default:
+            return 0;
+        }
+      });
+    } else {
+      filtered = [...filtered].sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      });
+    }
 
     return filtered;
   }, [projects, searchQuery, selectedCategory, selectedTech, sortBy]);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1
+  // Memoize featured projects
+  const featuredProjects = useMemo(() => 
+    projects.filter(p => p.featured), [projects]
+  );
+
+  // Memoize animation variants
+  const animationVariants = useMemo(() => ({
+    container: {
+      hidden: { opacity: 0 },
+      show: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.08,
+          delayChildren: 0.1
+        }
+      }
+    },
+    item: {
+      hidden: { opacity: 0, y: 30, scale: 0.95 },
+      show: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+          type: "spring",
+          stiffness: 100,
+          damping: 15
+        }
       }
     }
-  };
+  }), []);
 
-  const item = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15
-      }
-    }
-  };
+  // Optimize handlers with useCallback
+  const clearAllFilters = useCallback(() => {
+    setSearchQuery('');
+    setSelectedCategory('all');
+    setSelectedTech('all');
+  }, []);
 
-  const featuredProjects = projects.filter(p => p.featured);
+  const toggleStats = useCallback(() => {
+    setShowStats(prev => !prev);
+  }, []);
 
   // Category icons
-  const categoryIcons = {
+  const categoryIcons = useMemo(() => ({
     frontend: Globe,
     backend: Database,
     fullstack: Layers
-  };
+  }), []);
 
   return (
     <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
-      {/* Animated Background */}
+      {/* Optimized Animated Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
         <motion.div
@@ -287,8 +313,8 @@ const Projects = () => {
         />
       </div>
 
-      {/* Floating Elements */}
-      <FloatingElements />
+      {/* Memoized Floating Elements */}
+      <MemoizedFloatingElements />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
@@ -356,7 +382,7 @@ const Projects = () => {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => setShowStats(!showStats)}
+                onClick={toggleStats}
                 className="group relative overflow-hidden bg-background/50 backdrop-blur-sm border-primary/20 hover:border-primary/50 transition-all duration-300"
               >
                 <motion.div
@@ -368,8 +394,8 @@ const Projects = () => {
             </motion.div>
           </div>
 
-          {/* Enhanced Statistics with Glass Morphism */}
-          <AnimatePresence>
+          {/* Enhanced Statistics with Memoized Component */}
+          <AnimatePresence mode="wait">
             {showStats && (
               <motion.div
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -378,44 +404,7 @@ const Projects = () => {
                 transition={{ type: "spring", stiffness: 100 }}
                 className="mb-16"
               >
-                <div className="relative p-8 rounded-3xl bg-background/30 backdrop-blur-xl border border-white/10 shadow-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-3xl" />
-
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-6 relative z-10">
-                    {[
-                      { value: projectStats.totalProjects, label: "Total Projects", icon: Code, color: "from-blue-500 to-cyan-500" },
-                      { value: projectStats.completedProjects, label: "Completed", icon: Star, color: "from-green-500 to-emerald-500" },
-                      { value: projectStats.totalStars, label: "GitHub Stars", icon: Github, color: "from-yellow-500 to-orange-500" },
-                      { value: projectStats.totalForks, label: "Forks", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
-                      { value: projectStats.techCount, label: "Technologies", icon: Cpu, color: "from-indigo-500 to-purple-500" }
-                    ].map((stat, index) => (
-                      <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="text-center group cursor-pointer"
-                      >
-                        <div className="relative mb-3">
-                          <motion.div
-                            className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${stat.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                            whileHover={{ scale: 1.1, rotate: 5 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <stat.icon className="w-full h-full text-white" />
-                          </motion.div>
-                        </div>
-                        <motion.div
-                          className="text-3xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          {stat.value}
-                        </motion.div>
-                        <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
+                <ProjectStatistics projectStats={projectStats} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -441,9 +430,7 @@ const Projects = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-12 h-12 bg-background/50 border-white/20 focus:border-primary/50 focus:bg-background/70 transition-all duration-300"
                       />
-                      <motion.div
-                        className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"
-                      />
+
                     </div>
 
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -552,11 +539,7 @@ const Projects = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        setSearchQuery('');
-                        setSelectedCategory('all');
-                        setSelectedTech('all');
-                      }}
+                      onClick={clearAllFilters}
                       className="text-xs hover:bg-destructive/10 hover:text-destructive ml-auto"
                     >
                       Clear all
@@ -614,7 +597,7 @@ const Projects = () => {
                       transition: { duration: 0.3, type: "spring", stiffness: 300 }
                     }}
                   >
-                    <EnhancedProjectCard
+                    <MemoizedProjectCard
                       project={project}
                       featured={true}
                       viewMode="grid"
@@ -646,11 +629,7 @@ const Projects = () => {
                 </p>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCategory('all');
-                    setSelectedTech('all');
-                  }}
+                  onClick={clearAllFilters}
                   className="bg-background/50 hover:bg-background/70 border-primary/30"
                 >
                   <Zap className="mr-2 h-4 w-4" />
@@ -694,7 +673,7 @@ const Projects = () => {
               </motion.div>
 
               <motion.div
-                variants={container}
+                variants={animationVariants.container}
                 initial="hidden"
                 animate="show"
                 className={cn(
@@ -705,8 +684,8 @@ const Projects = () => {
                 )}
               >
                 {filteredAndSortedProjects.map((project) => (
-                  <motion.div key={project.id} variants={item}>
-                    <EnhancedProjectCard
+                  <motion.div key={project.id} variants={animationVariants.item}>
+                    <MemoizedProjectCard
                       project={project}
                       viewMode={viewMode}
                     />
@@ -721,52 +700,46 @@ const Projects = () => {
   );
 };
 
-const EnhancedProjectCard = ({ project, featured = false, viewMode = 'grid' }: {
+// Memoize expensive components
+const MemoizedProjectCard = memo(({ project, featured = false, viewMode = 'grid' }: {
   project: Project,
   featured?: boolean,
   viewMode?: 'grid' | 'list'
 }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [15, -15]));
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-15, 15]));
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [15, -15]), { damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-15, 15]), { damping: 20 });
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!featured) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     mouseX.set(e.clientX - centerX);
     mouseY.set(e.clientY - centerY);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, featured]);
 
-  const statusColors = {
+  const resetMousePosition = useCallback(() => {
+    if (featured) {
+      mouseX.set(0);
+      mouseY.set(0);
+    }
+  }, [mouseX, mouseY, featured]);
+
+  const statusColors = useMemo(() => ({
     completed: 'from-green-500 to-emerald-600',
     'in-progress': 'from-yellow-500 to-orange-600',
     planned: 'from-blue-500 to-indigo-600'
-  };
+  }), []);
 
-  const difficultyColors = {
-    beginner: 'from-green-400 to-green-600',
-    intermediate: 'from-yellow-400 to-yellow-600',
-    advanced: 'from-red-400 to-red-600'
-  };
-
+  // List view implementation
   if (viewMode === 'list') {
     return (
       <motion.div
         style={featured ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
-        onMouseMove={featured ? handleMouseMove : undefined}
-        onMouseEnter={() => {
-          if (featured) {
-            // Handle hover effects for featured projects
-          }
-        }}
-        onMouseLeave={() => {
-          if (featured) {
-            mouseX.set(0);
-            mouseY.set(0);
-          }
-        }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={resetMousePosition}
         whileHover={{ scale: 1.02 }}
         className="group"
       >
@@ -780,11 +753,8 @@ const EnhancedProjectCard = ({ project, featured = false, viewMode = 'grid' }: {
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-xl font-semibold">{project.title}</h3>
                     {featured && <Star className="h-4 w-4 text-primary fill-primary" />}
-                    <Badge className={statusColors[project.status]} variant="outline">
-                      {project.status.replace('-', ' ')}
-                    </Badge>
-                    <Badge className={difficultyColors[project.difficulty]} variant="outline">
-                      {project.difficulty}
+                    <Badge className={cn("text-xs font-medium bg-gradient-to-r", statusColors[project.status], "text-white border-0")}>
+                      {project.status === 'in-progress' ? 'WIP' : project.status.toUpperCase()}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground mb-4">{project.description}</p>
@@ -834,21 +804,12 @@ const EnhancedProjectCard = ({ project, featured = false, viewMode = 'grid' }: {
     );
   }
 
+  // Grid view (default)
   return (
     <motion.div
       style={featured ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
-      onMouseMove={featured ? handleMouseMove : undefined}
-      onMouseEnter={() => {
-        if (featured) {
-          // Handle hover effects for featured projects
-        }
-      }}
-      onMouseLeave={() => {
-        if (featured) {
-          mouseX.set(0);
-          mouseY.set(0);
-        }
-      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={resetMousePosition}
       whileHover={{ scale: featured ? 1.05 : 1.03 }}
       className="group h-full"
     >
@@ -995,19 +956,29 @@ const EnhancedProjectCard = ({ project, featured = false, viewMode = 'grid' }: {
       </Card>
     </motion.div>
   );
-};
+});
 
-// New Floating Elements Component
-const FloatingElements = () => {
+// Memoize floating elements to prevent unnecessary re-renders
+const MemoizedFloatingElements = memo(() => {
+  const elements = useMemo(() => 
+    Array.from({ length: 6 }, (_, i) => ({
+      id: i,
+      initialX: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1200,
+      initialY: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 800,
+      duration: Math.random() * 10 + 10,
+      delay: i * 2
+    })), []
+  );
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      {[...Array(6)].map((_, i) => (
+      {elements.map((element) => (
         <motion.div
-          key={i}
+          key={element.id}
           className="absolute w-2 h-2 bg-primary/20 rounded-full"
           initial={{
-            x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1200,
-            y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 800,
+            x: element.initialX,
+            y: element.initialY,
           }}
           animate={{
             x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1200,
@@ -1016,16 +987,61 @@ const FloatingElements = () => {
             opacity: [0.3, 0.8, 0.3]
           }}
           transition={{
-            duration: Math.random() * 10 + 10,
+            duration: element.duration,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 2
+            delay: element.delay
           }}
         />
       ))}
     </div>
   );
-};
+});
+
+// Memoize statistics component
+const ProjectStatistics = memo(({ projectStats }: { projectStats: any }) => {
+  const statsData = useMemo(() => [
+    { value: projectStats.totalProjects, label: "Total Projects", icon: Code, color: "from-blue-500 to-cyan-500" },
+    { value: projectStats.completedProjects, label: "Completed", icon: Star, color: "from-green-500 to-emerald-500" },
+    { value: projectStats.totalStars, label: "GitHub Stars", icon: Github, color: "from-yellow-500 to-orange-500" },
+    { value: projectStats.totalForks, label: "Forks", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
+    { value: projectStats.techCount, label: "Technologies", icon: Cpu, color: "from-indigo-500 to-purple-500" }
+  ], [projectStats]);
+
+  return (
+    <div className="relative p-8 rounded-3xl bg-background/30 backdrop-blur-xl border border-white/10 shadow-2xl">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-3xl" />
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-6 relative z-10">
+        {statsData.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="text-center group cursor-pointer"
+          >
+            <div className="relative mb-3">
+              <motion.div
+                className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${stat.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <stat.icon className="w-full h-full text-white" />
+              </motion.div>
+            </div>
+            <motion.div
+              className="text-3xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
+              whileHover={{ scale: 1.05 }}
+            >
+              {stat.value}
+            </motion.div>
+            <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+});
 
 const ProjectDetailsModal = ({ project }: { project: Project }) => {
   return (
@@ -1178,4 +1194,5 @@ const ProjectDetailsModal = ({ project }: { project: Project }) => {
   );
 };
 
-export default Projects;
+// Memoize the main component
+export default memo(Projects);
