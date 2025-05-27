@@ -476,13 +476,15 @@ const GeometricLoadingScreen = () => {
 				</motion.h1>
 
 				{/* Responsive title with scanning effect */}
-				<motion.p
-					className="text-lg sm:text-xl text-slate-300 mb-6 sm:mb-8 relative overflow-hidden"
-					initial={{ opacity: 0, scale: 0.8 }}
-					animate={{ opacity: 1, scale: 1 }}
-					transition={{ delay: 1.5, duration: 0.6 }}
-				>
-					{title}
+				<div className="relative">
+					<motion.p
+						className="text-lg sm:text-xl text-slate-300 mb-6 sm:mb-8 relative overflow-hidden"
+						initial={{ opacity: 0, scale: 0.8 }}
+						animate={{ opacity: 1, scale: 1 }}
+						transition={{ delay: 1.5, duration: 0.6 }}
+					>
+						{title}
+					</motion.p>
 					<motion.div
 						className="absolute top-0 left-0 w-full h-full opacity-30 hidden sm:block"
 						style={{
@@ -491,7 +493,7 @@ const GeometricLoadingScreen = () => {
 						animate={{ x: ['-100%', '100%'] }}
 						transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
 					/>
-				</motion.p>
+				</div>
 
 				{/* Responsive progress section */}
 				<div className="space-y-4">

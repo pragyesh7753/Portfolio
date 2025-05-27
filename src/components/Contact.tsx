@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useInView, useMotionValue } from 'framer-motion';
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, Save, Clock, Instagram, Sparkles, Zap, Heart, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -43,9 +43,6 @@ const Contact = () => {
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springConfig = { damping: 25, stiffness: 700 };
-  const x = useSpring(mouseX, springConfig);
-  const y = useSpring(mouseY, springConfig);
 
   const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -540,13 +537,6 @@ const Contact = () => {
           transition={{ duration: 10, repeat: Infinity, delay: 5 }}
         />
       </div>
-
-      {/* Interactive cursor follow effect */}
-      <motion.div
-        className="fixed w-6 h-6 rounded-full bg-primary/20 pointer-events-none z-50 mix-blend-difference hidden lg:block"
-        style={{ x, y }}
-        transition={{ type: "spring", stiffness: 500, damping: 28 }}
-      />
 
       <div className="max-w-7xl mx-auto relative">
         <motion.div
