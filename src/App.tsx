@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { ThemeProvider } from './components/ThemeProvider';
+import { Toaster } from './components/ui/toaster';
+import { ScrollToTop } from './components/ScrollToTop';
+import GeometricLoadingScreen from './components/GeometricLoadingScreen';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -9,10 +12,6 @@ import Contact from './components/Contact';
 import Achievements from './components/Achievements';
 import Footer from './components/Footer';
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
-import { ThemeProvider } from './components/ThemeProvider';
-import { Toaster } from './components/ui/toaster';
-import { ScrollToTop } from './components/ScrollToTop';
-import GeometricLoadingScreen from './components/GeometricLoadingScreen';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -26,30 +25,28 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  if (loading) {
+    return <GeometricLoadingScreen />;
+  }
+
   return (
     <ThemeProvider defaultTheme="dark">
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <GeometricLoadingScreen key="loading" />
-        ) : (
-          <Router>
-            <ScrollToTop />
-            <div className="min-h-screen bg-background text-foreground relative">
-              <ParticlesBackgroundEnhanced />
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/achievements" element={<Achievements />} />
-              </Routes>
-              <Footer />
-              <Toaster />
-            </div>
-          </Router>
-        )}
-      </AnimatePresence>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-background text-foreground relative">
+          <ParticlesBackgroundEnhanced />
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/achievements" element={<Achievements />} />
+          </Routes>
+          <Footer />
+          <Toaster />
+        </div>
+      </Router>
     </ThemeProvider>
   );
 }
