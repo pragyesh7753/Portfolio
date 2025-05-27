@@ -181,8 +181,9 @@ const Home = () => {
   // Memoized profile particles
   const profileParticles = useMemo(() => 
     Array.from({ length: 6 }, (_, i) => ({
-      top: 20 + Math.sin(i * 60) * 35,
-      left: 20 + Math.cos(i * 60) * 35,
+      // Increase the radius so particles are outside the avatar ring
+      top: 50 + Math.sin((i / 6) * 2 * Math.PI) * 60,  // center at 50%, radius 60%
+      left: 50 + Math.cos((i / 6) * 2 * Math.PI) * 60,
     }))
   , []);
 
@@ -793,10 +794,12 @@ const Home = () => {
               {profileParticles.map((particle, i) => (
                 <motion.div
                   key={`profile-particle-${i}`}
-                  className="absolute w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full"
+                  className="absolute w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full pointer-events-none"
                   style={{
                     top: `${particle.top}%`,
                     left: `${particle.left}%`,
+                    transform: 'translate(-50%, -50%)', // center the particle on the position
+                    zIndex: 1, // ensure it's below the avatar
                   }}
                   animate={{
                     y: [0, -8, 0],
