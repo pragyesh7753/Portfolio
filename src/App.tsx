@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
-import GeometricLoadingScreen from './components/GeometricLoadingScreen';
+// import GeometricLoadingScreen from './components/GeometricLoadingScreen';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -14,20 +14,20 @@ import Footer from './components/Footer';
 import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Enhanced loading experience with realistic timing
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 5000); // Extended for cosmic loading experience
+  // useEffect(() => {
+  //   // Enhanced loading experience with realistic timing
+  //   const timer = setTimeout(() => {
+  //     setLoading(false);
+  //   }, 5000); // Extended for cosmic loading experience
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
-  if (loading) {
-    return <GeometricLoadingScreen />;
-  }
+  // if (loading) {
+  //   return <GeometricLoadingScreen />;
+  // }
 
   return (
     <ThemeProvider defaultTheme="dark">
