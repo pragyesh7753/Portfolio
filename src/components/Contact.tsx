@@ -9,6 +9,7 @@ import { Textarea } from './ui/textarea';
 import { useToast } from './ui/use-toast';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import emailjs from '@emailjs/browser';
 
 interface FormData {
   name: string;
@@ -211,9 +212,19 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      // Send email using EmailJS
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
       toast({
         title: "Message sent successfully! 🎉",
         description: "Thank you for reaching out. I'll get back to you within 24 hours.",
