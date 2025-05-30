@@ -15,15 +15,24 @@ import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhance
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [, setError] = useState(false);
 
   useEffect(() => {
-    // Enhanced loading experience with realistic timing
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 5000); // Extended for cosmic loading experience
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
+
+  if (loading) {
+    try {
+      return <GeometricLoadingScreen />;
+    } catch (e) {
+      console.error("Loading screen error:", e);
+      setError(true);
+    }
+  }
 
   return (
     <ThemeProvider defaultTheme="dark">
@@ -41,12 +50,6 @@ function App() {
           </Routes>
           <Footer />
           <Toaster />
-          {/* Show loading overlay above all content */}
-          {loading && (
-            <div className="fixed inset-0 z-[9999]">
-              <GeometricLoadingScreen />
-            </div>
-          )}
         </div>
       </Router>
     </ThemeProvider>
