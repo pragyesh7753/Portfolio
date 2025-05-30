@@ -9,22 +9,36 @@ const Home = () => {
   const isInView = useInView(heroRef, { once: true, margin: "-100px" });
   const { scrollY } = useScroll();
   
-  // Enhanced parallax effects
-  const backgroundY = useTransform(scrollY, [0, 800], [0, 200]);
-  const textY = useTransform(scrollY, [0, 600], [0, -100]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+  // Detect mobile devices for performance optimization
+  const [isMobile, setIsMobile] = useState(false);
   
-  // Mouse tracking for interactive elements
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Simplified parallax effects - reduced for mobile
+  const backgroundY = useTransform(scrollY, [0, 800], [0, isMobile ? 50 : 200]);
+  const textY = useTransform(scrollY, [0, 600], [0, isMobile ? -25 : -100]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.9]);
+  
+  // Reduced mouse tracking - disabled on mobile
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
+  const springConfig = { stiffness: 50, damping: 25, mass: 0.5 };
+  const springX = useSpring(mouseX, springConfig);
+  const springY = useSpring(mouseY, springConfig);
 
-  // Transform values for style usage
-  const springXTransform = useTransform(springX, value => value * -0.5);
-  const springYTransform = useTransform(springY, value => value * -0.5);
-  const profileSpringX = useTransform(springX, value => value * 0.1);
-  const profileSpringY = useTransform(springY, value => value * 0.1);
+  // Simplified transform values
+  const springXTransform = useTransform(springX, value => isMobile ? 0 : value * -0.2);
+  const springYTransform = useTransform(springY, value => isMobile ? 0 : value * -0.2);
+  const profileSpringX = useTransform(springX, value => isMobile ? 0 : value * 0.05);
+  const profileSpringY = useTransform(springY, value => isMobile ? 0 : value * 0.05);
   
   // Typing animation state
   const [displayText, setDisplayText] = useState('');
@@ -34,38 +48,40 @@ const Home = () => {
   // Enhanced stats animation
   const [stats, setStats] = useState({ projects: 0, experience: 0, technologies: 0 });
   
-  // Mouse move handler for interactive effects - memoized to prevent unnecessary re-renders
+  // Optimized mouse move handler - disabled on mobile
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isMobile) return;
+    
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect && rect.width > 0 && rect.height > 0) {
-      mouseX.set((e.clientX - rect.left - rect.width / 2) / 20);
-      mouseY.set((e.clientY - rect.top - rect.height / 2) / 20);
+      mouseX.set((e.clientX - rect.left - rect.width / 2) / 40);
+      mouseY.set((e.clientY - rect.top - rect.height / 2) / 40);
     }
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
 
-  // Fixed typing animation with proper cleanup
+  // Optimized typing animation
   useEffect(() => {
     if (isInView && currentIndex < fullName.length) {
       const timer = setTimeout(() => {
         setDisplayText(fullName.slice(0, currentIndex + 1));
         setCurrentIndex(currentIndex + 1);
-      }, 80);
+      }, isMobile ? 100 : 80);
       
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, fullName.length, isInView]); // Fixed: added fullName.length dependency
+  }, [currentIndex, fullName.length, isInView, isMobile]);
   
-  // Fixed stats animation with proper cleanup
+  // Optimized stats animation
   useEffect(() => {
     if (isInView) {
-      const duration = 2500;
-      const steps = 60;
+      const duration = isMobile ? 1500 : 2500;
+      const steps = isMobile ? 30 : 60;
       const stepTime = duration / steps;
       
       let step = 0;
       const timer = setInterval(() => {
         const progress = step / steps;
-        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const easeOut = 1 - Math.pow(1 - progress, 2);
         setStats({
           projects: Math.floor(easeOut * 5),
           experience: Math.floor(easeOut * 1),
@@ -78,35 +94,35 @@ const Home = () => {
       
       return () => clearInterval(timer);
     }
-  }, [isInView]);
+  }, [isInView, isMobile]);
 
-  // Memoized animation variants to prevent recreation on each render
+  // Optimized animation variants
   const container = useMemo(() => ({
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: isMobile ? 0.05 : 0.1,
+        delayChildren: isMobile ? 0.1 : 0.2
       }
     }
-  }), []);
+  }), [isMobile]);
 
   const item = useMemo(() => ({
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    hidden: { opacity: 0, y: isMobile ? 15 : 30, scale: 0.95 },
     show: { 
       opacity: 1, 
       y: 0, 
       scale: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 15
+        stiffness: isMobile ? 150 : 100,
+        damping: isMobile ? 20 : 15
       }
     }
-  }), []);
+  }), [isMobile]);
 
-  // Memoized social links to prevent recreation
+  // Simplified social links
   const socialLinks = useMemo(() => [
     { 
       href: "https://github.com/pragyesh7753", 
@@ -116,8 +132,7 @@ const Home = () => {
         </svg>
       ),
       label: "GitHub", 
-      color: "hover:text-purple-400",
-      hoverColor: "hover:bg-purple-500/20"
+      color: "hover:text-purple-400"
     },
     { 
       href: "https://www.linkedin.com/in/pragyesh77", 
@@ -127,8 +142,7 @@ const Home = () => {
         </svg>
       ),
       label: "LinkedIn", 
-      color: "hover:text-blue-400",
-      hoverColor: "hover:bg-blue-500/20"
+      color: "hover:text-blue-400"
     },
     { 
       href: "mailto:spragyesh86@gmail.com", 
@@ -139,12 +153,11 @@ const Home = () => {
         </svg>
       ),
       label: "Email", 
-      color: "hover:text-violet-400",
-      hoverColor: "hover:bg-violet-500/20"
+      color: "hover:text-violet-400"
     }
   ], []);
 
-  // Memoized stats data to prevent recreation
+  // Optimized stats data
   const statsData = useMemo(() => [
     { value: stats.projects, label: "Projects", color: "text-blue-400", delay: 0.5 },
     { value: stats.experience, label: "Years", color: "text-violet-400", delay: 0.6 },
@@ -157,291 +170,194 @@ const Home = () => {
       window.dispatchEvent(new PopStateEvent('popstate'));
     } catch (error) {
       console.error('Navigation error:', error);
-      // Fallback to location change
       window.location.href = '/contact';
     }
   }, []);
 
-  // Memoized particle positions to prevent recalculation
+  // Reduced particle counts for better performance
+  const particleCount = isMobile ? 4 : 8;
   const particlePositions = useMemo(() => 
-    Array.from({ length: 12 }, () => ({
+    Array.from({ length: particleCount }, () => ({
       top: Math.random() * 100,
       left: Math.random() * 100,
     }))
-  , []);
+  , [particleCount]);
 
-  // Memoized floating element positions
+  const floatingCount = isMobile ? 3 : 6;
   const floatingPositions = useMemo(() => 
-    Array.from({ length: 8 }, (_, i) => ({
-      top: 20 + (i * 10),
-      left: 15 + (i * 8),
+    Array.from({ length: floatingCount }, (_, i) => ({
+      top: 20 + (i * 15),
+      left: 15 + (i * 12),
     }))
-  , []);
+  , [floatingCount]);
 
-  // Memoized profile particles
+  const profileParticleCount = isMobile ? 3 : 6;
   const profileParticles = useMemo(() => 
-    Array.from({ length: 6 }, (_, i) => ({
-      // Increase the radius so particles are outside the avatar ring
-      top: 50 + Math.sin((i / 6) * 2 * Math.PI) * 60,  // center at 50%, radius 60%
-      left: 50 + Math.cos((i / 6) * 2 * Math.PI) * 60,
+    Array.from({ length: profileParticleCount }, (_, i) => ({
+      top: 50 + Math.sin((i / profileParticleCount) * 2 * Math.PI) * 60,
+      left: 50 + Math.cos((i / profileParticleCount) * 2 * Math.PI) * 60,
     }))
-  , []);
+  , [profileParticleCount]);
 
   return (
     <div 
       ref={containerRef}
       onMouseMove={handleMouseMove}
       className="flex items-center justify-center w-full min-h-screen relative overflow-hidden"
+      style={{ willChange: 'transform' }}
       role="main"
       aria-label="Home page"
     >
-      {/* Enhanced theme-adaptive animated background */}
+      {/* Simplified animated background */}
       <motion.div 
-        style={{ y: backgroundY, opacity }}
+        style={{ y: backgroundY, opacity, willChange: 'transform' }}
         className="absolute inset-0"
         aria-hidden="true"
       >
-        {/* Base theme-adaptive gradient */}
+        {/* Base gradient - simplified for mobile */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/80 to-violet-50/60 dark:from-slate-950 dark:via-blue-950/50 dark:to-violet-950/30" />
         
-        {/* Secondary gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-100/40 via-transparent to-purple-100/30 dark:from-indigo-900/20 dark:via-transparent dark:to-purple-900/15" />
+        {/* Reduced gradient orbs count for mobile */}
+        {!isMobile && (
+          <>
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.2, 0.8, 1],
+                rotate: [0, 180, 360],
+                x: [0, 30, -20, 0],
+                y: [0, -25, 15, 0]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-1/6 left-1/6 w-48 h-48 lg:w-64 lg:h-64 bg-gradient-to-r from-blue-200/40 via-cyan-200/30 to-purple-200/35 dark:from-blue-400/20 dark:via-cyan-500/15 dark:to-purple-600/18 rounded-full blur-3xl"
+              style={{ willChange: 'transform' }}
+            />
+            
+            <motion.div 
+              animate={{ 
+                scale: [0.8, 1.3, 1, 1.1, 0.8],
+                rotate: [360, 180, 0],
+                x: [0, -40, 25, 0],
+                y: [0, 20, -30, 0]
+              }}
+              transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+              className="absolute bottom-1/6 right-1/6 w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-violet-200/30 via-fuchsia-200/20 to-pink-200/30 dark:from-violet-400/15 dark:via-fuchsia-500/10 dark:to-pink-600/15 rounded-full blur-3xl"
+              style={{ willChange: 'transform' }}
+            />
+          </>
+        )}
         
-        {/* Radial spotlight effect */}
-        <div className="absolute inset-0 bg-gradient-radial from-white/60 via-transparent to-transparent dark:from-slate-900/40 dark:via-transparent dark:to-transparent" />
+        {/* Single gradient orb for mobile */}
+        {isMobile && (
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/4 left-1/4 right-1/4 bottom-1/4 bg-gradient-to-br from-blue-200/30 via-violet-200/20 to-purple-200/25 dark:from-blue-400/15 dark:via-violet-500/10 dark:to-purple-600/12 rounded-full blur-3xl"
+            style={{ willChange: 'transform' }}
+          />
+        )}
         
-        {/* Dynamic theme-adaptive gradient orbs */}
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 0.8, 1],
-            rotate: [0, 180, 360],
-            x: [0, 50, -30, 0],
-            y: [0, -40, 20, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/6 left-1/6 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-blue-200/60 via-cyan-200/40 to-purple-200/50 dark:from-blue-400/30 dark:via-cyan-500/20 dark:to-purple-600/25 rounded-full blur-3xl"
-        />
+        {/* Simplified floating shapes - reduced for mobile */}
+        {!isMobile && (
+          <>
+            <motion.div 
+              style={{ x: springX, y: springY, willChange: 'transform' }}
+              animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
+              transition={{ 
+                rotate: { duration: 15, repeat: Infinity, ease: "linear" },
+                scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="absolute top-1/5 right-1/4 w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-emerald-200/15 to-teal-300/20 dark:from-emerald-400/6 dark:to-teal-600/8 rounded-lg backdrop-blur-sm border border-white/10"
+            />
+            
+            <motion.div 
+              style={{ x: springXTransform, y: springYTransform, willChange: 'transform' }}
+              animate={{ rotate: [360, 0], scale: [0.8, 1.2, 1, 0.8] }}
+              transition={{ 
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                scale: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }
+              }}
+              className="absolute bottom-1/4 left-1/3 w-20 h-20 lg:w-28 lg:h-28 bg-gradient-to-br from-orange-200/20 via-red-200/15 to-pink-300/20 dark:from-orange-400/8 dark:via-red-500/6 dark:to-pink-600/8 rounded-2xl backdrop-blur-sm border border-white/10"
+            />
+          </>
+        )}
         
-        <motion.div 
-          animate={{ 
-            scale: [0.8, 1.5, 1, 1.3, 0.8],
-            rotate: [360, 180, 0],
-            x: [0, -60, 40, 0],
-            y: [0, 30, -50, 0]
-          }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
-          className="absolute bottom-1/6 right-1/6 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-gradient-to-r from-violet-200/40 via-fuchsia-200/30 to-pink-200/40 dark:from-violet-400/20 dark:via-fuchsia-500/15 dark:to-pink-600/20 rounded-full blur-3xl"
-        />
-        
-        <motion.div 
-          animate={{ 
-            scale: [1.2, 0.6, 1.4, 1.2],
-            rotate: [0, -270, -360],
-            x: [0, 70, -50, 0],
-            y: [0, -20, 40, 0]
-          }}
-          transition={{ duration: 35, repeat: Infinity, ease: "easeInOut", delay: 10 }}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72 bg-gradient-to-r from-cyan-200/30 via-emerald-200/20 to-blue-200/30 dark:from-cyan-400/15 dark:via-emerald-400/10 dark:to-blue-600/15 rounded-full blur-3xl"
-        />
-        
-        {/* Additional theme-adaptive gradient layers */}
-        <motion.div 
-          animate={{ 
-            scale: [0.5, 1.8, 0.7, 1.2, 0.5],
-            rotate: [0, 90, 270, 360],
-            opacity: [0.2, 0.6, 0.3, 0.5, 0.2]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-1/4 right-1/3 w-56 h-56 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-indigo-200/40 via-purple-200/30 to-pink-200/40 dark:from-indigo-400/20 dark:via-purple-500/15 dark:to-pink-400/20 rounded-full blur-3xl"
-        />
-        
-        <motion.div 
-          animate={{ 
-            scale: [1.5, 0.4, 1.8, 0.8, 1.5],
-            rotate: [180, 0, 360, 180],
-            opacity: [0.15, 0.5, 0.25, 0.4, 0.15]
-          }}
-          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 8 }}
-          className="absolute bottom-1/3 left-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 bg-gradient-to-r from-teal-200/36 via-cyan-200/24 to-blue-200/36 dark:from-teal-400/18 dark:via-cyan-500/12 dark:to-blue-500/18 rounded-full blur-3xl"
-        />
-        
-        {/* Floating geometric shapes with theme adaptation */}
-        <motion.div 
-          style={{ x: springX, y: springY }}
-          animate={{ 
-            rotate: [0, 360],
-            scale: [1, 1.2, 0.8, 1]
-          }}
-          transition={{ 
-            rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" }
-          }}
-          className="absolute top-1/5 right-1/4 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24"
-        >
-          <div className="w-full h-full bg-gradient-to-br from-emerald-200/20 to-teal-300/30 dark:from-emerald-400/8 dark:to-teal-600/12 rounded-lg backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl" />
-        </motion.div>
-        
-        <motion.div 
-          style={{ x: springXTransform, y: springYTransform }}
-          animate={{ 
-            rotate: [360, 0],
-            scale: [0.8, 1.5, 1, 0.8],
-            borderRadius: ["20%", "50%", "30%", "20%"]
-          }}
-          transition={{ 
-            rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-            scale: { duration: 12, repeat: Infinity, ease: "easeInOut", delay: 3 },
-            borderRadius: { duration: 15, repeat: Infinity, ease: "easeInOut" }
-          }}
-          className="absolute bottom-1/4 left-1/3 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-orange-200/25 via-red-200/20 to-pink-300/30 dark:from-orange-400/10 dark:via-red-500/8 dark:to-pink-600/12 backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl"
-        />
-        
-        <motion.div 
-          style={{ x: profileSpringX, y: profileSpringY }}
-          animate={{ 
-            rotate: [0, -360],
-            scale: [1.2, 0.6, 1.4, 1.2],
-            skewX: [0, 10, -10, 0]
-          }}
-          transition={{ 
-            rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-            scale: { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
-            skewX: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-          }}
-          className="absolute top-2/3 right-1/5 w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 bg-gradient-to-br from-violet-200/30 via-purple-200/20 to-fuchsia-300/30 dark:from-violet-400/12 dark:via-purple-500/8 dark:to-fuchsia-600/12 rounded-full backdrop-blur-sm border border-white/20 dark:border-white/5 shadow-xl dark:shadow-2xl"
-        />
-        
-        {/* Theme-adaptive particle system */}
+        {/* Optimized particle system */}
         {particlePositions.map((position, i) => (
           <motion.div
             key={`particle-${i}`}
-            className="absolute w-2 h-2 bg-gradient-to-r from-blue-300/60 to-violet-300/60 dark:from-blue-400/40 dark:to-violet-500/40 rounded-full shadow-sm"
+            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-blue-300/40 to-violet-300/40 dark:from-blue-400/30 dark:to-violet-500/30 rounded-full"
             style={{
               top: `${position.top}%`,
               left: `${position.left}%`,
+              willChange: 'transform'
             }}
             animate={{
-              y: [0, -100, 0],
-              x: [0, Math.sin(i) * 50, 0],
-              opacity: [0, 0.8, 0],
-              scale: [0.5, 1.5, 0.5]
+              y: [0, -60, 0],
+              opacity: [0, 0.6, 0],
+              scale: [0.5, 1.2, 0.5]
             }}
             transition={{
-              duration: 8 + i * 0.5,
+              duration: isMobile ? 4 + i * 0.3 : 6 + i * 0.4,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.8
+              delay: i * 0.6
             }}
           />
         ))}
         
-        {/* Theme-adaptive interactive floating elements */}
-        {floatingPositions.map((position, i) => (
+        {/* Simplified floating elements */}
+        {!isMobile && floatingPositions.map((position, i) => (
           <motion.div
             key={`float-${i}`}
-            className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-gradient-to-r from-cyan-300/80 to-blue-300/80 dark:from-cyan-400/60 dark:to-blue-500/60 rounded-full shadow-lg"
+            className="absolute w-1 h-1 bg-gradient-to-r from-cyan-300/60 to-blue-300/60 dark:from-cyan-400/40 dark:to-blue-500/40 rounded-full"
             style={{
               top: `${position.top}%`,
               left: `${position.left}%`,
               x: springX,
-              y: springY
+              y: springY,
+              willChange: 'transform'
             }}
             animate={{
-              y: [0, -30, 0],
-              x: [0, Math.cos(i * 45) * 20, 0],
-              opacity: [0.3, 1, 0.3],
-              scale: [0.8, 1.4, 0.8]
+              y: [0, -20, 0],
+              opacity: [0.3, 0.8, 0.3],
+              scale: [0.8, 1.2, 0.8]
             }}
             transition={{
-              duration: 6 + i * 0.3,
+              duration: 4 + i * 0.2,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.4
+              delay: i * 0.3
             }}
           />
         ))}
         
-        {/* Enhanced theme-adaptive grid pattern overlay */}
+        {/* Simplified grid overlay */}
         <motion.div 
-          animate={{ 
-            opacity: [0.05, 0.15, 0.05],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0"
+          animate={{ opacity: [0.03, 0.08, 0.03] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 opacity-20 dark:opacity-10"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(99, 102, 241, 0.15) 1px, transparent 1px)
+              linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px',
-            filter: 'contrast(1.2) brightness(0.9)',
+            backgroundSize: isMobile ? '30px 30px' : '40px 40px',
           }}
         />
         
-        {/* Theme-adaptive radial gradient overlay with animation */}
-        <motion.div 
-          animate={{ 
-            background: [
-              "radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)",
-              "radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)"
-            ]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 dark:opacity-70"
-        />
-        
-        {/* Theme-adaptive depth layers */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/20 dark:from-background/20 dark:via-transparent dark:to-background/10" />
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-50/20 to-transparent dark:from-transparent dark:via-primary/3 dark:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-blue-100/10 to-transparent dark:from-transparent dark:via-blue-500/5 dark:to-transparent" />
-        
-        {/* Subtle texture overlay that adapts to theme */}
-        <motion.div 
-          animate={{ 
-            opacity: [0.03, 0.08, 0.03]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 opacity-20 dark:opacity-10 mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
-        
-        {/* Light theme specific elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/30 dark:hidden" />
-        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/40 via-transparent to-violet-50/20 dark:hidden" />
-        
-        {/* Dark theme specific elements */}
-        <div className="hidden dark:block absolute inset-0 bg-gradient-to-br from-slate-900/80 via-transparent to-slate-800/40" />
-        <div className="hidden dark:block absolute inset-0 bg-gradient-to-tl from-blue-900/30 via-transparent to-purple-900/20" />
-        
-        {/* Theme-adaptive dotted pattern */}
-        <motion.div 
-          animate={{ 
-            opacity: [0.1, 0.3, 0.1],
-            scale: [1, 1.05, 1]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.3) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-            backgroundPosition: '20px 20px',
-          }}
-        />
-        
-        {/* Final overlay for perfect theme integration */}
-        <div className="absolute inset-0 bg-white/10 dark:bg-slate-900/10 backdrop-blur-[0.5px]" />
+        {/* Theme overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-white/10 dark:from-background/15 dark:via-transparent dark:to-background/8" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/15" />
       </motion.div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 sm:py-20 lg:py-24 relative z-10">
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
           <motion.div 
             ref={heroRef}
-            style={{ y: textY }}
+            style={{ y: textY, willChange: 'transform' }}
             className="text-left order-2 md:order-1"
             initial="hidden"
             animate="show"
@@ -450,19 +366,17 @@ const Home = () => {
             {/* Badge */}
             <motion.div 
               variants={item} 
-              className="inline-flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 py-1.5 sm:py-2 px-3 sm:px-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-primary text-xs font-medium shadow-2xl"
-              whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              role="status"
-              aria-label="Professional status"
+              className="inline-flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 py-1.5 sm:py-2 px-3 sm:px-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-primary text-xs font-medium shadow-xl"
+              whileHover={!isMobile ? { scale: 1.05, y: -2 } : {}}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              style={{ willChange: 'transform' }}
             >
-              {/* Sparkle icon */}
               <motion.svg 
                 className="h-3 w-3 sm:h-4 sm:w-4"
                 viewBox="0 0 24 24"
                 fill="none"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                animate={!isMobile ? { rotate: 360 } : {}}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               >
                 <path 
                   d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z" 
@@ -473,14 +387,13 @@ const Home = () => {
               <span className="bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent font-semibold">
                 Full Stack Developer
               </span>
-              {/* Code icon */}
               <motion.svg 
                 className="h-3 w-3 sm:h-4 sm:w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
-                animate={{ scale: [1, 1.1, 1] }}
+                animate={!isMobile ? { scale: [1, 1.1, 1] } : {}}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
                 <polyline points="16,18 22,12 16,6" />
@@ -492,8 +405,6 @@ const Home = () => {
             <motion.h1 
               variants={item} 
               className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 sm:mb-8 tracking-tight leading-none"
-              role="heading"
-              aria-level={1}
             >
               <span className="block text-foreground/90">
                 Hi, I'm {displayText}
@@ -511,7 +422,7 @@ const Home = () => {
               I craft{' '}
               <motion.span 
                 className="text-blue-400 font-bold relative"
-                whileHover={{ scale: 1.05 }}
+                whileHover={!isMobile ? { scale: 1.05 } : {}}
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 accessible
@@ -524,7 +435,7 @@ const Home = () => {
               </motion.span>,{' '}
               <motion.span 
                 className="text-violet-400 font-bold relative"
-                whileHover={{ scale: 1.05 }}
+                whileHover={!isMobile ? { scale: 1.05 } : {}}
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 responsive
@@ -537,7 +448,7 @@ const Home = () => {
               </motion.span> and{' '}
               <motion.span 
                 className="text-purple-400 font-bold relative"
-                whileHover={{ scale: 1.05 }}
+                whileHover={!isMobile ? { scale: 1.05 } : {}}
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 high-performance
@@ -554,23 +465,21 @@ const Home = () => {
             {/* Stats section */}
             <motion.div 
               variants={item} 
-              className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl"
-              role="region"
-              aria-label="Statistics"
+              className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl"
             >
               {statsData.map((stat) => (
                 <motion.div 
                   key={stat.label}
                   className="text-center relative"
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  whileHover={!isMobile ? { scale: 1.05, y: -3 } : {}}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  style={{ willChange: 'transform' }}
                 >
                   <motion.div 
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
-                    transition={{ delay: stat.delay, type: "spring", stiffness: 200, damping: 15 }}
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
+                    transition={{ delay: stat.delay, type: "spring", stiffness: 150, damping: 15 }}
                     className={`text-xl sm:text-2xl lg:text-3xl font-black ${stat.color} mb-1`}
-                    aria-label={`${stat.value} ${stat.label}`}
                   >
                     {stat.value}+
                   </motion.div>
@@ -579,7 +488,7 @@ const Home = () => {
                     className={`absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-4 sm:w-6 h-0.5 ${stat.color.replace('text-', 'bg-')} rounded-full`}
                     initial={{ scaleX: 0 }}
                     animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-                    transition={{ delay: stat.delay + 0.5, duration: 0.5 }}
+                    transition={{ delay: stat.delay + 0.3, duration: 0.4 }}
                   />
                 </motion.div>
               ))}
@@ -588,19 +497,22 @@ const Home = () => {
             {/* Action buttons */}
             <motion.div variants={item} className="flex flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8">
               <motion.div
-                whileHover={{ scale: 1.05, y: -3 }}
+                whileHover={!isMobile ? { scale: 1.05, y: -2 } : {}}
                 whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ willChange: 'transform' }}
               >
                 <Button
-                  className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-violet-600 to-purple-600 hover:from-blue-600 hover:via-violet-700 hover:to-purple-700 text-white px-4 sm:px-6 py-2 sm:py-3 h-auto text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl shadow-2xl border-0"
+                  className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-violet-600 to-purple-600 hover:from-blue-600 hover:via-violet-700 hover:to-purple-700 text-white px-4 sm:px-6 py-2 sm:py-3 h-auto text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl shadow-xl border-0"
                   onClick={handleContactClick}
                 >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg sm:rounded-xl blur-xl opacity-50"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  />
+                  {!isMobile && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg sm:rounded-xl blur-xl opacity-30"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  )}
                   <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                     Let's Connect
                     <motion.svg
@@ -609,7 +521,7 @@ const Home = () => {
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
-                      animate={{ x: [0, 3, 0] }}
+                      animate={!isMobile ? { x: [0, 2, 0] } : {}}
                       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                     >
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -620,19 +532,17 @@ const Home = () => {
               </motion.div>
               
               <motion.div
-                whileHover={{ scale: 1.05, y: -3 }}
+                whileHover={!isMobile ? { scale: 1.05, y: -2 } : {}}
                 whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ willChange: 'transform' }}
               >
                 <Button
                   variant="outline"
                   className="relative overflow-hidden bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10 px-4 sm:px-6 py-2 sm:py-3 h-auto text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl shadow-xl"
                   asChild
                 >
-                  <a
-                    href="/resume.pdf"
-                    download="Pragyesh_Kumar_Seth_Resume.pdf"
-                  >
+                  <a href="/resume.pdf" download="Pragyesh_Kumar_Seth_Resume.pdf">
                     <span className="flex items-center gap-1 sm:gap-2">
                       <motion.svg
                         className="h-3 w-3 sm:h-4 sm:w-4"
@@ -640,7 +550,7 @@ const Home = () => {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        animate={{ y: [0, -3, 0] }}
+                        animate={!isMobile ? { y: [0, -2, 0] } : {}}
                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                       >
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -662,49 +572,38 @@ const Home = () => {
                   href={social.href}
                   target={social.href.startsWith('http') ? '_blank' : undefined}
                   rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className={`relative p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 text-muted-foreground ${social.color} ${social.hoverColor} transition-all duration-500 group shadow-xl`}
-                  whileHover={{ 
+                  className={`relative p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 text-muted-foreground ${social.color} transition-all duration-300 shadow-xl`}
+                  whileHover={!isMobile ? { 
                     scale: 1.1, 
-                    y: -6,
-                    rotateZ: 5
-                  }}
+                    y: -4,
+                    rotateZ: 3
+                  } : {}}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ 
-                    delay: 0.8 + index * 0.1,
+                    delay: 0.6 + index * 0.1,
                     type: "spring", 
-                    stiffness: 400, 
-                    damping: 25 
+                    stiffness: 300, 
+                    damping: 20 
                   }}
-                  aria-label={`Visit my ${social.label} profile`}
+                  style={{ willChange: 'transform' }}
                 >
-                  <motion.div
-                    className="absolute inset-0 rounded-lg sm:rounded-xl bg-gradient-to-r from-current/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    initial={false}
-                  />
-                  <motion.span 
-                    className="relative z-10 block group-hover:scale-110 transition-transform duration-300"
-                    animate={{ rotate: [0, 5, -5, 0] }}
-                    transition={{ 
-                      duration: 4, 
-                      repeat: Infinity, 
-                      ease: "easeInOut",
-                      delay: index * 0.5
-                    }}
-                  >
+                  <span className="relative z-10 block">
                     <div className="h-4 w-4 sm:h-5 sm:w-5">
                       {social.icon}
                     </div>
-                  </motion.span>
+                  </span>
                   
-                  <motion.div
-                    className="absolute -top-8 sm:-top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap"
-                    initial={{ y: 10, opacity: 0 }}
-                    whileHover={{ y: 0, opacity: 1 }}
-                  >
-                    {social.label}
-                  </motion.div>
+                  {!isMobile && (
+                    <motion.div
+                      className="absolute -top-8 sm:-top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap"
+                      initial={{ y: 5, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1 }}
+                    >
+                      {social.label}
+                    </motion.div>
+                  )}
                 </motion.a>
               ))}
             </motion.div>
@@ -713,104 +612,101 @@ const Home = () => {
           {/* Profile section */}
           <div className="flex justify-center md:justify-end items-center order-1 md:order-2">
             <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.8 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.3, type: "spring", stiffness: 100 }}
+              transition={{ duration: 0.6, delay: 0.2, type: "spring", stiffness: 120 }}
               className="relative"
-              style={{ x: profileSpringX, y: profileSpringY }}
+              style={{ x: profileSpringX, y: profileSpringY, willChange: 'transform' }}
             >
-              {/* Rotating rings */}
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-8 sm:-inset-12 lg:-inset-16 rounded-full bg-gradient-to-r from-blue-500/25 via-transparent to-violet-500/25 blur-2xl"
-              />
-              <motion.div 
-                animate={{ rotate: -360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-6 sm:-inset-10 lg:-inset-14 rounded-full bg-gradient-to-r from-violet-500/20 via-transparent to-purple-500/20 blur-xl"
-              />
-              <motion.div 
-                animate={{ rotate: 360, scale: [1, 1.05, 1] }}
-                transition={{ 
-                  rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute -inset-4 sm:-inset-8 lg:-inset-12 rounded-full bg-gradient-to-r from-cyan-400/15 via-blue-500/10 to-purple-600/15 blur-2xl"
-              />
+              {/* Simplified rotating rings for mobile */}
+              {!isMobile ? (
+                <>
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute -inset-6 sm:-inset-10 lg:-inset-14 rounded-full bg-gradient-to-r from-blue-500/20 via-transparent to-violet-500/20 blur-2xl"
+                    style={{ willChange: 'transform' }}
+                  />
+                  <motion.div 
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                    className="absolute -inset-4 sm:-inset-8 lg:-inset-12 rounded-full bg-gradient-to-r from-violet-500/15 via-transparent to-purple-500/15 blur-xl"
+                    style={{ willChange: 'transform' }}
+                  />
+                </>
+              ) : (
+                <motion.div 
+                  animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-500/20 via-violet-500/15 to-purple-500/20 blur-xl"
+                  style={{ willChange: 'transform' }}
+                />
+              )}
               
               {/* Profile avatar */}
               <motion.div
-                className="relative p-2 sm:p-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                className="relative p-2 sm:p-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl"
+                whileHover={!isMobile ? { scale: 1.05 } : {}}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                style={{ willChange: 'transform' }}
               >
                 <ProfileAvatar 
                   src="/images/profile.jpg"
                   alt="Pragyesh Kumar Seth" 
                   size="xl"
-                  className="shadow-2xl ring-4 sm:ring-6 ring-white/20 relative z-10 rounded-full w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80"
+                  className="shadow-xl ring-4 sm:ring-6 ring-white/20 relative z-10 rounded-full w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80"
                 />
               </motion.div>
               
-              {/* Floating elements */}
+              {/* Simplified floating elements */}
               <motion.div
                 animate={{ 
-                  y: [0, -20, 0],
-                  rotate: [0, 15, 0],
-                  scale: [1, 1.1, 1]
+                  y: [0, isMobile ? -10 : -15, 0],
+                  rotate: [0, isMobile ? 8 : 12, 0],
+                  scale: [1, isMobile ? 1.05 : 1.1, 1]
                 }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-400 to-violet-500 rounded-lg sm:rounded-xl shadow-2xl flex items-center justify-center"
+                transition={{ duration: isMobile ? 2.5 : 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-3 sm:-top-4 -right-3 sm:-right-4 w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-400 to-violet-500 rounded-lg shadow-xl flex items-center justify-center"
+                style={{ willChange: 'transform' }}
               >
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  className="text-white text-base sm:text-lg lg:text-xl"
-                >
-                  ⚡
-                </motion.span>
+                <span className="text-white text-sm sm:text-base">⚡</span>
               </motion.div>
               
               <motion.div
                 animate={{ 
-                  y: [0, 15, 0],
-                  rotate: [0, -15, 0],
-                  scale: [1, 1.2, 1]
+                  y: [0, isMobile ? 8 : 12, 0],
+                  rotate: [0, isMobile ? -8 : -12, 0],
+                  scale: [1, isMobile ? 1.08 : 1.15, 1]
                 }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-                className="absolute -bottom-2 sm:-bottom-3 -left-6 sm:-left-8 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-violet-400 to-purple-500 rounded-lg sm:rounded-xl shadow-2xl flex items-center justify-center"
+                transition={{ duration: isMobile ? 3 : 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute -bottom-2 sm:-bottom-3 -left-4 sm:-left-6 w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-violet-400 to-purple-500 rounded-lg shadow-xl flex items-center justify-center"
+                style={{ willChange: 'transform' }}
               >
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="text-white text-base sm:text-lg"
-                >
-                  🚀
-                </motion.span>
+                <span className="text-white text-sm sm:text-base">🚀</span>
               </motion.div>
               
               {/* Optimized floating particles */}
               {profileParticles.map((particle, i) => (
                 <motion.div
                   key={`profile-particle-${i}`}
-                  className="absolute w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full pointer-events-none"
+                  className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-gradient-to-r from-blue-400 to-violet-500 rounded-full pointer-events-none"
                   style={{
                     top: `${particle.top}%`,
                     left: `${particle.left}%`,
-                    transform: 'translate(-50%, -50%)', // center the particle on the position
-                    zIndex: 1, // ensure it's below the avatar
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 1,
+                    willChange: 'transform'
                   }}
                   animate={{
-                    y: [0, -8, 0],
-                    opacity: [0.4, 1, 0.4],
-                    scale: [0.8, 1.2, 0.8]
+                    y: [0, isMobile ? -4 : -6, 0],
+                    opacity: [0.4, 0.8, 0.4],
+                    scale: [0.8, 1.1, 0.8]
                   }}
                   transition={{
-                    duration: 2 + i * 0.2,
+                    duration: isMobile ? 1.5 + i * 0.1 : 2 + i * 0.15,
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: i * 0.3
+                    delay: i * 0.2
                   }}
                 />
               ))}
