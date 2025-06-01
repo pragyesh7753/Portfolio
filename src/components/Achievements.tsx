@@ -36,6 +36,16 @@ const Achievements = () => {
     },
     {
       id: "cert-2",
+      title: "All India Online Aptitude Test 2025",
+      issuedBy: "Naukri Campus",
+      date: "May 2025",
+      imageUrl: "/images/certificates/aincat_2025_certificate.jpg",
+      driveUrl: "https://www.naukri.com/campus/certificates/naukri_campus_ai_ncat_achievemen_may_2025/v0/683a339c892c1f3133ab56ed?utm_source=certificate&utm_medium=copy&utm_campaign=683a339c892c1f3133ab56ed",
+      featured: true,
+      category: "competition"
+    },
+    {
+      id: "cert-3",
       title: "Innoviz - 2025",
       issuedBy: "St. Andrews Institute of Technology & Management",
       date: "April 2025",
@@ -45,7 +55,7 @@ const Achievements = () => {
       category: "competition"
     },
     {
-      id: "cert-3",
+      id: "cert-4",
       title: "Merit Performance Award",
       issuedBy: "St. Andrews Institute of Technology & Management",
       date: "November 2023",
@@ -55,7 +65,7 @@ const Achievements = () => {
       category: "academic"
     },
     {
-      id: "cert-4",
+      id: "cert-5",
       title: "Java Programming",
       issuedBy: "Great Learning",
       date: "December 2023",
@@ -65,7 +75,7 @@ const Achievements = () => {
       category: "development"
     },
     {
-      id: "cert-5",
+      id: "cert-6",
       title: "Bapu Bazaar Samman Patra",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
@@ -75,7 +85,7 @@ const Achievements = () => {
       category: "competition"
     },
     {
-      id: "cert-6",
+      id: "cert-7",
       title: "Voter Awareness Campaign",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
