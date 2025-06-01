@@ -293,8 +293,8 @@ const Contact = () => {
     {
       icon: <Phone className="w-6 h-6 text-primary" />,
       title: "Phone",
-      value: "+91 7753938370",
-      link: "tel:+917753938370",
+      value: "+91 7753847898",
+      link: "tel:+917753847898",
       description: "Available 9 AM - 6 PM IST",
       gradient: "from-green-500 to-emerald-500",
       bgColor: "bg-green-50 dark:bg-green-950/20"
