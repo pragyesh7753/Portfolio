@@ -72,7 +72,6 @@ const About = () => {
     { text: "Ranked at 1st position in Tech Quiz Competition", icon: <Sparkles className="w-5 h-5" />, color: "from-green-500 to-emerald-500" },
     { text: "Secured AIR 28th in All India Online Aptitude Test 2025", icon: <Award className="w-5 h-5" />, color: "from-rose-500 to-pink-500" },
     { text: "Secured 1st position in semester examinations", icon: <Zap className="w-5 h-5" />, color: "from-purple-500 to-pink-500" },
-    { text: "Published 3 open-source projects with 100+ stars", icon: <Star className="w-5 h-5" />, color: "from-indigo-500 to-blue-500" },
     { text: "Mentored 10+ junior developers", icon: <CheckCircle className="w-5 h-5" />, color: "from-teal-500 to-cyan-500" },
   ];
 
