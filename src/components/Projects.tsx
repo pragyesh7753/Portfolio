@@ -131,7 +131,7 @@ const Projects = () => {
       difficulty: "beginner",
       features: [
         "Smooth animations",
-        "Score tracking",
+        "Score trackin</CardTitle>g",
         "Multiple difficulty levels",
         "Responsive controls"
       ]
@@ -149,13 +149,45 @@ const Projects = () => {
       stars: 20,
       forks: 6,
       status: "completed",
-      difficulty: "advanced",
+      difficulty: "beginner",
       features: [
         "Modern design system",
         "Smooth animations",
         "Email integration",
         "SEO optimized",
         "Performance optimized"
+      ]
+    }
+    ,
+    {
+      id: "harmony-music-school",
+      title: "Harmony Music School",
+      description: "A modern music school platform built with Next.js and Aceternity UI.",
+      longDescription: "Harmony Music School is a web application designed to streamline music education. Built with Next.js for fast, SEO-friendly performance and Aceternity UI for a beautiful, accessible interface, it offers course management, scheduling, and student-teacher collaboration.",
+      tech: ["Next.js", "TypeScript", "Aceternity UI", "Tailwind CSS"],
+      category: "frontend",
+      liveUrl: "https://harmonyschool.pragyesh.tech/",
+      githubUrl: "https://github.com/pragyesh7753/Web_Development/tree/main/NEXT.js/Mini-Project/next-app",
+      featured: false,
+      stars: 1,
+      forks: 0,
+      status: "completed",
+      difficulty: "intermediate",
+      features: [
+        "Course and lesson management",
+        "Student and teacher dashboards",
+        "Responsive design with Aceternity UI",
+        "Event scheduling and notifications"
+      ],
+      challenges: [
+        "Integrating custom UI components with Aceternity UI",
+        "Ensuring accessibility and responsiveness",
+        "Optimizing Next.js performance for dynamic content"
+      ],
+      learnings: [
+        "Advanced Next.js routing and CSR",
+        "Component-driven development with Aceternity UI",
+        "Best practices for scalable frontend architecture"
       ]
     }
   ], []);
@@ -194,14 +226,14 @@ const Projects = () => {
     // Apply filters only if needed
     if (searchQuery || selectedCategory !== 'all' || selectedTech !== 'all') {
       filtered = projects.filter(project => {
-        const matchesSearch = !searchQuery || 
+        const matchesSearch = !searchQuery ||
           project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           project.tech.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
-          
+
         const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
         const matchesTech = selectedTech === 'all' || project.tech.includes(selectedTech);
-        
+
         return matchesSearch && matchesCategory && matchesTech;
       });
     }
@@ -230,7 +262,7 @@ const Projects = () => {
   }, [projects, searchQuery, selectedCategory, selectedTech, sortBy]);
 
   // Memoize featured projects
-  const featuredProjects = useMemo(() => 
+  const featuredProjects = useMemo(() =>
     projects.filter(p => p.featured), [projects]
   );
 
@@ -640,13 +672,13 @@ const Projects = () => {
           ) : (
             <>
               {/* All Projects Heading */}
-              <motion.div 
+              <motion.div
                 className="text-center mb-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >
-                <motion.h3 
+                <motion.h3
                   className="text-2xl md:text-3xl font-bold mb-4 flex items-center justify-center gap-3"
                   whileHover={{ scale: 1.02 }}
                 >
@@ -665,8 +697,8 @@ const Projects = () => {
                   </motion.div>
                 </motion.h3>
                 <p className="text-muted-foreground">
-                  {filteredAndSortedProjects.length === projects.length 
-                    ? `Complete collection of all projects` 
+                  {filteredAndSortedProjects.length === projects.length
+                    ? `Complete collection of all projects`
                     : `${filteredAndSortedProjects.length} projects matching your criteria`
                   }
                 </p>
@@ -766,19 +798,6 @@ const MemoizedProjectCard = memo(({ project, featured = false, viewMode = 'grid'
                       </Badge>
                     ))}
                   </div>
-
-                  {project.stars !== undefined && (
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3" />
-                        {project.stars}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Github className="h-3 w-3" />
-                        {project.forks} forks
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -869,22 +888,7 @@ const MemoizedProjectCard = memo(({ project, featured = false, viewMode = 'grid'
             {project.description}
           </CardDescription>
 
-          {project.stars !== undefined && (
-            <motion.div
-              className="flex items-center gap-4 text-xs text-muted-foreground mt-3"
-              initial={{ opacity: 0.7 }}
-              whileHover={{ opacity: 1 }}
-            >
-              <div className="flex items-center gap-1.5">
-                <Star className="h-3.5 w-3.5 text-yellow-500" />
-                <span className="font-medium">{project.stars}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
-                <span className="font-medium">{project.forks}</span>
-              </div>
-            </motion.div>
-          )}
+          {/* Removed stars and forks display here */}
         </CardHeader>
 
         <CardContent className="pb-4 relative z-10">
@@ -960,7 +964,7 @@ const MemoizedProjectCard = memo(({ project, featured = false, viewMode = 'grid'
 
 // Memoize floating elements to prevent unnecessary re-renders
 const MemoizedFloatingElements = memo(() => {
-  const elements = useMemo(() => 
+  const elements = useMemo(() =>
     Array.from({ length: 6 }, (_, i) => ({
       id: i,
       initialX: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1200,
