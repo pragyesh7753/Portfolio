@@ -18,9 +18,10 @@ This portfolio serves as a comprehensive showcase of my work, skills, and profes
 ## Technologies Used
 
 - HTML5 & CSS3
-- JavaScript
+- TypeScript
 - React
 - Tailwind CSS
+- Radix UI
 
 ## Installation
 
