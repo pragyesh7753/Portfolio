@@ -16,6 +16,7 @@ interface Certificate {
   driveUrl: string;
   featured: boolean;
   category?: string;  // Optional property for basic filtering
+  description: string; // Unique description for each certificate
 }
 
 const Achievements = () => {
@@ -32,7 +33,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.png",
       driveUrl: "https://learn.pwskills.com/certificate/fce1fcfd-7e97-4b7d-ad54-5e62ed63911c",
       featured: true,
-      category: "development"
+      category: "development",
+      description: "Completed an intensive Full Stack Web Development course covering MERN stack, REST APIs, authentication, and deployment. Demonstrated hands-on skills through multiple projects."
     },
     {
       id: "cert-2",
@@ -42,7 +44,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/python-programming.png",
       driveUrl: "https://moonshot.scaler.com/s/sl/QchAavjio8?_gl=1*v19d6i*_gcl_au*MTg3ODY3NDM4My4xNzUwMDU0NzU1*FPAU*MTEwNzg5NjY0OC4xNzUwMDU0NzU4*_ga*MTIyMTU5NzE4MC4xNzUwMDU0NzU0*_ga_53S71ZZG1X*czE3NTAwNjYwODQkbzIkZzEkdDE3NTAwNjY0NTkkajEkbDAkaDY1MTM5NzU0OQ..",
       featured: true,
-      category: "development"
+      category: "development",
+      description: "Successfully completed a comprehensive Python programming course, mastering core concepts, data structures, OOP, and real-world problem solving."
     },
     {
       id: "cert-3",
@@ -52,7 +55,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/aincat_2025_certificate.jpg",
       driveUrl: "https://www.naukri.com/campus/certificates/naukri_campus_ai_ncat_achievemen_may_2025/v0/683a339c892c1f3133ab56ed?utm_source=certificate&utm_medium=copy&utm_campaign=683a339c892c1f3133ab56ed",
       featured: true,
-      category: "competition"
+      category: "competition",
+      description: "Achieved distinction in the All India Online Aptitude Test, demonstrating strong analytical, logical reasoning, and quantitative skills at a national level."
     },
     {
       id: "cert-4",
@@ -62,7 +66,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/Innoviz-paticipation.jpg",
       driveUrl: "https://drive.google.com/file/d/10BadZlGjPAen5ArSRActyX7W1jjFP4TI/view?usp=drive_link",
       featured: true,
-      category: "competition"
+      category: "competition",
+      description: "Participated in Innoviz 2025, a college-level technical fest, showcasing innovative solutions and teamwork in various competitions."
     },
     {
       id: "cert-5",
@@ -72,7 +77,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/merit-performance.jpg",
       driveUrl: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view?usp=drive_link",
       featured: true,
-      category: "academic"
+      category: "academic",
+      description: "Received the Merit Performance Award for outstanding academic achievements and consistent high performance in university examinations."
     },
     {
       id: "cert-6",
@@ -82,7 +88,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/java-programming.jpg",
       driveUrl: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view?usp=drive_link",
       featured: true,
-      category: "development"
+      category: "development",
+      description: "Completed a Java programming course, gaining proficiency in core Java concepts, OOP, and application development."
     },
     {
       id: "cert-7",
@@ -92,7 +99,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/bapu-bazaar.jpg",
       driveUrl: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view?usp=sharing",
       featured: false,
-      category: "competition"
+      category: "competition",
+      description: "Awarded the Bapu Bazaar Samman Patra for active participation and contribution in university-level cultural and social events. Led a team of 15 volunteers to organize and manage the event successfully."
     },
     {
       id: "cert-8",
@@ -102,7 +110,8 @@ const Achievements = () => {
       imageUrl: "/images/certificates/voter.jpg",
       driveUrl: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view?usp=drive_link",
       featured: false,
-      category: "community"
+      category: "community",
+      description: "Recognized for volunteering in the Voter Awareness Campaign, promoting civic responsibility and encouraging voter participation."
     }
   ];
 
@@ -266,7 +275,7 @@ const Achievements = () => {
               >
                 {showAll ? (
                   <span className="flex items-center gap-2">
-                    View Featured Only
+                    View Less
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="18 15 12 9 6 15"></polyline>
                     </svg>
@@ -311,7 +320,8 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e?: React.MouseEvent<HTMLDivElement>) => {
+    if (e) e.stopPropagation();
     setIsExpanded(!isExpanded);
   };
 
@@ -323,6 +333,20 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
       setMousePosition({ x, y });
     }
   };
+
+  // Close expanded card when clicking outside
+  useEffect(() => {
+    if (!isExpanded) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isExpanded]);
 
   // Generate a unique gradient color based on the index
   const getGradientColor = () => {
@@ -374,9 +398,11 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
       <Card
         className={cn(
           "h-full overflow-hidden transition-all duration-300 relative",
-          isHovered ? "shadow-lg border-primary/30 scale-[1.02]" : "shadow-sm scale-100",
+          // Remove scale and border changes that affect layout
+          isHovered ? "ring-2 ring-primary/30 shadow-lg" : "shadow-sm",
           isExpanded ? "ring-0 shadow-none border-primary/20" : ""
         )}
+        style={{ willChange: 'transform' }}
         ref={cardRef}
         onClick={handleClick}
       >
@@ -480,8 +506,7 @@ const CertificateCard = ({ certificate, index }: { certificate: Certificate, ind
               className="mt-3"
             >
               <p className="text-sm text-muted-foreground">
-                This certificate validates expertise in {certificate.title.toLowerCase()}
-                skills and demonstrates a commitment to professional development.
+                {certificate.description}
               </p>
             </motion.div>
           )}
