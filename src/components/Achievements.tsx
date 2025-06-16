@@ -36,6 +36,16 @@ const Achievements = () => {
     },
     {
       id: "cert-2",
+      title: "Python Programming",
+      issuedBy: "Scaler",
+      date: "June 2025",
+      imageUrl: "/images/certificates/python-programming.png",
+      driveUrl: "https://moonshot.scaler.com/s/sl/QchAavjio8?_gl=1*v19d6i*_gcl_au*MTg3ODY3NDM4My4xNzUwMDU0NzU1*FPAU*MTEwNzg5NjY0OC4xNzUwMDU0NzU4*_ga*MTIyMTU5NzE4MC4xNzUwMDU0NzU0*_ga_53S71ZZG1X*czE3NTAwNjYwODQkbzIkZzEkdDE3NTAwNjY0NTkkajEkbDAkaDY1MTM5NzU0OQ..",
+      featured: true,
+      category: "development"
+    },
+    {
+      id: "cert-3",
       title: "All India Online Aptitude Test 2025",
       issuedBy: "Naukri Campus",
       date: "May 2025",
@@ -45,7 +55,7 @@ const Achievements = () => {
       category: "competition"
     },
     {
-      id: "cert-3",
+      id: "cert-4",
       title: "Innoviz - 2025",
       issuedBy: "St. Andrews Institute of Technology & Management",
       date: "April 2025",
@@ -55,7 +65,7 @@ const Achievements = () => {
       category: "competition"
     },
     {
-      id: "cert-4",
+      id: "cert-5",
       title: "Merit Performance Award",
       issuedBy: "St. Andrews Institute of Technology & Management",
       date: "November 2023",
@@ -65,7 +75,7 @@ const Achievements = () => {
       category: "academic"
     },
     {
-      id: "cert-5",
+      id: "cert-6",
       title: "Java Programming",
       issuedBy: "Great Learning",
       date: "December 2023",
@@ -75,7 +85,7 @@ const Achievements = () => {
       category: "development"
     },
     {
-      id: "cert-6",
+      id: "cert-7",
       title: "Bapu Bazaar Samman Patra",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
@@ -85,7 +95,7 @@ const Achievements = () => {
       category: "competition"
     },
     {
-      id: "cert-7",
+      id: "cert-8",
       title: "Voter Awareness Campaign",
       issuedBy: "Veer Bahadur Singh Purvanchal University",
       date: "March 2023",
