@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const GeometricLoadingScreen = () => {
+const  LoadingScreen = () => {
 	const [progress, setProgress] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
 
@@ -139,4 +139,4 @@ const GeometricLoadingScreen = () => {
 	);
 };
 
-export default GeometricLoadingScreen;
+export default LoadingScreen;

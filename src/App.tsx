@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { ScrollToTop } from './components/ScrollToTop';
-import GeometricLoadingScreen from './components/GeometricLoadingScreen';
+import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -27,7 +27,7 @@ function App() {
 
   if (loading) {
     try {
-      return <GeometricLoadingScreen />;
+      return <LoadingScreen />;
     } catch (e) {
       console.error("Loading screen error:", e);
       setError(true);
