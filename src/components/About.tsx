@@ -1,208 +1,58 @@
-import { motion, useAnimation, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Code2, Server, Globe, Database, CheckCircle, Star, Quote, Sparkles, Zap, Target, Award } from 'lucide-react';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+import { Code2, Server, Globe, Database, Star, Quote, Sparkles, Award } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 
 const About = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
 
-  // Enhanced parallax transforms
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const skills = useMemo(() => [
+    { name: 'Frontend Development', icon: <Code2 className="w-6 h-6" />, description: 'Building responsive and interactive UI with modern frameworks', color: 'from-blue-500 to-cyan-500', technologies: [{ name: 'React', proficiency: 90, icon: '⚛️' }, { name: 'TypeScript', proficiency: 85, icon: '📘' }, { name: 'Tailwind CSS', proficiency: 95, icon: '🎨' }, { name: 'JavaScript', proficiency: 90, icon: '💛' }, { name: 'Next.js', proficiency: 85, icon: '▲' }] },
+    { name: 'Backend Development', icon: <Server className="w-6 h-6" />, description: 'Creating robust server-side applications and APIs', color: 'from-emerald-500 to-teal-500', technologies: [{ name: 'Node.js', proficiency: 85, icon: '🟢' }, { name: 'Express', proficiency: 80, icon: '🚀' }, { name: 'Python', proficiency: 75, icon: '🐍' }, { name: 'REST APIs', proficiency: 75, icon: '🔗' }] },
+    { name: 'Web Technologies', icon: <Globe className="w-6 h-6" />, description: 'Implementing core web technologies and best practices', color: 'from-purple-500 to-pink-500', technologies: [{ name: 'HTML5', proficiency: 95, icon: '🌐' }, { name: 'CSS3', proficiency: 90, icon: '🎭' }, { name: 'Responsive Design', proficiency: 90, icon: '📱' }, { name: 'PWA', proficiency: 80, icon: '⚡' }] },
+    { name: 'Database & Tools', icon: <Database className="w-6 h-6" />, description: 'Designing and managing various database systems', color: 'from-orange-500 to-red-500', technologies: [{ name: 'MongoDB', proficiency: 80, icon: '🍃' }, { name: 'MySQL', proficiency: 75, icon: '🐬' }, { name: 'Git', proficiency: 90, icon: '📂' }] }
+  ], []);
 
-  const skills = [
-    { 
-      name: 'Frontend Development', 
-      icon: <Code2 className="w-6 h-6" />, 
-      description: 'Building responsive and interactive UI with modern frameworks',
-      color: 'from-blue-500 to-cyan-500',
-      technologies: [
-        { name: 'React', proficiency: 90, icon: '⚛️' },
-        { name: 'TypeScript', proficiency: 85, icon: '📘' },
-        { name: 'Tailwind CSS', proficiency: 95, icon: '🎨' },
-        { name: 'JavaScript', proficiency: 90, icon: '💛' },
-        { name: 'Next.js', proficiency: 85, icon: '▲' }
-      ]
-    },
-    { 
-      name: 'Backend Development', 
-      icon: <Server className="w-6 h-6" />, 
-      description: 'Creating robust server-side applications and APIs',
-      color: 'from-emerald-500 to-teal-500',
-      technologies: [
-        { name: 'Node.js', proficiency: 85, icon: '🟢' },
-        { name: 'Express', proficiency: 80, icon: '🚀' },
-        { name: 'Python', proficiency: 75, icon: '🐍' },
-        { name: 'REST APIs', proficiency: 75, icon: '🔗' }
-      ]
-    },
-    { 
-      name: 'Web Technologies', 
-      icon: <Globe className="w-6 h-6" />, 
-      description: 'Implementing core web technologies and best practices',
-      color: 'from-purple-500 to-pink-500',
-      technologies: [
-        { name: 'HTML5', proficiency: 95, icon: '🌐' },
-        { name: 'CSS3', proficiency: 90, icon: '🎭' },
-        { name: 'Responsive Design', proficiency: 90, icon: '📱' },
-        { name: 'PWA', proficiency: 80, icon: '⚡' }
-      ]
-    },
-    { 
-      name: 'Database & Tools', 
-      icon: <Database className="w-6 h-6" />, 
-      description: 'Designing and managing various database systems',
-      color: 'from-orange-500 to-red-500',
-      technologies: [
-        { name: 'MongoDB', proficiency: 80, icon: '🍃' },
-        { name: 'MySQL', proficiency: 75, icon: '🐬' },
-        { name: 'Git', proficiency: 90, icon: '📂' }
-      ]
-    }
-  ];
+  const achievements = useMemo(() => [
+    { text: "Successfully developed and deployed 5+ web projects", icon: "🎯", color: "from-blue-500 to-cyan-500" },
+    { text: "Ranked at 2nd position in Coding Contest organized by IEEE", icon: "🏆", color: "from-amber-500 to-orange-500" },
+    { text: "Ranked at 1st position in Tech Quiz Competition", icon: "✨", color: "from-green-500 to-emerald-500" },
+    { text: "Secured AIR 28th in All India Online Aptitude Test 2025", icon: "🥇", color: "from-rose-500 to-pink-500" },
+    { text: "Secured 1st position in semester examinations", icon: "⚡", color: "from-purple-500 to-pink-500" },
+    { text: "Mentored 10+ junior developers", icon: "✅", color: "from-teal-500 to-cyan-500" },
+  ], []);
 
-  const achievements = [
-    { text: "Successfully developed and deployed 5+ web projects", icon: <Target className="w-5 h-5" />, color: "from-blue-500 to-cyan-500" },
-    { text: "Ranked at 2nd position in Coding Contest organized by IEEE", icon: <Award className="w-5 h-5" />, color: "from-amber-500 to-orange-500" },
-    { text: "Ranked at 1st position in Tech Quiz Competition", icon: <Sparkles className="w-5 h-5" />, color: "from-green-500 to-emerald-500" },
-    { text: "Secured AIR 28th in All India Online Aptitude Test 2025", icon: <Award className="w-5 h-5" />, color: "from-rose-500 to-pink-500" },
-    { text: "Secured 1st position in semester examinations", icon: <Zap className="w-5 h-5" />, color: "from-purple-500 to-pink-500" },
-    { text: "Mentored 10+ junior developers", icon: <CheckCircle className="w-5 h-5" />, color: "from-teal-500 to-cyan-500" },
-  ];
+  const testimonials = useMemo(() => [
+    { name: "Hritik Sonkar", text: "Pragyesh's coding expertise is phenomenal! His attention to detail and problem-solving approach helped us deliver our project 2 weeks ahead of schedule. Truly exceptional!" },
+    { name: "Anand Raj Bind", text: "Working with Pragyesh was incredible. His ability to transform complex designs into pixel-perfect, interactive experiences is unmatched. A true frontend wizard!" },
+    { name: "Anurag Singh", text: "Pragyesh delivered a stunning portfolio that impressed our entire hiring committee. His modern approach and clean code standards are exactly what we look for!" },
+    { name: "Leroy Vincient Serpis", text: "His technical explanations are clear and his problem-solving methodology is systematic. Pragyesh makes complex concepts accessible to everyone on the team." },
+    { name: "Rishabh Rai", text: "Pragyesh's dedication is inspiring. He helped optimize our database queries, reducing load times by 60%. His full-stack knowledge is comprehensive and practical." },
+    { name: "Dheeraj Sonkar", text: "The community website Pragyesh built has increased our engagement by 300%. His understanding of user experience and modern web standards is exceptional." },
+    { name: "Alok Maurya", text: "Under tight deadlines, Pragyesh delivered a scalable solution that handled 10x our expected traffic. His architecture decisions were spot-on and future-proof." },
+    { name: "Prajapati Saurabh Lalman", text: "Pragyesh's animation work brought our brand to life with 90+ PageSpeed scores. He perfectly balances visual appeal with performance optimization." }
+  ], []);
 
-  const testimonials = [
-    {
-      name: "Hritik Sonkar",
-      text: "Pragyesh's coding expertise is phenomenal! His attention to detail and problem-solving approach helped us deliver our project 2 weeks ahead of schedule. Truly exceptional!",
-      rating: 5
-    },
-    {
-      name: "Anand Raj Bind",
-      text: "Working with Pragyesh was incredible. His ability to transform complex designs into pixel-perfect, interactive experiences is unmatched. A true frontend wizard!",
-      rating: 5
-    },
-    {
-      name: "Anurag Singh",
-      text: "Pragyesh delivered a stunning portfolio that impressed our entire hiring committee. His modern approach and clean code standards are exactly what we look for!",
-      rating: 5
-    },
-    {
-      name: "Leroy Vincient Serpis",
-      text: "His technical explanations are clear and his problem-solving methodology is systematic. Pragyesh makes complex concepts accessible to everyone on the team.",
-      rating: 5
-    },
-    {
-      name: "Rishabh Rai",
-      text: "Pragyesh's dedication is inspiring. He helped optimize our database queries, reducing load times by 60%. His full-stack knowledge is comprehensive and practical.",
-      rating: 5
-    },
-    {
-      name: "Dheeraj Sonkar",
-      text: "The community website Pragyesh built has increased our engagement by 300%. His understanding of user experience and modern web standards is exceptional.",
-      rating: 5
-    },
-    {
-      name: "Alok Maurya",
-      text: "Under tight deadlines, Pragyesh delivered a scalable solution that handled 10x our expected traffic. His architecture decisions were spot-on and future-proof.",
-      rating: 5
-    },
-    {
-      name: "Prajapati Saurabh Lalman",
-      text: "Pragyesh's animation work brought our brand to life with 90+ PageSpeed scores. He perfectly balances visual appeal with performance optimization.",
-      rating: 5
-    }
-  ];
-
-  // Enhanced testimonials functionality
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Intersection Observer for animations
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.1 }
-    );
-    
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-    
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), { threshold: 0.1 });
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Enhanced auto-scroll with smooth transitions
   useEffect(() => {
     if (!isVisible) return;
-    
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-    
+    const interval = setInterval(() => setCurrentTestimonial(prev => (prev + 1) % testimonials.length), 4000);
     return () => clearInterval(interval);
   }, [isVisible, testimonials.length]);
 
-  // Enhanced style injection with CSS custom properties
   useEffect(() => {
     const style = document.createElement('style');
-    style.textContent = `
-      :root {
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --glow-primary: rgba(59, 130, 246, 0.3);
-        --glow-secondary: rgba(168, 85, 247, 0.3);
-      }
-      
-      .glass-effect {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border);
-      }
-      
-      .glow-effect {
-        box-shadow: 0 0 30px var(--glow-primary);
-      }
-      
-      .float-animation {
-        animation: float 6s ease-in-out infinite;
-      }
-      
-      .pulse-glow {
-        animation: pulseGlow 3s ease-in-out infinite alternate;
-      }
-      
-      @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        33% { transform: translateY(-10px) rotate(2deg); }
-        66% { transform: translateY(-5px) rotate(-1deg); }
-      }
-      
-      @keyframes pulseGlow {
-        0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
-        100% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.4), 0 0 60px rgba(168, 85, 247, 0.2); }
-      }
-      
-      .skill-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      
-      .testimonial-card {
-        transform-style: preserve-3d;
-        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-      }
-      
-      .testimonial-card:hover {
-        transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
-      }
-    `;
+    style.textContent = `.glass-effect{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1)}.glow-effect{box-shadow:0 0 30px rgba(59,130,246,0.3)}.skill-card{transition:all 0.3s ease}.skill-card:hover{box-shadow:0 4px 20px rgba(59,130,246,0.2)}.testimonial-card{transition:all 0.3s ease}`;
     document.head.appendChild(style);
-    
     return () => {
       if (style.parentNode) {
         style.parentNode.removeChild(style);
@@ -210,101 +60,28 @@ const About = () => {
     };
   }, []);
 
-  // Enhanced avatar gradient with more variety
-  const getAvatarGradient = useCallback((index: number) => {
-    const gradients = [
-      "from-blue-500 via-purple-500 to-pink-500",
-      "from-emerald-500 via-cyan-500 to-blue-500", 
-      "from-amber-500 via-orange-500 to-red-500",
-      "from-pink-500 via-rose-500 to-purple-500",
-      "from-indigo-500 via-blue-500 to-cyan-500",
-      "from-teal-500 via-emerald-500 to-green-500",
-      "from-fuchsia-500 via-purple-500 to-indigo-500",
-      "from-violet-500 via-purple-500 to-blue-500"
-    ];
-    return gradients[index % gradients.length];
-  }, []);
+  const getAvatarGradient = useCallback((index: number) => [
+    "from-blue-500 via-purple-500 to-pink-500", "from-emerald-500 via-cyan-500 to-blue-500", "from-amber-500 via-orange-500 to-red-500", "from-pink-500 via-rose-500 to-purple-500", "from-indigo-500 via-blue-500 to-cyan-500", "from-teal-500 via-emerald-500 to-green-500", "from-fuchsia-500 via-purple-500 to-indigo-500", "from-violet-500 via-purple-500 to-blue-500"
+  ][index % 8], []);
 
-  // Enhanced particles with interactive behavior
-  const [particles] = useState(Array.from({ length: 25 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: 1 + Math.random() * 4,
-    duration: 20 + Math.random() * 30,
-    delay: Math.random() * 10,
-    opacity: 0.1 + Math.random() * 0.3
-  })));
-
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    
+    const handleMouseMove = (e: MouseEvent) => setMousePosition({ x: e.clientX, y: e.clientY });
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   return (
     <div ref={containerRef} className="min-h-screen pt-24 md:pt-28 pb-16 relative overflow-hidden">
-      {/* Enhanced background with parallax and interactive elements */}
-      <motion.div 
-        className="absolute inset-0 opacity-30 md:opacity-40"
-        style={{ y: y1 }}
-      >
-        <div className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-[80px] md:blur-[120px] pulse-glow" />
-        <div className="absolute -bottom-20 -left-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-tr from-emerald-500/20 to-cyan-500/20 rounded-full blur-[60px] md:blur-[100px] pulse-glow" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-pink-500/10 to-orange-500/10 rounded-full blur-[60px] md:blur-[80px] float-animation" />
-      </motion.div>
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-[80px] md:blur-[120px]" />
+        <div className="absolute -bottom-20 -left-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-tr from-emerald-500/20 to-cyan-500/20 rounded-full blur-[60px] md:blur-[100px]" />
+      </div>
       
-      {/* Interactive cursor effect - hidden on mobile */}
-      <motion.div
-        className="fixed w-64 h-64 rounded-full pointer-events-none z-0 opacity-5 hidden md:block"
-        style={{
-          background: `radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)`,
-          left: mousePosition.x - 128,
-          top: mousePosition.y - 128,
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
 
-      {/* Enhanced floating particles with mouse interaction - reduced on mobile */}
-      {particles.slice(0, window.innerWidth < 768 ? 10 : 25).map(particle => (
-        <motion.div 
-          key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 pointer-events-none"
-          style={{
-            top: `${particle.y}%`,
-            left: `${particle.x}%`,
-            width: `${Math.max(particle.size * (window.innerWidth < 768 ? 0.5 : 1), 1)}px`,
-            height: `${Math.max(particle.size * (window.innerWidth < 768 ? 0.5 : 1), 1)}px`,
-            opacity: particle.opacity * (window.innerWidth < 768 ? 0.7 : 1),
-          }}
-          animate={{
-            y: ['-30%', '30%'],
-            x: ['20%', '-20%'],
-            scale: [1, 1.5, 1],
-            opacity: [particle.opacity, particle.opacity * 2, particle.opacity]
-          }}
-          transition={{
-            repeat: Infinity,
-            duration: particle.duration,
-            ease: "easeInOut",
-            delay: particle.delay,
-            times: [0, 0.5, 1],
-            repeatType: "reverse",
-          }}
-        />
-      ))}
+
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -314,10 +91,7 @@ const About = () => {
           className="space-y-12 md:space-y-16"
         >
           {/* Enhanced Hero About Section */}
-          <motion.div 
-            className="space-y-6"
-            style={{ y: y2 }}
-          >
+          <div className="space-y-6">
             <motion.div 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -358,7 +132,7 @@ const About = () => {
                   <div className="relative z-10">
                     <motion.div
                       className="flex items-center mb-3 md:mb-4"
-                      whileHover={{ x: window.innerWidth >= 768 ? 10 : 0 }}
+                      whileHover={{ scale: 1.01 }}
                       transition={{ type: "spring", stiffness: 400 }}
                     >
                       <div className="h-6 md:h-8 w-1 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full mr-2 md:mr-3" />
@@ -391,8 +165,7 @@ const About = () => {
                           <motion.span
                             key={tag}
                             className="px-2 md:px-3 py-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full text-xs font-medium border border-blue-500/20"
-                            whileHover={{ scale: window.innerWidth >= 768 ? 1.05 : 1, y: window.innerWidth >= 768 ? -2 : 0 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.9 + index * 0.1 }}
@@ -427,11 +200,10 @@ const About = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.8 + index * 0.1 }}
-                        whileHover={{ scale: window.innerWidth >= 768 ? 1.02 : 1, x: window.innerWidth >= 768 ? 5 : 0 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                       >
                         <div className="flex items-start space-x-2 md:space-x-3">
-                          <div className={`p-1 md:p-1.5 rounded-lg bg-gradient-to-r ${achievement.color} bg-opacity-20 group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
+                          <div className={`p-1 md:p-1.5 rounded-lg bg-gradient-to-r ${achievement.color} bg-opacity-20 group-hover:scale-110 transition-transform duration-300 flex-shrink-0 text-sm`}>
                             {achievement.icon}
                           </div>
                           <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300 flex-1 text-xs md:text-sm">
@@ -446,8 +218,7 @@ const About = () => {
               
               {/* Compact personal details - increased size */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, rotateY: window.innerWidth >= 1024 ? 20 : 0 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
                 className="relative lg:col-span-2 order-1 lg:order-2"
               >
@@ -480,8 +251,7 @@ const About = () => {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 1 + i * 0.1 }}
-                        whileHover={{ x: window.innerWidth >= 768 ? 3 : 0 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                       >
                         <div className="flex items-center space-x-2">
                           <span className="text-sm group-hover/item:scale-110 transition-transform duration-200">{detail.icon}</span>
@@ -509,7 +279,7 @@ const About = () => {
                 </Card>
               </motion.div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Enhanced Skills Section with advanced animations */}
           <motion.div
@@ -559,8 +329,7 @@ const About = () => {
                   {skills.map((skill, index) => (
                     <motion.div
                       key={skill.name}
-                      initial={{ opacity: 0, y: 50, rotateY: window.innerWidth >= 768 ? -20 : 0 }}
-                      animate={{ opacity: 1, y: 0, rotateY: 0 }}
+                      initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.4 + index * 0.2, duration: 0.8 }}
                       className="skill-card group h-full"
                     >
@@ -571,7 +340,7 @@ const About = () => {
                         <CardHeader className="relative z-10 pb-3 md:pb-4">
                           <motion.div 
                             className={`inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${skill.color} mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}
-                            whileHover={{ rotate: window.innerWidth >= 768 ? 360 : 0 }}
+                            whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.6 }}
                           >
                             <div className="text-white text-sm md:text-base">{skill.icon}</div>
@@ -596,8 +365,7 @@ const About = () => {
                                   initial={{ opacity: 0, scale: 0.8 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{ delay: 1.6 + index * 0.2 + techIndex * 0.1 }}
-                                  whileHover={{ scale: window.innerWidth >= 768 ? 1.05 : 1 }}
-                                  whileTap={{ scale: 0.95 }}
+                                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                                 >
                                   <span className="text-xs">{tech.icon}</span> {tech.name}
                                 </motion.span>
@@ -694,9 +462,7 @@ const About = () => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentTestimonial}
-                  initial={{ opacity: 0, y: 50, rotateX: window.innerWidth >= 768 ? -20 : 0 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  exit={{ opacity: 0, y: -50, rotateX: window.innerWidth >= 768 ? 20 : 0 }}
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
                   className="w-full"
                 >
@@ -707,23 +473,10 @@ const About = () => {
                       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                         <motion.div 
                           className={`relative h-16 w-16 md:h-24 md:w-24 rounded-full bg-gradient-to-br ${getAvatarGradient(currentTestimonial)} flex items-center justify-center text-white shadow-2xl flex-shrink-0`}
-                          whileHover={{ scale: window.innerWidth >= 768 ? 1.1 : 1, rotate: window.innerWidth >= 768 ? 5 : 0 }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{ type: "spring", stiffness: 300 }}
+                          whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                           <span className="font-bold text-xl md:text-3xl">{testimonials[currentTestimonial].name.charAt(0)}</span>
-                          
-                          {/* Animated ring effects */}
-                          <motion.div 
-                            className="absolute inset-0 rounded-full border-2 border-white/30"
-                            animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          />
-                          <motion.div 
-                            className="absolute -inset-2 rounded-full border border-white/20"
-                            animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.2, 0.8] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                          />
+                          <motion.div className="absolute inset-0 rounded-full border-2 border-white/30" animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2, repeat: Infinity }} />
                         </motion.div>
                         
                         <div className="flex-1 text-center md:text-left">
@@ -732,13 +485,8 @@ const About = () => {
                           </div>
                           
                           <div className="flex justify-center md:justify-start mb-3 md:mb-4">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <motion.div
-                                key={star}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: star * 0.1, type: "spring" }}
-                              >
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <motion.div key={i} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1, type: "spring" }}>
                                 <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500 fill-current" />
                               </motion.div>
                             ))}
@@ -758,15 +506,9 @@ const About = () => {
               <div className="flex justify-center gap-2 md:gap-3 mt-6 md:mt-8 flex-wrap">
                 {testimonials.map((_, index) => (
                   <motion.button
-                    key={index}
-                    onClick={() => setCurrentTestimonial(index)}
-                    className={`h-2 md:h-3 rounded-full transition-all duration-300 touch-manipulation ${
-                      index === currentTestimonial 
-                        ? `w-6 md:w-8 bg-gradient-to-r ${getAvatarGradient(index)}`
-                        : 'w-2 md:w-3 bg-white/30 hover:bg-white/50'
-                    }`}
-                    whileHover={{ scale: window.innerWidth >= 768 ? 1.2 : 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    key={index} onClick={() => setCurrentTestimonial(index)}
+                    className={`h-2 md:h-3 rounded-full transition-all duration-300 touch-manipulation ${index === currentTestimonial ? `w-6 md:w-8 bg-gradient-to-r ${getAvatarGradient(index)}` : 'w-2 md:w-3 bg-white/30 hover:bg-white/50'}`}
+                    whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
                   />
                 ))}
               </div>
@@ -778,37 +520,13 @@ const About = () => {
   );
 };
 
-// Enhanced progress bar with gradient and glow effects
-const EnhancedProgressBar = ({ 
-  value, 
-  delay = 0, 
-  color = "from-blue-500 to-purple-500" 
-}: { 
-  value: number; 
-  delay?: number; 
-  color?: string; 
-}) => {
+const EnhancedProgressBar = ({ value, delay = 0, color = "from-blue-500 to-purple-500" }: { value: number; delay?: number; color?: string }) => {
   const controls = useAnimation();
-  
-  useEffect(() => {
-    controls.start({
-      width: `${value}%`,
-      transition: { delay, duration: 1.5, ease: "easeOut" }
-    });
-  }, [controls, value, delay]);
-  
+  useEffect(() => { controls.start({ width: `${value}%`, transition: { delay, duration: 1.5, ease: "easeOut" } }); }, [controls, value, delay]);
   return (
     <div className="relative h-2 md:h-3 bg-white/10 rounded-full overflow-hidden">
-      <motion.div 
-        className={`h-full bg-gradient-to-r ${color} rounded-full relative overflow-hidden`}
-        initial={{ width: 0 }}
-        animate={controls}
-      >
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-          animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
+      <motion.div className={`h-full bg-gradient-to-r ${color} rounded-full relative overflow-hidden`} initial={{ width: 0 }} animate={controls}>
+        <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" animate={{ x: ['-100%', '100%'] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
       </motion.div>
     </div>
   );
