@@ -1,103 +1,46 @@
-import { Moon, Sun } from "lucide-react"
-import { motion } from "framer-motion"
+
 import { useTheme } from "./ThemeProvider"
+import { Sun, Moon } from "lucide-react"
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
+  const isDark = theme === "dark"
 
   return (
-    <motion.button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-amber-50/90 to-orange-100/80 dark:from-slate-700/90 dark:to-slate-600/80 border border-amber-200/60 dark:border-slate-500/60 hover:from-amber-100/90 hover:to-orange-200/80 dark:hover:from-slate-600/90 dark:hover:to-slate-500/80 transition-all duration-300 shadow-lg hover:shadow-xl group overflow-hidden"
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className={`relative w-20 h-10 rounded-full transition-all duration-700 overflow-hidden shadow-lg border-2 border-slate-300 dark:border-slate-700 flex items-center px-1 ${isDark ? 'bg-gradient-to-br from-slate-800 to-slate-900' : 'bg-gradient-to-br from-sky-200 to-blue-400'}`}
+      aria-label="Toggle theme"
+      style={{ minWidth: 80, minHeight: 40 }}
     >
-      {/* Rotating background glow effect */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-amber-200/40 to-orange-300/30 dark:from-blue-400/20 dark:to-purple-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-      />
-
-      {/* Sun icon for light theme */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        initial={false}
-        animate={{
-          opacity: theme === "light" ? 1 : 0,
-          scale: theme === "light" ? 1 : 0.3,
-          rotate: theme === "light" ? 0 : 180,
-        }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
+      {/* Background scenery */}
+      <div className="absolute inset-0 transition-all duration-700 pointer-events-none" style={{ zIndex: 0 }}>
+        {/* Day sky with clouds */}
+        <div className={`absolute inset-0 transition-opacity duration-700 ${isDark ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="absolute left-5 top-2 w-5 h-2 bg-white rounded-full opacity-70 blur-sm" />
+          <div className="absolute left-12 top-4 w-4 h-1.5 bg-white rounded-full opacity-60 blur-sm" />
+          <div className="absolute left-2 top-6 w-3 h-1 bg-white rounded-full opacity-50 blur-sm" />
+        </div>
+        {/* Night sky with stars */}
+        <div className={`absolute inset-0 transition-opacity duration-700 ${isDark ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="absolute left-7 top-2 w-1 h-1 bg-white rounded-full opacity-80" />
+          <div className="absolute left-15 top-5 w-1 h-1 bg-white rounded-full opacity-60" />
+          <div className="absolute left-4 top-7 w-1 h-1 bg-white rounded-full opacity-70" />
+        </div>
+      </div>
+      {/* Toggle knob with icon */}
+      <div
+        className={`absolute w-9 h-9 rounded-full shadow-md flex items-center justify-center transition-transform duration-700 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ${isDark ? 'translate-x-[2.5rem]' : 'translate-x-0'}`}
+        style={{ zIndex: 2 }}
       >
-        <motion.div
-          animate={{ rotate: theme === "light" ? 360 : 0 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        >
-          <Sun
-            size={16}
-            className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-amber-600 dark:text-amber-500 drop-shadow-sm relative z-10"
-          />
-        </motion.div>
-      </motion.div>
-
-      {/* Moon icon for dark theme */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        initial={false}
-        animate={{
-          opacity: theme === "dark" ? 1 : 0,
-          scale: theme === "dark" ? 1 : 0.3,
-          rotate: theme === "dark" ? 0 : -180,
-        }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-      >
-        <motion.div
-          animate={{
-            rotate: theme === "dark" ? [0, -10, 10, 0] : 0,
-            scale: theme === "dark" ? [1, 1.1, 1] : 1,
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <Moon
-            size={16}
-            className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-slate-600 dark:text-slate-300 drop-shadow-sm relative z-10"
-          />
-        </motion.div>
-      </motion.div>
-
-      {/* Subtle inner highlight circle */}
-      <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/30 to-transparent dark:from-white/10 dark:to-transparent pointer-events-none" />
-
-      {/* Active state indicator ring */}
-      <motion.div
-        className="absolute inset-0 rounded-full border-2"
-        animate={{
-          borderColor:
-            theme === "light"
-              ? "rgba(245, 158, 11, 0.4)"
-              : "rgba(99, 102, 241, 0.4)",
-          boxShadow:
-            theme === "light"
-              ? "0 0 10px rgba(245, 158, 11, 0.3)"
-              : "0 0 10px rgba(99, 102, 241, 0.3)",
-        }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Pulse effect on theme change */}
-      <motion.div
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-current/20 to-transparent"
-        initial={{ scale: 0, opacity: 1 }}
-        animate={{ scale: theme ? [0, 1.5, 0] : 0, opacity: [1, 0, 0] }}
-        transition={{ duration: 0.6 }}
-        key={theme}
-      />
-    </motion.button>
+        {isDark ? (
+          <Moon className="text-yellow-200 w-5 h-5 drop-shadow" strokeWidth={1.5} />
+        ) : (
+          <Sun className="text-yellow-400 w-5 h-5 drop-shadow" strokeWidth={1.5} />
+        )}
+      </div>
+      {/* Decorative ground */}
+      <div className={`absolute bottom-0 left-0 w-full h-2 rounded-b-full transition-all duration-700 ${isDark ? 'bg-slate-700' : 'bg-green-300'}`} style={{ zIndex: 1 }} />
+    </button>
   )
 }
