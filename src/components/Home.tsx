@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Button } from './ui/button';
 import { ProfileAvatar } from './ProfileAvatar';
-import { DRIVE_ASSETS } from '@/config/driveAssets';
 
 // Constants for performance optimization
 const FULL_NAME = "Pragyesh Kumar Seth";
