@@ -53,6 +53,19 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stats, setStats] = useState({ projects: 0, experience: 0, technologies: 0 });
   
+  // Description typewriter states
+  const [descriptionText, setDescriptionText] = useState('');
+  const [descriptionIndex, setDescriptionIndex] = useState(0);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const descriptionLines = [
+    { text: "I craft ", highlights: [{ word: "accessible", color: "text-blue-400" }, { word: "responsive", color: "text-violet-400" }, { word: "high-performance", color: "text-purple-400" }], ending: " web applications." },
+    { text: "I build ", highlights: [{ word: "scalable", color: "text-emerald-400" }, { word: "modern", color: "text-cyan-400" }], ending: " solutions with technologies." },
+    { text: "I create ", highlights: [{ word: "seamless", color: "text-pink-400" }, { word: "innovative", color: "text-orange-400" }], ending: " user experiences." },
+    { text: "I transform ", highlights: [{ word: "ideas", color: "text-yellow-400" }, { word: "powerful", color: "text-red-400" }], ending: " into digital solutions." }
+  ];
+  
   // Mobile detection with debouncing
   useEffect(() => {
     const checkMobile = () => {
@@ -100,7 +113,7 @@ const Home = () => {
     }
   }, [mouseX, mouseY, isMobile]);
 
-  // Typing animation
+  // Name typing animation
   useEffect(() => {
     if (isInView && currentIndex < FULL_NAME.length) {
       const timer = setTimeout(() => {
@@ -111,6 +124,58 @@ const Home = () => {
       return () => clearTimeout(timer);
     }
   }, [currentIndex, isInView, isMobile]);
+  
+  // Description typewriter animation
+  useEffect(() => {
+    if (!isInView) return;
+    
+    const currentLine = descriptionLines[currentLineIndex];
+    const fullText = currentLine.text + currentLine.highlights.map(h => h.word).join(', ') + currentLine.ending;
+    const typingSpeed = isMobile ? 50 : 40;
+    const pauseTime = 2000;
+    const deleteSpeed = 30;
+    
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        if (descriptionIndex < fullText.length) {
+          let displayText = currentLine.text;
+          let remainingText = fullText.slice(currentLine.text.length, descriptionIndex + 1);
+          
+          // Add highlights
+          currentLine.highlights.forEach(highlight => {
+            const regex = new RegExp(`\\b${highlight.word}\\b`, 'gi');
+            displayText = displayText.replace(regex, `<span class="${highlight.color} font-bold">${highlight.word}</span>`);
+            remainingText = remainingText.replace(regex, `<span class="${highlight.color} font-bold">${highlight.word}</span>`);
+          });
+          
+          setDescriptionText(displayText + remainingText);
+          setDescriptionIndex(prev => prev + 1);
+        } else {
+          setTimeout(() => setIsDeleting(true), pauseTime);
+        }
+      } else {
+        if (descriptionIndex > 0) {
+          let displayText = currentLine.text;
+          let remainingText = fullText.slice(currentLine.text.length, descriptionIndex - 1);
+          
+          // Add highlights
+          currentLine.highlights.forEach(highlight => {
+            const regex = new RegExp(`\\b${highlight.word}\\b`, 'gi');
+            displayText = displayText.replace(regex, `<span class="${highlight.color} font-bold">${highlight.word}</span>`);
+            remainingText = remainingText.replace(regex, `<span class="${highlight.color} font-bold">${highlight.word}</span>`);
+          });
+          
+          setDescriptionText(displayText + remainingText);
+          setDescriptionIndex(prev => prev - 1);
+        } else {
+          setIsDeleting(false);
+          setCurrentLineIndex(prev => (prev + 1) % descriptionLines.length);
+        }
+      }
+    }, isDeleting ? deleteSpeed : typingSpeed);
+    
+    return () => clearTimeout(timer);
+  }, [descriptionIndex, currentLineIndex, isDeleting, isInView, isMobile, descriptionLines]);
   
   // Stats animation
   useEffect(() => {
@@ -404,51 +469,21 @@ const Home = () => {
               </span>
             </motion.h1>
 
-            {/* Description */}
-            <motion.p 
-              variants={animationVariants.item} className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-xl lg:max-w-2xl leading-relaxed">
-              I craft{' '}
-              <motion.span 
-                className="text-blue-400 font-bold relative"
-                whileHover={!isMobile ? { scale: 1.05 } : {}}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                accessible
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-400 rounded-full"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 1, duration: 0.5 }}
+            {/* Description with typewriter effect */}
+            <motion.div 
+              variants={animationVariants.item} 
+              className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-xl lg:max-w-2xl leading-relaxed min-h-[3.5rem] sm:min-h-[4rem] lg:min-h-[4.5rem]"
+            >
+              <span className="inline-block">
+                <span dangerouslySetInnerHTML={{ __html: descriptionText }} />
+                <motion.span
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                  className="inline-block w-0.5 h-5 sm:h-6 lg:h-7 bg-gradient-to-b from-blue-400 to-violet-500 ml-1 rounded-full"
+                  aria-hidden="true"
                 />
-              </motion.span>,{' '}
-              <motion.span 
-                className="text-violet-400 font-bold relative"
-                whileHover={!isMobile ? { scale: 1.05 } : {}}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                responsive
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-violet-400 rounded-full"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 1.2, duration: 0.5 }}
-                />
-              </motion.span> and{' '}
-              <motion.span 
-                className="text-purple-400 font-bold relative"
-                whileHover={!isMobile ? { scale: 1.05 } : {}}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                high-performance
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-purple-400 rounded-full"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 1.4, duration: 0.5 }}
-                />
-              </motion.span>{' '}
-              web applications.
-            </motion.p>
+              </span>
+            </motion.div>
 
             {/* Stats section */}
             <motion.div 
