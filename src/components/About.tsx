@@ -239,7 +239,7 @@ const About = () => {
                   <CardContent className="space-y-2 relative z-10 pb-3">
                     {[
                       { label: "Name", value: "Pragyesh Kumar Seth", icon: "👨‍💻" },
-                      { label: "Location", value: "Jaunpur, U.P., India", icon: "📍" },
+                      { label: "Location", value: "India", icon: "📍" },
                       { label: "Email", value: "spragyesh86@gmail.com", icon: "📧" },
                       { label: "Experience", value: "Fresher", icon: "🚀" },
                       { label: "Availability", value: "Full-time", icon: "⏰" },
