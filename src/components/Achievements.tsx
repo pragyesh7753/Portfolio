@@ -6,6 +6,8 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { cn } from '@/lib/utils';
+import { getDriveThumbnail } from '@/utils/driveUtils';
+import { DRIVE_ASSETS } from '@/config/driveAssets';
 
 interface Certificate {
   id: string;
@@ -25,7 +27,7 @@ const certificates: Certificate[] = [
     title: "Full Stack Web Development",
     issuedBy: "PW Skills",
     date: "April 2023",
-    imageUrl: "/images/certificates/mern-stack-pw-skills-certificate.png",
+    imageUrl: DRIVE_ASSETS.certificates.mernStack,
     driveUrl: "https://learn.pwskills.com/certificate/fce1fcfd-7e97-4b7d-ad54-5e62ed63911c",
     featured: true,
     category: "development",
@@ -36,7 +38,7 @@ const certificates: Certificate[] = [
     title: "Python Programming",
     issuedBy: "Scaler",
     date: "June 2025",
-    imageUrl: "/images/certificates/python-programming.png",
+    imageUrl: DRIVE_ASSETS.certificates.python,
     driveUrl: "https://moonshot.scaler.com/s/sl/QchAavjio8",
     featured: true,
     category: "development",
@@ -47,7 +49,7 @@ const certificates: Certificate[] = [
     title: "All India Online Aptitude Test 2025",
     issuedBy: "Naukri Campus",
     date: "May 2025",
-    imageUrl: "/images/certificates/aincat_2025_certificate.jpg",
+    imageUrl: DRIVE_ASSETS.certificates.aincat,
     driveUrl: "https://www.naukri.com/campus/certificates/naukri_campus_ai_ncat_achievemen_may_2025/v0/683a339c892c1f3133ab56ed",
     featured: true,
     category: "competition",
@@ -58,8 +60,8 @@ const certificates: Certificate[] = [
     title: "Innoviz - 2025",
     issuedBy: "St. Andrews Institute of Technology & Management",
     date: "April 2025",
-    imageUrl: "/images/certificates/Innoviz-paticipation.jpg",
-    driveUrl: "https://drive.google.com/file/d/10BadZlGjPAen5ArSRActyX7W1jjFP4TI/view",
+    imageUrl: DRIVE_ASSETS.certificates.innoviz,
+    driveUrl: DRIVE_ASSETS.certificates.innoviz,
     featured: true,
     category: "competition",
     description: "Participated in Innoviz 2025, showcasing innovative solutions and teamwork in technical competitions."
@@ -69,8 +71,8 @@ const certificates: Certificate[] = [
     title: "Merit Performance Award",
     issuedBy: "St. Andrews Institute of Technology & Management",
     date: "November 2023",
-    imageUrl: "/images/certificates/merit-performance.jpg",
-    driveUrl: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view",
+    imageUrl: DRIVE_ASSETS.certificates.merit,
+    driveUrl: DRIVE_ASSETS.certificates.merit,
     featured: true,
     category: "academic",
     description: "Received the Merit Performance Award for outstanding academic achievements and consistent high performance."
@@ -80,8 +82,8 @@ const certificates: Certificate[] = [
     title: "Java Programming",
     issuedBy: "Great Learning",
     date: "December 2023",
-    imageUrl: "/images/certificates/java-programming.jpg",
-    driveUrl: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view",
+    imageUrl: DRIVE_ASSETS.certificates.java,
+    driveUrl: DRIVE_ASSETS.certificates.java,
     featured: true,
     category: "development",
     description: "Completed a Java programming course, gaining proficiency in core Java concepts and OOP."
@@ -91,8 +93,8 @@ const certificates: Certificate[] = [
     title: "Bapu Bazaar Samman Patra",
     issuedBy: "Veer Bahadur Singh Purvanchal University",
     date: "March 2023",
-    imageUrl: "/images/certificates/bapu-bazaar.jpg",
-    driveUrl: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view",
+    imageUrl: DRIVE_ASSETS.certificates.bapu,
+    driveUrl: DRIVE_ASSETS.certificates.bapu,
     featured: false,
     category: "competition",
     description: "Awarded for active participation in university-level cultural and social events."
@@ -102,8 +104,8 @@ const certificates: Certificate[] = [
     title: "Voter Awareness Campaign",
     issuedBy: "Veer Bahadur Singh Purvanchal University",
     date: "March 2023",
-    imageUrl: "/images/certificates/voter.jpg",
-    driveUrl: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view",
+    imageUrl: DRIVE_ASSETS.certificates.voter,
+    driveUrl: DRIVE_ASSETS.certificates.voter,
     featured: false,
     category: "community",
     description: "Recognized for volunteering in the Voter Awareness Campaign, promoting civic responsibility."
@@ -360,7 +362,7 @@ const CertificateCard = ({
               {!imageError ? (
                 <>
                   <img
-                    src={certificate.imageUrl}
+                    src={getDriveThumbnail(certificate.imageUrl, 600)}
                     alt={certificate.title}
                     className={cn(
                       "object-cover w-full h-full transition-all duration-300",

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Button } from './ui/button';
 import { ProfileAvatar } from './ProfileAvatar';
+import { DRIVE_ASSETS } from '@/config/driveAssets';
 
 // Constants for performance optimization
 const FULL_NAME = "Pragyesh Kumar Seth";
@@ -556,7 +557,7 @@ const Home = () => {
                   className="relative overflow-hidden bg-white/4 backdrop-blur-xl border-white/15 hover:bg-white/8 px-4 sm:px-6 py-2 sm:py-3 h-auto text-sm sm:text-base font-semibold rounded-lg shadow-lg"
                   asChild
                 >
-                  <a href="/resume.pdf" download="Pragyesh_Kumar_Seth_Resume.pdf">
+                  <a href="https://drive.google.com/uc?export=download&id=1SWw_1mCAbpi7jnYLK1U0Su984fp_EVnU" download="Pragyesh_Kumar_Seth_Resume.pdf">
                     <span className="flex items-center gap-1.5">
                       <motion.svg
                         className="h-3 w-3 sm:h-4 sm:w-4"
@@ -653,7 +654,7 @@ const Home = () => {
                 transition={{ type: "spring", stiffness: 150, damping: 20 }}
               >
                 <ProfileAvatar 
-                  src="/images/profile.jpg"
+                  src="/dp.png"
                   alt="Pragyesh Kumar Seth" 
                   size="xl"
                   className="shadow-lg ring-3 sm:ring-4 ring-white/15 relative z-10 rounded-full w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72"
