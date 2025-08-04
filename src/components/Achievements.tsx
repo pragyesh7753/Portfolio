@@ -124,11 +124,11 @@ const Achievements = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
-  const filteredCertificates = useMemo(() => 
+  const filteredCertificates = useMemo(() =>
     certificates.filter(cert => {
       const featuredMatch = showAll || cert.featured;
       const categoryMatch = selectedCategory === 'all' || cert.category === selectedCategory;
-      const searchMatch = !searchQuery || 
+      const searchMatch = !searchQuery ||
         cert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         cert.issuedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
         cert.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -156,14 +156,26 @@ const Achievements = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold relative inline-block">
+          {/* Header */}
+          <div className="mb-16 text-center">
+            <motion.h2
+              className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent relative inline-block"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
               Achievements
               <Star className="absolute -top-3 -right-3 h-6 w-6 text-amber-500 opacity-70" />
-            </h2>
-            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+            </motion.h2>
+
+            <motion.p
+              className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               A showcase of certifications and recognition earned through continuous learning
-            </p>
+            </motion.p>
           </div>
 
           <div className="mb-8 space-y-4">
@@ -186,10 +198,10 @@ const Achievements = () => {
                 </Button>
               )}
             </div>
-            
+
             <div className="flex flex-wrap gap-2 justify-center">
               {categories.map(category => (
-                <Badge 
+                <Badge
                   key={category.id}
                   variant={selectedCategory === category.id ? 'default' : 'outline'}
                   className={cn(
@@ -201,7 +213,7 @@ const Achievements = () => {
                   {category.label}
                 </Badge>
               ))}
-              <Badge 
+              <Badge
                 variant="secondary"
                 className="cursor-pointer px-3 py-1.5 transition-all ml-2"
                 onClick={() => setShowAll(!showAll)}
@@ -213,7 +225,7 @@ const Achievements = () => {
 
           <AnimatePresence mode="wait">
             {filteredCertificates.length === 0 ? (
-              <motion.div 
+              <motion.div
                 key="empty"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -238,9 +250,9 @@ const Achievements = () => {
                 transition={{ staggerChildren: 0.05 }}
               >
                 {filteredCertificates.map((certificate, index) => (
-                  <CertificateCard 
-                    key={certificate.id} 
-                    certificate={certificate} 
+                  <CertificateCard
+                    key={certificate.id}
+                    certificate={certificate}
                     index={index}
                     isExpanded={expandedCard === certificate.id}
                     onExpand={() => handleCardExpand(certificate.id)}
@@ -272,13 +284,13 @@ const Achievements = () => {
   );
 };
 
-const CertificateCard = ({ 
-  certificate, 
-  index, 
-  isExpanded, 
-  onExpand 
-}: { 
-  certificate: Certificate; 
+const CertificateCard = ({
+  certificate,
+  index,
+  isExpanded,
+  onExpand
+}: {
+  certificate: Certificate;
   index: number;
   isExpanded: boolean;
   onExpand: () => void;
@@ -290,7 +302,7 @@ const CertificateCard = ({
 
   const gradientColors = [
     'from-blue-500/20',
-    'from-purple-500/20', 
+    'from-purple-500/20',
     'from-teal-500/20',
     'from-amber-500/20',
     'from-rose-500/20'
@@ -379,7 +391,7 @@ const CertificateCard = ({
                 </div>
               )}
             </div>
-            
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 p-3">
               <h3 className="font-semibold text-white text-sm line-clamp-2">{certificate.title}</h3>
