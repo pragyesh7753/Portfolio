@@ -556,7 +556,7 @@ const Home = () => {
                   className="relative overflow-hidden bg-white/4 backdrop-blur-xl border-white/15 hover:bg-white/8 px-4 sm:px-6 py-2 sm:py-3 h-auto text-sm sm:text-base font-semibold rounded-lg shadow-lg"
                   asChild
                 >
-                  <a href="https://drive.google.com/uc?export=download&id=1SWw_1mCAbpi7jnYLK1U0Su984fp_EVnU" download="Pragyesh_Kumar_Seth_Resume.pdf">
+                  <a href="https://drive.google.com/uc?export=download&id=1eOSI7Fs_p3DUC_aGpmCoYZiPs5fyJcR1" download="Pragyesh_Kumar_Seth_Resume.pdf">
                     <span className="flex items-center gap-1.5">
                       <motion.svg
                         className="h-3 w-3 sm:h-4 sm:w-4"
