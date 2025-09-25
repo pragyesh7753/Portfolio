@@ -32,11 +32,48 @@ interface Project {
 
 const PROJECTS: Project[] = [
   {
+    id: "chatify",
+    title: "Chatify - Full Stack Chat Application",
+    description: "A modern, full-stack, and feature-rich communication app blending the best of WhatsApp, Slack, and Facebook with innovative chat, call, and collaboration tools.",
+    longDescription: "Chatify is a comprehensive communication platform that combines real-time messaging, voice/video calls, and collaborative features. Built with modern web technologies, it offers a seamless user experience with features like group chats, file sharing, emoji reactions, and more.",
+    tech: ["React", "Tailwind CSS", "Daisy UI", "Express", "MongoDB", "Cloudinary", "Socket.io", "Node.js"],
+    category: "fullstack",
+    liveUrl: "https://chatify.pragyesh.tech/",
+    githubUrl: "https://github.com/pragyesh7753/Chatify",
+    featured: true,
+    stars: 35,
+    forks: 12,
+    status: "in-progress",
+    difficulty: "advanced",
+    features: [
+      "Real-time messaging with Stream API",
+      "Group chat functionality",
+      "File and image sharing via Cloudinary",
+      "User authentication and profiles",
+      "Emoji reactions and typing indicators",
+      "Message search and history",
+      "Responsive design with Tailwind CSS",
+      "Modern UI components with Daisy UI"
+    ],
+    challenges: [
+      "Real-time synchronization across multiple users",
+      "Efficient file upload and storage management",
+      "Scalable socket connection handling",
+      "Database optimization for message history"
+    ],
+    learnings: [
+      "WebSocket for real-time communication",
+      "Cloud storage integration with Cloudinary",
+      "Advanced React state management",
+      "MongoDB schema design for chat applications"
+    ]
+  },
+  {
     id: "internauto",
     title: "InternAuto - Automate Your Future",
     description: "Automated internship application platform with AI-driven form filling and career guidance.",
-    longDescription: "InternAuto revolutionizes the internship application process with modern web technologies and AI integration.",
-    tech: ["React", "JavaScript", "Python", "Flask", "Selenium", "Tailwind CSS"],
+    longDescription: "InternAuto revolutionizes the internship application process with modern web technologies and AI integration. It automates form filling, provides career guidance, and streamlines the entire application workflow.",
+    tech: ["React", "JavaScript", "Python", "Flask", "Selenium", "Tailwind CSS", "AI/ML"],
     category: "fullstack",
     liveUrl: "https://internauto.pragyesh.tech/",
     githubUrl: "https://github.com/pragyesh7753/InternAuto_project",
@@ -45,15 +82,33 @@ const PROJECTS: Project[] = [
     forks: 8,
     status: "completed",
     difficulty: "advanced",
-    features: ["AI form filling", "Web scraping", "Resume generation", "Career guidance", "Application tracking"],
-    challenges: ["Reliable web scraping", "AI model integration", "Dynamic website handling"],
-    learnings: ["Python automation", "AI/ML integration", "Complex React state management"]
+    features: [
+      "AI-powered form filling automation",
+      "Web scraping for internship opportunities",
+      "Resume generation and optimization",
+      "Career guidance and recommendations",
+      "Application tracking dashboard",
+      "Integration with popular job portals"
+    ],
+    challenges: [
+      "Reliable web scraping across different platforms",
+      "AI model integration for form understanding",
+      "Dynamic website handling with Selenium",
+      "Anti-bot detection bypassing"
+    ],
+    learnings: [
+      "Python automation with Selenium",
+      "AI/ML model integration",
+      "Complex React state management",
+      "Flask backend development"
+    ]
   },
   {
     id: "todo-context",
     title: "Todo App with Context API",
-    description: "Feature-rich todo application with React Context API and local storage.",
-    tech: ["React", "Context API", "Tailwind CSS"],
+    description: "Feature-rich todo application with React Context API and local storage persistence.",
+    longDescription: "A comprehensive task management application built with React Context API for state management and local storage for data persistence. Features include task categorization, drag-and-drop functionality, and theme customization.",
+    tech: ["React", "Context API", "Tailwind CSS", "Local Storage"],
     category: "frontend",
     liveUrl: "https://todo.pragyesh.tech/",
     githubUrl: "https://github.com/pragyesh7753/Web_Development/tree/main/React/10-todoContextLocal",
@@ -62,13 +117,31 @@ const PROJECTS: Project[] = [
     forks: 5,
     status: "completed",
     difficulty: "intermediate",
-    features: ["Context API state", "Local storage", "Drag & drop", "Task categories", "Theme toggle"]
+    features: [
+      "Context API for global state management",
+      "Local storage for data persistence",
+      "Drag & drop task reordering",
+      "Task categories and filtering",
+      "Dark/light theme toggle",
+      "Task completion tracking"
+    ],
+    challenges: [
+      "Implementing drag-and-drop functionality",
+      "Managing complex state with Context API",
+      "Local storage synchronization"
+    ],
+    learnings: [
+      "React Context API best practices",
+      "Local storage management",
+      "Advanced React hooks usage"
+    ]
   },
   {
     id: "password-manager",
     title: "Password Manager",
-    description: "Secure password manager with local encryption and storage.",
-    tech: ["React", "LocalStorage", "Encryption"],
+    description: "Secure password manager with local encryption and storage for managing credentials safely.",
+    longDescription: "A secure password management application that stores encrypted passwords locally. Features password generation, secure storage, and import/export capabilities for managing all your credentials in one place.",
+    tech: ["React", "LocalStorage", "Encryption", "JavaScript", "Tailwind CSS"],
     category: "frontend",
     liveUrl: "https://pass-op.pragyesh.tech/",
     githubUrl: "https://github.com/pragyesh7753/Password-Manager_localStorage-version",
@@ -76,13 +149,31 @@ const PROJECTS: Project[] = [
     forks: 3,
     status: "completed",
     difficulty: "intermediate",
-    features: ["Local encryption", "Password generation", "Secure storage", "Import/Export"]
+    features: [
+      "Local encryption for password security",
+      "Random password generation",
+      "Secure local storage",
+      "Import/Export functionality",
+      "Search and filter passwords",
+      "Copy to clipboard feature"
+    ],
+    challenges: [
+      "Implementing client-side encryption",
+      "Secure local data storage",
+      "User experience for password management"
+    ],
+    learnings: [
+      "Client-side encryption techniques",
+      "Security best practices",
+      "Local storage optimization"
+    ]
   },
   {
     id: "portfolio",
     title: "Portfolio Website",
-    description: "Modern, professional portfolio with smooth animations and dark mode.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "Radix UI"],
+    description: "Modern, professional portfolio website with smooth animations, dark mode, and responsive design.",
+    longDescription: "A contemporary portfolio website showcasing projects, skills, and experience. Built with modern technologies and featuring smooth animations, email integration, and SEO optimization for maximum impact.",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "Radix UI", "EmailJS"],
     category: "frontend",
     liveUrl: "https://pragyesh.tech/",
     githubUrl: "https://github.com/pragyesh7753/Portfolio",
@@ -90,21 +181,58 @@ const PROJECTS: Project[] = [
     stars: 20,
     forks: 6,
     status: "completed",
-    difficulty: "beginner",
-    features: ["Modern design", "Smooth animations", "Email integration", "SEO optimized"]
+    difficulty: "intermediate",
+    features: [
+      "Modern and clean design",
+      "Smooth animations with Framer Motion",
+      "Dark/light mode toggle",
+      "Email integration for contact form",
+      "SEO optimized",
+      "Fully responsive design",
+      "TypeScript for type safety"
+    ],
+    challenges: [
+      "Complex animation orchestration",
+      "Performance optimization",
+      "Cross-browser compatibility"
+    ],
+    learnings: [
+      "Advanced Framer Motion animations",
+      "TypeScript best practices",
+      "Modern UI/UX principles"
+    ]
   },
   {
     id: "harmony-music-school",
     title: "Harmony Music School",
-    description: "Modern music school platform built with Next.js and Aceternity UI.",
-    tech: ["Next.js", "TypeScript", "Aceternity UI", "Tailwind CSS"],
+    description: "Modern music school platform built with Next.js and Aceternity UI for course management and student engagement.",
+    longDescription: "A comprehensive music education platform designed for music schools. Features course management, student dashboards, event scheduling, and instructor tools, all wrapped in a modern and intuitive interface.",
+    tech: ["Next.js", "TypeScript", "Aceternity UI", "Tailwind CSS", "React"],
     category: "frontend",
     liveUrl: "https://harmonyschool.pragyesh.tech/",
     githubUrl: "https://github.com/pragyesh7753/Web_Development/tree/main/NEXT.js/Mini-Project/next-app",
-    stars: 1,
+    stars: 8,
+    forks: 2,
     status: "completed",
     difficulty: "intermediate",
-    features: ["Course management", "Student dashboards", "Responsive design", "Event scheduling"]
+    features: [
+      "Course catalog and management",
+      "Student enrollment system",
+      "Instructor dashboards",
+      "Event and recital scheduling",
+      "Responsive design",
+      "Modern UI with Aceternity components"
+    ],
+    challenges: [
+      "Complex component architecture",
+      "State management across pages",
+      "Integration with Aceternity UI"
+    ],
+    learnings: [
+      "Next.js framework features",
+      "Advanced TypeScript usage",
+      "Component library integration"
+    ]
   }
 ];
 
