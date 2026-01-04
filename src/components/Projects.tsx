@@ -104,8 +104,8 @@ const PROJECTS: Project[] = [
     ]
   },
   {
-    id: "todo-context",
-    title: "Todo App with Context API",
+    id: "todomaster-pro",
+    title: "TodoMaster Pro",
     description: "Feature-rich todo application with React Context API and local storage persistence.",
     longDescription: "A comprehensive task management application built with React Context API for state management and local storage for data persistence. Features include task categorization, drag-and-drop functionality, and theme customization.",
     tech: ["React", "Context API", "Tailwind CSS", "Local Storage"],
