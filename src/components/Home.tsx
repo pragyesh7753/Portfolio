@@ -653,7 +653,7 @@ const Home = () => {
                 transition={{ type: "spring", stiffness: 150, damping: 20 }}
               >
                 <ProfileAvatar 
-                  src="/dp.png"
+                  src="/dp.jpg"
                   alt="Pragyesh Kumar Seth" 
                   size="xl"
                   className="shadow-lg ring-3 sm:ring-4 ring-white/15 relative z-10 rounded-full w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72"
