@@ -29,4 +29,4 @@ This portfolio serves as a comprehensive showcase of my work, skills, and profes
 
 ## Deployment
 
-The site is deployed at pragyesh.tech
+The site is deployed at pragyesh.in
