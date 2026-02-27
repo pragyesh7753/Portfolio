@@ -1,57 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
-import { ScrollToTop } from './components/ScrollToTop';
-import LoadingScreen from './components/LoadingScreen';
+import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
 import Projects from './components/Projects';
-import Contact from './components/Contact';
 import Achievements from './components/Achievements';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
-import ParticlesBackgroundEnhanced from './components/ParticlesBackgroundEnhanced';
+import LoadingScreen from './components/LoadingScreen';
+import InteractiveBackground from './components/InteractiveBackground';
+import CustomCursor from './components/CustomCursor';
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [, setError] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    try {
-      return <LoadingScreen />;
-    } catch (e) {
-      console.error("Loading screen error:", e);
-      setError(true);
-    }
-  }
 
   return (
     <ThemeProvider defaultTheme="dark">
-      <Router>
-        <ScrollToTop />
-        <div className="min-h-screen bg-background text-foreground relative">
-          <ParticlesBackgroundEnhanced />
+      {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+      <CustomCursor />
+      <InteractiveBackground />
+      <SmoothScroll>
+        <div className="relative z-[1] min-h-screen bg-transparent text-foreground noise-overlay">
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/achievements" element={<Achievements />} />
-          </Routes>
+          <main>
+            <Home />
+            <About />
+            <Projects />
+            <Achievements />
+            <Contact />
+          </main>
           <Footer />
           <Toaster />
         </div>
-      </Router>
+      </SmoothScroll>
     </ThemeProvider>
   );
 }

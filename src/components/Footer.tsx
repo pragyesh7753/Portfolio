@@ -1,113 +1,109 @@
-import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import { memo } from 'react';
+import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
+import { memo, useCallback } from 'react';
+import { scrollToSection } from './SmoothScroll';
 
 const XIcon = () => (
-  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
 const socialLinks = [
-  { href: 'https://github.com/pragyesh7753', icon: Github, label: 'GitHub', hover: 'hover:bg-primary hover:text-primary-foreground' },
-  { href: 'http://www.linkedin.com/in/pragyesh77', icon: Linkedin, label: 'LinkedIn', hover: 'hover:bg-blue-600 hover:text-white' },
-  { href: 'mailto:spragyesh86@gmail.com', icon: Mail, label: 'Email', hover: 'hover:bg-red-500 hover:text-white' },
-  { href: 'https://x.com/SethPragyesh', icon: XIcon, label: 'X', hover: 'hover:bg-blue-400 hover:text-white' }
+  { href: 'https://github.com/pragyesh7753', icon: Github, label: 'GitHub' },
+  { href: 'http://www.linkedin.com/in/pragyesh77', icon: Linkedin, label: 'LinkedIn' },
+  { href: 'mailto:spragyesh86@gmail.com', icon: Mail, label: 'Email' },
+  { href: 'https://x.com/SethPragyesh', icon: XIcon, label: 'X' },
 ];
 
-const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/achievements', label: 'Achievements' },
-  { to: '/contact', label: 'Contact' }
-];
+const MARQUEE_ITEMS = ['LET\'S WORK TOGETHER', 'LET\'S BUILD SOMETHING', 'LET\'S CREATE'];
 
-const services = ['Web Development', 'API Development', 'Consulting'];
+const Footer = memo(() => {
+  const scrollTop = useCallback(() => scrollToSection('home'), []);
 
-const Footer = memo(() => (
-  <footer className="bg-background/80 backdrop-blur-md border-t border-border/40">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-violet-500 to-purple-600">
-            Pragyesh Kumar Seth
-          </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Full stack developer creating innovative solutions with modern technologies. 
-            Building scalable, accessible, and performant web applications.
-          </p>
-          <div className="flex gap-3">
-            {socialLinks.map(({ href, icon: Icon, label, hover }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith('http') ? '_blank' : undefined}
-                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className={`flex items-center justify-center w-10 h-10 rounded-full bg-muted ${hover} transition-all duration-300 group`}
-                aria-label={label}
+  return (
+    <footer className="relative border-t border-foreground/[0.04] overflow-hidden">
+      {/* Large background text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+        <span
+          className="text-stroke text-foreground/[0.03] whitespace-nowrap leading-none"
+          style={{
+            fontSize: 'clamp(5rem, 18vw, 22rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.04em',
+          }}
+        >
+          PRAGYESH
+        </span>
+      </div>
+
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12">
+        {/* CTA marquee strip */}
+        <div className="py-12 border-b border-foreground/[0.04] overflow-hidden">
+          <div className="animate-marquee flex whitespace-nowrap">
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+              <span
+                key={i}
+                className="mx-10 text-xl md:text-2xl font-bold text-foreground/[0.08] uppercase tracking-[0.1em] flex items-center gap-10"
               >
-                <Icon className="group-hover:scale-110 transition-transform" />
-              </a>
+                {item}
+                <span className="text-foreground/[0.12]">✦</span>
+              </span>
             ))}
           </div>
         </div>
-        
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold">Quick Links</h3>
-          <ul className="space-y-3">
-            {navLinks.map(({ to, label }) => (
-              <li key={to}>
-                <NavLink 
-                  to={to} 
-                  className={({ isActive }) => 
-                    `text-sm transition-all duration-200 hover:translate-x-1 inline-block ${
-                      isActive ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                    }`
-                  }
+
+        {/* Main footer content */}
+        <div className="py-12 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h3 className="text-lg font-bold tracking-tight mb-1">
+              <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
+                Pragyesh Kumar Seth
+              </span>
+            </h3>
+            <p className="text-xs text-muted-foreground/50">
+              Full Stack Developer · Building the web, one pixel at a time.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-6">
+            {/* Social links */}
+            <div className="flex items-center gap-2">
+              {socialLinks.map(({ href, icon: Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="p-2.5 rounded-full border border-foreground/[0.05] text-muted-foreground/50 hover:text-foreground hover:border-foreground/[0.12] transition-all duration-300"
+                  aria-label={label}
                 >
-                  {label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold">Services</h3>
-          <ul className="space-y-3 text-sm text-muted-foreground">
-            {services.map(service => (
-              <li key={service} className="hover:text-foreground transition-colors cursor-pointer">
-                {service}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold">Get In Touch</h3>
-          <div className="space-y-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <Mail size={16} className="text-primary" />
-              <span>spragyesh86@gmail.com</span>
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
-            <div className="flex items-center gap-3">
-              <MapPin size={16} className="text-primary" />
-              <span>India</span>
-            </div>
+
+            {/* Back to top */}
+            <button
+              onClick={scrollTop}
+              className="p-2.5 rounded-full border border-foreground/[0.05] text-muted-foreground/50 hover:text-foreground hover:border-foreground/[0.12] transition-all duration-300"
+              aria-label="Back to top"
+            >
+              <ArrowUp className="w-4 h-4" />
+            </button>
           </div>
         </div>
+
+        {/* Copyright */}
+        <div className="border-t border-foreground/[0.04] py-8 text-center">
+          <p className="text-[11px] text-muted-foreground/30 font-mono tracking-wider">
+            © {new Date().getFullYear()} Pragyesh Kumar Seth. Crafted with React, TypeScript,
+            GSAP & Framer Motion.
+          </p>
+        </div>
       </div>
-      
-      <div className="border-t border-border/60 mt-12 pt-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Pragyesh Kumar Seth. All rights reserved.
-        </p>
-      </div>
-    </div>
-  </footer>
-));
+    </footer>
+  );
+});
 
 Footer.displayName = 'Footer';
-
 export default Footer;
