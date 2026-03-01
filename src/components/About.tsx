@@ -135,10 +135,12 @@ const About = () => {
 
   return (
     <section id="about" ref={sectionRef} className="relative py-32 md:py-40 overflow-hidden">
+      {/* Section accent glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.06] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.8), transparent 70%)' }} />
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Section label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-muted-foreground/40 uppercase tracking-[0.3em]">
+          <span className="text-[10px] font-mono text-indigo-400/60 uppercase tracking-[0.3em]">
             01 — About
           </span>
         </div>
@@ -150,7 +152,7 @@ const About = () => {
               {'ABOUT ME'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="about-char inline-block leading-[0.85]"
+                  className="about-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 900,
@@ -169,7 +171,7 @@ const About = () => {
           {/* Avatar */}
           <div className="lg:col-span-4 bio-reveal">
             <div className="relative">
-              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-foreground/[0.03] border border-foreground/[0.06]">
+              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-foreground/[0.03] border border-indigo-500/10 shadow-lg shadow-indigo-500/5">
                 <img
                   src="/dp.jpg"
                   alt="Pragyesh Kumar Seth"
@@ -205,7 +207,7 @@ const About = () => {
               {personalInfo.map((item) => (
                 <span
                   key={item}
-                  className="text-sm text-muted-foreground px-4 py-2 rounded-full border border-foreground/[0.06] bg-foreground/[0.02]"
+                  className="text-sm text-muted-foreground px-4 py-2 rounded-full border border-indigo-500/10 bg-indigo-500/[0.03] hover:border-indigo-500/20 transition-colors"
                 >
                   {item}
                 </span>
@@ -217,12 +219,12 @@ const About = () => {
         {/* Stats */}
         <div
           ref={statsRef}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-28 py-14 border-y border-foreground/[0.05]"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-28 py-14 border-y border-indigo-500/[0.08]"
         >
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
               <span
-                className="stat-number text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground"
+                className="stat-number text-4xl md:text-5xl lg:text-6xl font-black tracking-tight bg-gradient-to-b from-foreground to-foreground/50 bg-clip-text text-transparent"
                 data-target={stat.value}
                 data-suffix={stat.suffix}
               >
@@ -237,14 +239,14 @@ const About = () => {
 
         {/* Skills */}
         <div ref={skillsRef}>
-          <h3 className="text-[11px] font-medium text-muted-foreground/50 uppercase tracking-[0.2em] mb-10">
+          <h3 className="text-[11px] font-medium text-indigo-400/50 uppercase tracking-[0.2em] mb-10">
             Technical Skills
           </h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {skills.map((group) => (
               <div
                 key={group.category}
-                className="skill-card group p-6 rounded-2xl border border-foreground/[0.05] bg-foreground/[0.015] hover:border-foreground/[0.12] transition-all duration-500"
+                className="skill-card group p-6 rounded-2xl border border-foreground/[0.05] bg-gradient-to-br from-foreground/[0.02] to-indigo-500/[0.02] hover:border-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-500"
               >
                 <h4 className="text-[11px] font-medium text-muted-foreground/60 uppercase tracking-[0.2em] mb-5">
                   {group.category}
@@ -253,7 +255,7 @@ const About = () => {
                   {group.items.map((skill) => (
                     <span
                       key={skill}
-                      className="text-[13px] px-3 py-1.5 rounded-full bg-foreground/[0.03] text-foreground/70 hover:bg-foreground/[0.07] hover:text-foreground transition-colors duration-300"
+                      className="text-[13px] px-3 py-1.5 rounded-full bg-foreground/[0.04] text-foreground/70 hover:bg-indigo-500/10 hover:text-foreground transition-colors duration-300"
                     >
                       {skill}
                     </span>

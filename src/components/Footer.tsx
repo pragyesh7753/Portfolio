@@ -21,11 +21,11 @@ const Footer = memo(() => {
   const scrollTop = useCallback(() => scrollToSection('home'), []);
 
   return (
-    <footer className="relative border-t border-foreground/[0.04] overflow-hidden">
+    <footer className="relative border-t border-indigo-500/[0.08] overflow-hidden">
       {/* Large background text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <span
-          className="text-stroke text-foreground/[0.03] whitespace-nowrap leading-none"
+          className="text-stroke text-foreground/[0.04] whitespace-nowrap leading-none"
           style={{
             fontSize: 'clamp(5rem, 18vw, 22rem)',
             fontWeight: 900,
@@ -43,10 +43,10 @@ const Footer = memo(() => {
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <span
                 key={i}
-                className="mx-10 text-xl md:text-2xl font-bold text-foreground/[0.08] uppercase tracking-[0.1em] flex items-center gap-10"
+                className="mx-10 text-xl md:text-2xl font-bold text-indigo-500/[0.08] uppercase tracking-[0.1em] flex items-center gap-10"
               >
                 {item}
-                <span className="text-foreground/[0.12]">✦</span>
+                <span className="text-violet-500/[0.15]">✦</span>
               </span>
             ))}
           </div>
@@ -74,7 +74,7 @@ const Footer = memo(() => {
                   href={href}
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="p-2.5 rounded-full border border-foreground/[0.05] text-muted-foreground/50 hover:text-foreground hover:border-foreground/[0.12] transition-all duration-300"
+                  className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
                   aria-label={label}
                 >
                   <Icon className="w-4 h-4" />
@@ -85,7 +85,7 @@ const Footer = memo(() => {
             {/* Back to top */}
             <button
               onClick={scrollTop}
-              className="p-2.5 rounded-full border border-foreground/[0.05] text-muted-foreground/50 hover:text-foreground hover:border-foreground/[0.12] transition-all duration-300"
+              className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
               aria-label="Back to top"
             >
               <ArrowUp className="w-4 h-4" />
@@ -94,10 +94,9 @@ const Footer = memo(() => {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-foreground/[0.04] py-8 text-center">
+        <div className="border-t border-indigo-500/[0.06] py-8 text-center">
           <p className="text-[11px] text-muted-foreground/30 font-mono tracking-wider">
-            © {new Date().getFullYear()} Pragyesh Kumar Seth. Crafted with React, TypeScript,
-            GSAP & Framer Motion.
+            © {new Date().getFullYear()} Pragyesh Kumar Seth
           </p>
         </div>
       </div>

@@ -206,7 +206,7 @@ const Achievements = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-muted-foreground/40 uppercase tracking-[0.3em]">
+          <span className="text-[10px] font-mono text-amber-400/60 uppercase tracking-[0.3em]">
             03 — Recognition
           </span>
         </div>
@@ -218,7 +218,7 @@ const Achievements = () => {
               {'ACHIEVEMENTS'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="ach-char inline-block leading-[0.85]"
+                  className="ach-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 900,
@@ -246,7 +246,7 @@ const Achievements = () => {
                 className={cn(
                   'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 capitalize',
                   selectedCategory === cat.id
-                    ? 'bg-foreground text-background'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20'
                     : 'bg-foreground/[0.04] text-muted-foreground hover:bg-foreground/[0.08] border border-foreground/[0.06]'
                 )}
               >
@@ -332,7 +332,7 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
   return (
     <motion.div
       layout
-      className="cert-card group relative rounded-2xl border border-foreground/[0.05] bg-foreground/[0.015] hover:border-foreground/[0.12] transition-all duration-500 overflow-hidden"
+      className="cert-card group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-amber-500/[0.015] hover:border-amber-500/20 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-500 overflow-hidden"
       whileHover={{ y: -3 }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] via-transparent to-orange-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />

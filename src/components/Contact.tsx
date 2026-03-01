@@ -188,7 +188,7 @@ const Contact = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-muted-foreground/40 uppercase tracking-[0.3em]">
+          <span className="text-[10px] font-mono text-cyan-400/60 uppercase tracking-[0.3em]">
             04 — Contact
           </span>
         </div>
@@ -200,7 +200,7 @@ const Contact = () => {
               {"LET'S".split('').map((char, i) => (
                 <span
                   key={`a-${i}`}
-                  className="ct-char inline-block leading-[0.85]"
+                  className="ct-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 900,
@@ -217,11 +217,13 @@ const Contact = () => {
               {'CONNECT'.split('').map((char, i) => (
                 <span
                   key={`b-${i}`}
-                  className="ct-char inline-block text-stroke text-foreground/25 leading-[0.85]"
+                  className="ct-char inline-block leading-[0.85]"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 900,
                     letterSpacing: '-0.04em',
+                    WebkitTextStroke: '1.5px rgba(6,182,212,0.4)',
+                    WebkitTextFillColor: 'transparent',
                   }}
                 >
                   {char}
@@ -249,7 +251,7 @@ const Contact = () => {
               {contactInfo.map((info, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.05] bg-foreground/[0.015] hover:border-foreground/[0.1] transition-all duration-300 group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-cyan-500/[0.015] hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5 transition-all duration-300 group"
                 >
                   <div className="p-2 rounded-lg bg-foreground/[0.05] text-muted-foreground group-hover:text-foreground transition-colors">
                     {info.icon}
@@ -285,7 +287,7 @@ const Contact = () => {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl border border-foreground/[0.05] bg-foreground/[0.015] text-muted-foreground hover:text-foreground hover:border-foreground/[0.12] transition-all duration-300"
+                    className="p-3 rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] text-muted-foreground hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
                     aria-label={s.label}
                   >
                     {s.icon}

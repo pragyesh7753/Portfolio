@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
 
 interface Props {
@@ -6,9 +6,10 @@ interface Props {
 }
 
 const LoadingScreen = ({ onComplete }: Props) => {
-  const [count, setCount] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const done = useRef(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
@@ -36,14 +37,16 @@ const LoadingScreen = ({ onComplete }: Props) => {
       );
     }
 
-    // Counter tween
+    // Counter tween — direct DOM update, no React re-renders
     const obj = { val: 0 };
     gsap.to(obj, {
       val: 100,
       duration: 2.6,
       ease: 'power2.inOut',
       onUpdate() {
-        setCount(Math.round(obj.val));
+        const v = Math.round(obj.val);
+        if (counterRef.current) counterRef.current.textContent = `${v}%`;
+        if (barRef.current) barRef.current.style.width = `${v}%`;
       },
       onComplete() {
         triggerExit();
@@ -55,7 +58,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
     <div
       ref={containerRef}
       className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ backgroundColor: '#09090b' }}
+      style={{ backgroundColor: '#0a0e19' }}
     >
       {/* Subtle grid */}
       <div
@@ -74,7 +77,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
             {'PRAGYESH'.split('').map((char, i) => (
               <span
                 key={i}
-                className="ld-char inline-block text-white text-5xl sm:text-7xl md:text-8xl font-black tracking-[-0.04em]"
+                className="ld-char inline-block bg-gradient-to-b from-white to-indigo-200 bg-clip-text text-transparent text-5xl sm:text-7xl md:text-8xl font-black tracking-[-0.04em]"
               >
                 {char}
               </span>
@@ -86,12 +89,13 @@ const LoadingScreen = ({ onComplete }: Props) => {
         <div className="max-w-[220px] mx-auto">
           <div className="flex justify-between text-[10px] text-white/25 mb-3 font-mono uppercase tracking-[0.25em]">
             <span>Loading</span>
-            <span>{count}%</span>
+            <span ref={counterRef}>0%</span>
           </div>
-          <div className="h-[1px] bg-white/[0.08] overflow-hidden rounded-full">
+          <div className="h-[2px] bg-white/[0.06] overflow-hidden rounded-full">
             <div
-              className="h-full bg-white/80 rounded-full"
-              style={{ width: `${count}%`, transition: 'width 0.05s linear' }}
+              ref={barRef}
+              className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500"
+              style={{ width: '0%' }}
             />
           </div>
         </div>

@@ -52,7 +52,7 @@ const Navbar = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden md:block"
           >
-            <div className="flex items-center gap-1 px-2.5 py-2 rounded-full bg-background/70 backdrop-blur-2xl border border-foreground/[0.06] shadow-2xl shadow-black/5 dark:shadow-black/40">
+            <div className="flex items-center gap-1 px-2.5 py-2 rounded-full bg-background/80 backdrop-blur-2xl border border-indigo-500/[0.08] shadow-2xl shadow-indigo-500/5 dark:shadow-indigo-500/10">
               {/* Logo */}
               <button
                 onClick={() => handleClick('home')}
@@ -77,7 +77,7 @@ const Navbar = () => {
                   {activeSection === item.id && (
                     <motion.span
                       layoutId="active-pill"
-                      className="absolute inset-0 bg-foreground/[0.06] rounded-full"
+                      className="absolute inset-0 bg-indigo-500/10 rounded-full"
                       transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                     />
                   )}

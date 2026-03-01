@@ -22,7 +22,7 @@ function App() {
       <CustomCursor />
       <InteractiveBackground />
       <SmoothScroll>
-        <div className="relative z-[1] min-h-screen bg-transparent text-foreground noise-overlay">
+        <div className="relative z-[1] min-h-screen bg-transparent text-foreground">
           <Navbar />
           <main>
             <Home />

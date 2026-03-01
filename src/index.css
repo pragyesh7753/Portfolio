@@ -31,26 +31,26 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 98%;
     --primary: 239 84% 67%;
     --primary-foreground: 0 0% 3.9%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --secondary: 217 33% 13%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 13%;
+    --muted-foreground: 215 20% 60%;
+    --accent: 217 33% 13%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --background-rgb: 9,9,11;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 14%;
+    --input: 217 33% 14%;
+    --ring: 224 71% 66%;
+    --background-rgb: 10,14,25;
     --primary-rgb: 99,102,241;
   }
 }
@@ -99,19 +99,27 @@ body {
   min-height: 100vh;
 }
 
-/* Film grain / noise overlay */
-.noise-overlay::after {
-  content: '';
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Aurora drift animations — GPU-accelerated via transform */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(5%, 8%) scale(1.05); }
+  50% { transform: translate(-3%, 15%) scale(0.95); }
+  75% { transform: translate(8%, 5%) scale(1.02); }
 }
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-8%, -5%) scale(1.08); }
+  66% { transform: translate(5%, -10%) scale(0.92); }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(10%, -8%) scale(1.05); }
+  50% { transform: translate(-5%, 5%) scale(0.95); }
+  80% { transform: translate(3%, -3%) scale(1.03); }
+}
+.animate-aurora-1 { animation: aurora-1 20s ease-in-out infinite; }
+.animate-aurora-2 { animation: aurora-2 25s ease-in-out infinite; }
+.animate-aurora-3 { animation: aurora-3 22s ease-in-out infinite; }
 
 /* Marquee */
 @keyframes marquee {
