@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {Award, Star, Search, X } from 'lucide-react';
+import { Award, Star, Search, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
@@ -144,7 +144,8 @@ const Achievements = () => {
     () =>
       certificates.filter((c) => {
         const featuredMatch = showAll || c.featured;
-        const catMatch = selectedCategory === 'all' || c.category === selectedCategory;
+        const catMatch =
+          selectedCategory === 'all' || c.category === selectedCategory;
         const searchMatch =
           !searchQuery ||
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -178,16 +179,17 @@ const Achievements = () => {
     return () => ctx.revert();
   }, []);
 
-  // Grid animation on filter
+  // Grid animation
   useEffect(() => {
     const cards = gridRef.current?.querySelectorAll('.cert-card');
     if (cards?.length) {
       gsap.fromTo(
         cards,
-        { y: 35, opacity: 0 },
+        { y: 35, opacity: 0, scale: 0.95 },
         {
           y: 0,
           opacity: 1,
+          scale: 1,
           stagger: 0.06,
           duration: 0.5,
           ease: 'power3.out',
@@ -206,8 +208,8 @@ const Achievements = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-amber-400/60 uppercase tracking-[0.3em]">
-            03 — Recognition
+          <span className="text-[10px] font-mono text-amber-400/50 uppercase tracking-[0.3em]">
+            04 — Recognition
           </span>
         </div>
 
@@ -218,10 +220,10 @@ const Achievements = () => {
               {'ACHIEVEMENTS'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="ach-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="ach-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
-                    fontWeight: 900,
+                    fontWeight: 700,
                     letterSpacing: '-0.04em',
                   }}
                 >
@@ -231,8 +233,8 @@ const Achievements = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground mt-6 max-w-xl">
-            Certifications and recognition earned through continuous learning and
-            dedication.
+            Certifications and recognition earned through continuous
+            learning and dedication.
           </p>
         </div>
 
@@ -323,7 +325,7 @@ const Achievements = () => {
   );
 };
 
-/* ─────────────────── Cert Card ─────────────────── */
+/* ─────────────────── Cert Card — glass style ─────────────────── */
 
 const CertCard = ({ cert }: { cert: Certificate }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -332,7 +334,7 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
   return (
     <motion.div
       layout
-      className="cert-card group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-amber-500/[0.015] hover:border-amber-500/20 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-500 overflow-hidden"
+      className="cert-card group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-amber-500/[0.015] hover:border-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-500 overflow-hidden"
       whileHover={{ y: -3 }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] via-transparent to-orange-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -378,13 +380,13 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
             </Badge>
           </div>
 
-          {/* Hover overlay with view button */}
+          {/* Hover overlay */}
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
             <a
               href={cert.driveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-full hover:bg-white/90 transition-colors transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+              className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-full hover:bg-white/90 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
             >
               View Certificate
             </a>
@@ -393,7 +395,7 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
 
         {/* Info */}
         <div className="space-y-1.5">
-          <h3 className="font-semibold text-sm leading-tight line-clamp-2">
+          <h3 className="font-display font-semibold text-sm leading-tight line-clamp-2">
             {cert.title}
           </h3>
           <p className="text-[11px] text-muted-foreground/60">

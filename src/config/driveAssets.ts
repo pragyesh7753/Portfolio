@@ -21,6 +21,7 @@ export const DRIVE_ASSETS = {
 // Helper function to get asset URL
 export const getAssetUrl = (path: string): string => {
   const keys = path.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = DRIVE_ASSETS;
 
   for (const key of keys) {

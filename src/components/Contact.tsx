@@ -128,7 +128,8 @@ const Contact = () => {
     const newErrors: Partial<FormData> = {};
     if (!formData.name.trim()) newErrors.name = 'Name required';
     if (!formData.email.trim()) newErrors.email = 'Email required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = 'Invalid email';
     if (!formData.subject.trim()) newErrors.subject = 'Subject required';
     if (!formData.message.trim()) newErrors.message = 'Message required';
     else if (formData.message.length < 10) newErrors.message = 'Min 10 characters';
@@ -188,8 +189,8 @@ const Contact = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-cyan-400/60 uppercase tracking-[0.3em]">
-            04 — Contact
+          <span className="text-[10px] font-mono text-accent-cyan/50 uppercase tracking-[0.3em]">
+            05 — Contact
           </span>
         </div>
 
@@ -200,10 +201,10 @@ const Contact = () => {
               {"LET'S".split('').map((char, i) => (
                 <span
                   key={`a-${i}`}
-                  className="ct-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="ct-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
-                    fontWeight: 900,
+                    fontWeight: 700,
                     letterSpacing: '-0.04em',
                   }}
                 >
@@ -217,12 +218,13 @@ const Contact = () => {
               {'CONNECT'.split('').map((char, i) => (
                 <span
                   key={`b-${i}`}
-                  className="ct-char inline-block leading-[0.85]"
+                  className="ct-char inline-block leading-[0.85] font-display"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
-                    fontWeight: 900,
+                    fontWeight: 700,
                     letterSpacing: '-0.04em',
-                    WebkitTextStroke: '1.5px rgba(6,182,212,0.4)',
+                    WebkitTextStroke:
+                      '1.5px rgba(var(--accent-cyan-rgb), 0.4)',
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
@@ -242,8 +244,8 @@ const Contact = () => {
             className="space-y-8"
           >
             <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
-              Ready to bring your ideas to life? Let's discuss your project and
-              create something amazing together.
+              Ready to bring your ideas to life? Let's discuss your project
+              and create something amazing together.
             </p>
 
             {/* Contact info */}
@@ -251,9 +253,9 @@ const Contact = () => {
               {contactInfo.map((info, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-cyan-500/[0.015] hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5 transition-all duration-300 group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-primary/[0.015] hover:border-primary/15 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
                 >
-                  <div className="p-2 rounded-lg bg-foreground/[0.05] text-muted-foreground group-hover:text-foreground transition-colors">
+                  <div className="p-2 rounded-lg bg-foreground/[0.05] text-muted-foreground group-hover:text-foreground group-hover:bg-primary/10 transition-all duration-300">
                     {info.icon}
                   </div>
                   <div>
@@ -287,7 +289,7 @@ const Contact = () => {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] text-muted-foreground hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
+                    className="p-3 rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] hover:scale-110 transition-all duration-300"
                     aria-label={s.label}
                   >
                     {s.icon}
@@ -297,8 +299,8 @@ const Contact = () => {
             </div>
 
             {/* Response time */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-indigo-500/[0.05] border border-indigo-500/[0.08]">
-              <Clock className="w-4 h-4 text-indigo-500" />
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/[0.04] border border-primary/[0.08]">
+              <Clock className="w-4 h-4 text-primary" />
               <p className="text-xs text-muted-foreground">
                 Typically respond within 24 hours
               </p>
@@ -311,123 +313,154 @@ const Contact = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="p-8 rounded-2xl border border-foreground/[0.05] bg-foreground/[0.015]">
-              <div className="flex items-center gap-2.5 mb-2">
-                <Send className="w-4 h-4 text-indigo-500" />
-                <h3 className="text-lg font-semibold">Send Message</h3>
-              </div>
-              <p className="text-sm text-muted-foreground/60 mb-8">
-                Share your project details and let's start a conversation.
-              </p>
+            <div className="p-8 rounded-2xl border border-foreground/[0.05] bg-foreground/[0.015] relative overflow-hidden">
+              {/* Subtle gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-accent-cyan/[0.02] pointer-events-none" />
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <Label htmlFor="name" className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                      Name *
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Your name"
-                      className={cn(
-                        'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-indigo-500/30',
-                        errors.name && 'border-destructive'
-                      )}
-                    />
-                    {errors.name && (
-                      <p className="text-[11px] text-destructive mt-1">{errors.name}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Label htmlFor="email" className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                      Email *
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      className={cn(
-                        'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-indigo-500/30',
-                        errors.email && 'border-destructive'
-                      )}
-                    />
-                    {errors.email && (
-                      <p className="text-[11px] text-destructive mt-1">{errors.email}</p>
-                    )}
-                  </div>
+              <div className="relative">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <Send className="w-4 h-4 text-primary" />
+                  <h3 className="text-lg font-display font-semibold">
+                    Send Message
+                  </h3>
                 </div>
-                <div>
-                  <Label htmlFor="subject" className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                    Subject *
-                  </Label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Project inquiry"
-                    className={cn(
-                      'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-indigo-500/30',
-                      errors.subject && 'border-destructive'
-                    )}
-                  />
-                  {errors.subject && (
-                    <p className="text-[11px] text-destructive mt-1">{errors.subject}</p>
-                  )}
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <Label htmlFor="message" className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                      Message *
-                    </Label>
-                    <span className="text-[10px] text-muted-foreground/40 font-mono">
-                      {formData.message.length}/500
-                    </span>
-                  </div>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell me about your project..."
-                    rows={4}
-                    maxLength={500}
-                    className={cn(
-                      'bg-foreground/[0.03] border-foreground/[0.06] focus:border-indigo-500/30 resize-none',
-                      errors.message && 'border-destructive'
-                    )}
-                  />
-                  {errors.message && (
-                    <p className="text-[11px] text-destructive mt-1">{errors.message}</p>
-                  )}
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full rounded-full h-12 font-medium bg-foreground text-background hover:bg-foreground/90"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center gap-2">
-                      <motion.div
-                        className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                <p className="text-sm text-muted-foreground/60 mb-8">
+                  Share your project details and let's start a conversation.
+                </p>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div>
+                      <Label
+                        htmlFor="name"
+                        className="text-xs text-muted-foreground/60 uppercase tracking-wider"
+                      >
+                        Name *
+                      </Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Your name"
+                        className={cn(
+                          'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                          errors.name && 'border-destructive'
+                        )}
                       />
-                      Sending...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Send className="w-4 h-4" /> Send Message
-                    </span>
-                  )}
-                </Button>
-              </form>
+                      {errors.name && (
+                        <p className="text-[11px] text-destructive mt-1">
+                          {errors.name}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="email"
+                        className="text-xs text-muted-foreground/60 uppercase tracking-wider"
+                      >
+                        Email *
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="your@email.com"
+                        className={cn(
+                          'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                          errors.email && 'border-destructive'
+                        )}
+                      />
+                      {errors.email && (
+                        <p className="text-[11px] text-destructive mt-1">
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <Label
+                      htmlFor="subject"
+                      className="text-xs text-muted-foreground/60 uppercase tracking-wider"
+                    >
+                      Subject *
+                    </Label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      placeholder="Project inquiry"
+                      className={cn(
+                        'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                        errors.subject && 'border-destructive'
+                      )}
+                    />
+                    {errors.subject && (
+                      <p className="text-[11px] text-destructive mt-1">
+                        {errors.subject}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <Label
+                        htmlFor="message"
+                        className="text-xs text-muted-foreground/60 uppercase tracking-wider"
+                      >
+                        Message *
+                      </Label>
+                      <span className="text-[10px] text-muted-foreground/40 font-mono">
+                        {formData.message.length}/500
+                      </span>
+                    </div>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell me about your project..."
+                      rows={4}
+                      maxLength={500}
+                      className={cn(
+                        'bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30 resize-none',
+                        errors.message && 'border-destructive'
+                      )}
+                    />
+                    {errors.message && (
+                      <p className="text-[11px] text-destructive mt-1">
+                        {errors.message}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full rounded-full h-12 font-medium bg-gradient-to-r from-primary to-accent-violet text-white hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <motion.div
+                          className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: 'linear',
+                          }}
+                        />
+                        Sending...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Send className="w-4 h-4" /> Send Message
+                      </span>
+                    )}
+                  </Button>
+                </form>
+              </div>
             </div>
           </motion.div>
         </div>

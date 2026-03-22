@@ -1,6 +1,10 @@
 import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useRef, useEffect } from 'react';
 import { scrollToSection } from './SmoothScroll';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const XIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
@@ -15,20 +19,51 @@ const socialLinks = [
   { href: 'https://x.com/SethPragyesh', icon: XIcon, label: 'X' },
 ];
 
-const MARQUEE_ITEMS = ['LET\'S WORK TOGETHER', 'LET\'S BUILD SOMETHING', 'LET\'S CREATE'];
+const MARQUEE_ITEMS = ["LET'S WORK TOGETHER", "LET'S BUILD SOMETHING", "LET'S CREATE"];
 
 const Footer = memo(() => {
   const scrollTop = useCallback(() => scrollToSection('home'), []);
+  const footerRef = useRef<HTMLElement>(null);
+  const bigTextRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Large background text scale-up reveal
+      if (bigTextRef.current) {
+        gsap.fromTo(
+          bigTextRef.current,
+          { scale: 0.6, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: 'top 90%',
+              end: 'top 40%',
+              scrub: 1,
+            },
+          }
+        );
+      }
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <footer className="relative border-t border-indigo-500/[0.08] overflow-hidden">
-      {/* Large background text */}
+    <footer
+      ref={footerRef}
+      className="relative border-t border-primary/[0.06] overflow-hidden"
+    >
+      {/* Large background text — scroll-reveal scale */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <span
-          className="text-stroke text-foreground/[0.04] whitespace-nowrap leading-none"
+          ref={bigTextRef}
+          className="text-stroke font-display text-foreground/[0.03] whitespace-nowrap leading-none"
           style={{
             fontSize: 'clamp(5rem, 18vw, 22rem)',
-            fontWeight: 900,
+            fontWeight: 700,
             letterSpacing: '-0.04em',
           }}
         >
@@ -40,23 +75,25 @@ const Footer = memo(() => {
         {/* CTA marquee strip */}
         <div className="py-12 border-b border-foreground/[0.04] overflow-hidden">
           <div className="animate-marquee flex whitespace-nowrap">
-            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-              <span
-                key={i}
-                className="mx-10 text-xl md:text-2xl font-bold text-indigo-500/[0.08] uppercase tracking-[0.1em] flex items-center gap-10"
-              >
-                {item}
-                <span className="text-violet-500/[0.15]">✦</span>
-              </span>
-            ))}
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map(
+              (item, i) => (
+                <span
+                  key={i}
+                  className="mx-10 text-xl md:text-2xl font-display font-bold text-primary/[0.06] uppercase tracking-[0.1em] flex items-center gap-10"
+                >
+                  {item}
+                  <span className="text-accent-violet/[0.1]">✦</span>
+                </span>
+              )
+            )}
           </div>
         </div>
 
         {/* Main footer content */}
         <div className="py-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
-            <h3 className="text-lg font-bold tracking-tight mb-1">
-              <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
+            <h3 className="text-lg font-display font-bold tracking-tight mb-1">
+              <span className="bg-gradient-to-r from-primary to-accent-violet bg-clip-text text-transparent">
                 Pragyesh Kumar Seth
               </span>
             </h3>
@@ -74,7 +111,7 @@ const Footer = memo(() => {
                   href={href}
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
+                  className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] hover:scale-110 transition-all duration-300"
                   aria-label={label}
                 >
                   <Icon className="w-4 h-4" />
@@ -85,16 +122,16 @@ const Footer = memo(() => {
             {/* Back to top */}
             <button
               onClick={scrollTop}
-              className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-indigo-500/20 hover:bg-indigo-500/[0.05] transition-all duration-300"
+              className="group p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] transition-all duration-300"
               aria-label="Back to top"
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-300" />
             </button>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-indigo-500/[0.06] py-8 text-center">
+        <div className="border-t border-primary/[0.05] py-8 text-center">
           <p className="text-[11px] text-muted-foreground/30 font-mono tracking-wider">
             © {new Date().getFullYear()} Pragyesh Kumar Seth
           </p>

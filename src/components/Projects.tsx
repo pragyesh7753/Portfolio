@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, memo } from 'react';
+import { useState, useMemo, useRef, useEffect, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, Search, Eye, Layers, ArrowUpRight } from 'lucide-react';
 import { Badge } from './ui/badge';
@@ -176,7 +176,6 @@ const Projects = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading char reveal
       const chars = headingRef.current?.querySelectorAll('.proj-char');
       if (chars?.length) {
         gsap.fromTo(
@@ -199,7 +198,7 @@ const Projects = () => {
     return () => ctx.revert();
   }, []);
 
-  // Animate grid cards on filter change
+  // Animate grid cards
   useEffect(() => {
     const cards = gridRef.current?.querySelectorAll('.project-card');
     if (cards?.length) {
@@ -220,13 +219,18 @@ const Projects = () => {
 
   return (
     <section id="projects" ref={sectionRef} className="relative py-32 md:py-40 overflow-hidden">
-      {/* Section accent glow */}
-      <div className="absolute top-20 left-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.8), transparent 70%)' }} />
+      {/* Accent glow */}
+      <div
+        className="absolute top-20 left-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.04] pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(var(--accent-violet-rgb),0.8), transparent 70%)',
+        }}
+      />
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
-          <span className="text-[10px] font-mono text-violet-400/60 uppercase tracking-[0.3em]">
-            02 — Work
+          <span className="text-[10px] font-mono text-accent-violet/50 uppercase tracking-[0.3em]">
+            03 — Work
           </span>
         </div>
 
@@ -237,10 +241,10 @@ const Projects = () => {
               {'SELECTED WORK'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="proj-char inline-block leading-[0.85] bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="proj-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
-                    fontWeight: 900,
+                    fontWeight: 700,
                     letterSpacing: '-0.04em',
                   }}
                 >
@@ -265,7 +269,7 @@ const Projects = () => {
                 className={cn(
                   'px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 capitalize',
                   filter === cat
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
+                    ? 'bg-gradient-to-r from-primary to-accent-violet text-white shadow-md shadow-primary/20'
                     : 'bg-foreground/[0.04] text-muted-foreground hover:bg-foreground/[0.08] border border-foreground/[0.06]'
                 )}
               >
@@ -323,94 +327,112 @@ const Projects = () => {
   );
 };
 
-/* ────────────────────────────── Project Card ────────────────────────────── */
+/* ────────────────────────────── Project Card with 3D Tilt ────────────────────────────── */
 
 const ProjectCard = memo(({ project, index }: { project: Project; index: number }) => {
   const num = String(index + 1).padStart(2, '0');
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -4;
+    const rotateY = ((x - centerX) / centerX) * 4;
+
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+  }, []);
 
   return (
     <motion.div
       layout
-      className="project-card group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-indigo-500/[0.015] hover:border-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-500 overflow-hidden"
-      whileHover={{ y: -4 }}
+      className="project-card"
     >
-      {/* Hover gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.04] via-transparent to-violet-500/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-primary/[0.015] hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+        style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+      >
+        {/* Hover gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-accent-violet/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-      <div className="relative p-7 sm:p-8">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3">
-            {/* Number watermark */}
-            <span className="text-4xl font-black text-foreground/[0.06] leading-none select-none">
-              {num}
-            </span>
-            <div>
-              <h3 className="text-xl font-semibold tracking-tight">{project.title}</h3>
-              <span
-                className={cn(
-                  'inline-block text-[10px] px-2 py-0.5 rounded-full border mt-1.5 uppercase tracking-wider font-medium',
-                  statusStyles[project.status]
-                )}
-              >
-                {project.status === 'in-progress' ? 'In Progress' : project.status}
+        <div className="relative p-7 sm:p-8">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl font-display font-bold text-foreground/[0.06] leading-none select-none">
+                {num}
               </span>
+              <div>
+                <h3 className="text-xl font-display font-semibold tracking-tight">
+                  {project.title}
+                </h3>
+                <span
+                  className={cn(
+                    'inline-block text-[10px] px-2 py-0.5 rounded-full border mt-1.5 uppercase tracking-wider font-medium',
+                    statusStyles[project.status]
+                  )}
+                >
+                  {project.status === 'in-progress' ? 'In Progress' : project.status}
+                </span>
+              </div>
             </div>
+
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.04] transition-all duration-300 opacity-0 group-hover:opacity-100"
+              aria-label={`Visit ${project.title}`}
+            >
+              <ArrowUpRight className="w-4 h-4" />
+            </a>
           </div>
 
-          {/* Arrow link */}
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground hover:text-foreground hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-300 opacity-0 group-hover:opacity-100"
-            aria-label={`Visit ${project.title}`}
-          >
-            <ArrowUpRight className="w-4 h-4" />
-          </a>
-        </div>
+          {/* Description */}
+          <p className="text-sm text-muted-foreground leading-relaxed mb-6 line-clamp-2">
+            {project.description}
+          </p>
 
-        {/* Description */}
-        <p className="text-sm text-muted-foreground leading-relaxed mb-6 line-clamp-2">
-          {project.description}
-        </p>
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-primary/[0.06] text-primary/80 border border-primary/10 hover:bg-primary/10 transition-colors duration-300"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
 
-        {/* Tech tags */}
-        <div className="flex flex-wrap gap-1.5 mb-6">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-indigo-500/[0.06] text-indigo-300/80 border border-indigo-500/10"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2 pt-5 border-t border-foreground/[0.04]">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="rounded-full text-xs h-8 px-3"
-            asChild
-          >
-            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="w-3 h-3 mr-1.5" /> Demo
-            </a>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="rounded-full text-xs h-8 px-3"
-            asChild
-          >
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-              <Github className="w-3 h-3 mr-1.5" /> Code
-            </a>
-          </Button>
-          <div className="ml-auto">
-            <ProjectModal project={project} />
+          {/* Actions */}
+          <div className="flex items-center gap-2 pt-5 border-t border-foreground/[0.04]">
+            <Button variant="ghost" size="sm" className="rounded-full text-xs h-8 px-3" asChild>
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-3 h-3 mr-1.5" />
+                Demo
+              </a>
+            </Button>
+            <Button variant="ghost" size="sm" className="rounded-full text-xs h-8 px-3" asChild>
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                <Github className="w-3 h-3 mr-1.5" />
+                Code
+              </a>
+            </Button>
+            <div className="ml-auto">
+              <ProjectModal project={project} />
+            </div>
           </div>
         </div>
       </div>
@@ -426,12 +448,13 @@ const ProjectModal = ({ project }: { project: Project }) => (
   <Dialog>
     <DialogTrigger asChild>
       <Button variant="ghost" size="sm" className="rounded-full text-xs h-8 px-3">
-        <Eye className="w-3 h-3 mr-1.5" /> Details
+        <Eye className="w-3 h-3 mr-1.5" />
+        Details
       </Button>
     </DialogTrigger>
     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle className="flex items-center gap-2 text-xl">
+        <DialogTitle className="flex items-center gap-2 text-xl font-display">
           {project.title}
           <Badge variant="outline" className="text-[10px] uppercase tracking-wider">
             {project.status}
@@ -454,7 +477,7 @@ const ProjectModal = ({ project }: { project: Project }) => (
               <ul className="space-y-2.5 pt-2">
                 {project.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm">
-                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                     {f}
                   </li>
                 ))}
@@ -475,7 +498,7 @@ const ProjectModal = ({ project }: { project: Project }) => (
           <TabsContent value="insights" className="space-y-5 pt-2">
             {project.challenges?.length ? (
               <div>
-                <h4 className="font-semibold mb-2 text-sm">Challenges</h4>
+                <h4 className="font-semibold mb-2 text-sm font-display">Challenges</h4>
                 <ul className="space-y-1.5 text-sm">
                   {project.challenges.map((c, i) => (
                     <li key={i} className="flex items-start gap-2">
@@ -487,11 +510,11 @@ const ProjectModal = ({ project }: { project: Project }) => (
             ) : null}
             {project.learnings?.length ? (
               <div>
-                <h4 className="font-semibold mb-2 text-sm">Learnings</h4>
+                <h4 className="font-semibold mb-2 text-sm font-display">Learnings</h4>
                 <ul className="space-y-1.5 text-sm">
                   {project.learnings.map((l, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span className="text-indigo-500">•</span> {l}
+                      <span className="text-primary">•</span> {l}
                     </li>
                   ))}
                 </ul>
@@ -502,12 +525,14 @@ const ProjectModal = ({ project }: { project: Project }) => (
         <div className="flex gap-3 pt-2">
           <Button className="rounded-full" asChild>
             <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Live Demo
             </a>
           </Button>
           <Button variant="outline" className="rounded-full" asChild>
             <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-              <Github className="mr-2 h-4 w-4" /> Source Code
+              <Github className="mr-2 h-4 w-4" />
+              Source Code
             </a>
           </Button>
         </div>

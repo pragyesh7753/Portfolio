@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { cn } from '@/lib/utils';
@@ -8,6 +8,7 @@ import { scrollToSection } from './SmoothScroll';
 const NAV_ITEMS = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
+  { id: 'experience', label: 'Journey' },
   { id: 'projects', label: 'Work' },
   { id: 'achievements', label: 'Awards' },
   { id: 'contact', label: 'Contact' },
@@ -18,9 +19,23 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Scroll progress
+  const { scrollYProgress } = useScroll();
+  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = scaleX.on('change', (v) => {
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${v})`;
+      }
+    });
+    return () => unsubscribe();
+  }, [scaleX]);
+
   useEffect(() => {
     const handleScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.7);
+      setVisible(window.scrollY > window.innerHeight * 0.6);
 
       const sections = NAV_ITEMS.map((n) => n.id);
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -42,6 +57,9 @@ const Navbar = () => {
 
   return (
     <>
+      {/* Scroll progress bar */}
+      <div ref={progressRef} className="scroll-progress" />
+
       {/* Desktop floating pill nav */}
       <AnimatePresence>
         {visible && (
@@ -52,13 +70,17 @@ const Navbar = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden md:block"
           >
-            <div className="flex items-center gap-1 px-2.5 py-2 rounded-full bg-background/80 backdrop-blur-2xl border border-indigo-500/[0.08] shadow-2xl shadow-indigo-500/5 dark:shadow-indigo-500/10">
+            <div className="flex items-center gap-1 px-2.5 py-2 rounded-full glass shadow-2xl shadow-black/10 dark:shadow-black/30">
               {/* Logo */}
               <button
                 onClick={() => handleClick('home')}
                 className="px-2 py-1"
               >
-                <img src="/favicon.png" alt="Logo" className="h-5 w-5 rounded-sm" />
+                <img
+                  src="/favicon.png"
+                  alt="Logo"
+                  className="h-5 w-5 rounded-sm"
+                />
               </button>
 
               <div className="w-px h-4 bg-foreground/[0.08]" />
@@ -77,8 +99,16 @@ const Navbar = () => {
                   {activeSection === item.id && (
                     <motion.span
                       layoutId="active-pill"
-                      className="absolute inset-0 bg-indigo-500/10 rounded-full"
-                      transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                      className="absolute inset-0 rounded-full gradient-border"
+                      style={{
+                        background:
+                          'rgba(var(--primary-rgb), 0.08)',
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 400,
+                        damping: 35,
+                      }}
                     />
                   )}
                   <span className="relative z-10">{item.label}</span>
@@ -114,7 +144,7 @@ const Navbar = () => {
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 }}
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="p-2.5 rounded-full bg-background/70 backdrop-blur-2xl border border-foreground/[0.06] shadow-lg"
+                className="p-2.5 rounded-full glass shadow-lg"
               >
                 {mobileOpen ? <X size={18} /> : <Menu size={18} />}
               </motion.button>
@@ -139,11 +169,16 @@ const Navbar = () => {
                   key={item.id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    delay: i * 0.06,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   onClick={() => handleClick(item.id)}
                   className={cn(
-                    'block w-full text-3xl font-light tracking-tight transition-colors',
-                    activeSection === item.id ? 'text-foreground' : 'text-muted-foreground/50'
+                    'block w-full text-3xl font-display font-light tracking-tight transition-colors',
+                    activeSection === item.id
+                      ? 'text-foreground'
+                      : 'text-muted-foreground/50'
                   )}
                 >
                   {item.label}

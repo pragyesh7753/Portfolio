@@ -1,60 +1,134 @@
 @import 'lenis/dist/lenis.css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --background-rgb: 255,255,255;
-    --primary-rgb: 99,102,241;
-  }
+/*
+ * Theme configuration — migrated from tailwind.config.js
+ * Using Tailwind v4 CSS-first @theme directive
+ */
+@theme inline {
+  --font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
 
-  .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 3.9%;
-    --secondary: 217 33% 13%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 13%;
-    --muted-foreground: 215 20% 60%;
-    --accent: 217 33% 13%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 14%;
-    --input: 217 33% 14%;
-    --ring: 224 71% 66%;
-    --background-rgb: 10,14,25;
-    --primary-rgb: 99,102,241;
-  }
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-rgb: rgb(var(--primary-rgb));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-cyan: rgb(var(--accent-cyan-rgb));
+  --color-accent-violet: rgb(var(--accent-violet-rgb));
+  --color-accent-rose: rgb(var(--accent-rose-rgb));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+/*
+ * CSS Variables for light/dark themes
+ */
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 252 80% 60%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 252 80% 60%;
+  --radius: 0.75rem;
+  --background-rgb: 250, 250, 252;
+  --primary-rgb: 124, 92, 252;
+  --accent-cyan-rgb: 34, 211, 238;
+  --accent-violet-rgb: 139, 92, 246;
+  --accent-rose-rgb: 244, 114, 182;
+}
+
+.dark {
+  --background: 240 20% 3.5%;
+  --foreground: 210 40% 98%;
+  --card: 240 20% 5%;
+  --card-foreground: 210 40% 98%;
+  --popover: 240 20% 5%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 252 80% 65%;
+  --primary-foreground: 0 0% 3.9%;
+  --secondary: 240 14% 10%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 240 14% 10%;
+  --muted-foreground: 215 16% 52%;
+  --accent: 240 14% 10%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 240 14% 12%;
+  --input: 240 14% 12%;
+  --ring: 252 80% 65%;
+  --background-rgb: 8, 8, 16;
+  --primary-rgb: 134, 102, 255;
+  --accent-cyan-rgb: 34, 211, 238;
+  --accent-violet-rgb: 139, 92, 246;
+  --accent-rose-rgb: 244, 114, 182;
+}
+
+/*
+ * Base styles
+ */
 @layer base {
   * {
     @apply border-border;
@@ -65,15 +139,14 @@
   }
 }
 
-@layer utilities {
-  .text-stroke {
-    -webkit-text-stroke: 1.5px currentColor;
-    -webkit-text-fill-color: transparent;
-  }
-  .text-stroke-2 {
-    -webkit-text-stroke: 2px currentColor;
-    -webkit-text-fill-color: transparent;
-  }
+@utility text-stroke {
+  -webkit-text-stroke: 1.5px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+
+@utility text-stroke-2 {
+  -webkit-text-stroke: 2px currentColor;
+  -webkit-text-fill-color: transparent;
 }
 
 :root {
@@ -99,7 +172,7 @@ body {
   min-height: 100vh;
 }
 
-/* Aurora drift animations — GPU-accelerated via transform */
+/* ── Aurora drift animations ── */
 @keyframes aurora-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(5%, 8%) scale(1.05); }
@@ -121,57 +194,85 @@ body {
 .animate-aurora-2 { animation: aurora-2 25s ease-in-out infinite; }
 .animate-aurora-3 { animation: aurora-3 22s ease-in-out infinite; }
 
-/* Marquee */
+/* ── Gradient shift ── */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ── Float animation ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float { animation: float 5s ease-in-out infinite; }
+
+/* ── Text shimmer ── */
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.animate-text-shimmer {
+  background-size: 200% auto;
+  animation: text-shimmer 4s linear infinite;
+}
+
+/* ── Marquee ── */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
 .animate-marquee {
   animation: marquee 30s linear infinite;
 }
 
-/* Selection */
+/* ── Noise overlay ── */
+.noise-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+
+/* ── Selection ── */
 ::selection {
-  background: hsl(var(--primary) / 0.15);
+  background: hsl(var(--primary) / 0.2);
   color: hsl(var(--foreground));
 }
 
-/* Scrollbar - ultra thin */
+/* ── Scrollbar ── */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--primary-rgb), 0.12) transparent;
+  scrollbar-color: rgba(var(--primary-rgb), 0.15) transparent;
 }
-
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary-rgb), 0.15);
+  background: rgba(var(--primary-rgb), 0.2);
   border-radius: 10px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--primary-rgb), 0.35);
+  background: rgba(var(--primary-rgb), 0.4);
 }
 
-/* Focus */
-*:focus {
-  outline: none;
-}
-
+/* ── Focus ── */
+*:focus { outline: none; }
 *:focus-visible {
   outline: 2px solid rgba(var(--primary-rgb), 0.5);
   outline-offset: 2px;
 }
 
-/* Reduce motion */
+/* ── Reduce motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -181,13 +282,49 @@ body {
   }
 }
 
-/* Safari fix */
+/* ── Safari fix ── */
 input, textarea {
   -webkit-appearance: none;
   border-radius: 0.5rem;
 }
 
-/* Smooth images */
+/* ── Smooth images ── */
 img {
   transition: opacity 0.3s ease;
+}
+
+/* ── Glassmorphism utility ── */
+.glass {
+  background: rgba(var(--background-rgb), 0.6);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid rgba(var(--primary-rgb), 0.08);
+}
+
+/* ── Gradient border ── */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.3), rgba(var(--accent-violet-rgb), 0.3), rgba(var(--accent-rose-rgb), 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── Scroll progress bar ── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  z-index: 9999;
+  background: linear-gradient(90deg, rgba(var(--accent-cyan-rgb), 1), rgba(var(--accent-violet-rgb), 1), rgba(var(--accent-rose-rgb), 1));
+  transform-origin: left;
 }

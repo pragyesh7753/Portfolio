@@ -5,6 +5,7 @@ import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
+import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Achievements from './components/Achievements';
 import Contact from './components/Contact';
@@ -22,11 +23,12 @@ function App() {
       <CustomCursor />
       <InteractiveBackground />
       <SmoothScroll>
-        <div className="relative z-[1] min-h-screen bg-transparent text-foreground">
+        <div className="relative z-[1] min-h-screen bg-transparent text-foreground noise-overlay">
           <Navbar />
           <main>
             <Home />
             <About />
+            <Experience />
             <Projects />
             <Achievements />
             <Contact />
