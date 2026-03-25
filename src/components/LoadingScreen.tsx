@@ -24,9 +24,9 @@ const LoadingScreen = ({ onComplete }: Props) => {
 
     // Scale down content
     tl.to(wordsRef.current, {
-      scale: 0.8,
+      scale: 0.85,
       opacity: 0,
-      duration: 0.5,
+      duration: 0.4,
       ease: 'power3.in',
     });
 
@@ -35,10 +35,10 @@ const LoadingScreen = ({ onComplete }: Props) => {
       containerRef.current,
       {
         clipPath: 'inset(0 0 100% 0)',
-        duration: 0.9,
+        duration: 0.6,
         ease: 'power4.inOut',
       },
-      '-=0.2'
+      '-=0.15'
     );
   }, []);
 
@@ -55,10 +55,10 @@ const LoadingScreen = ({ onComplete }: Props) => {
           {
             y: '0%',
             rotateX: 0,
-            stagger: 0.15,
-            duration: 1,
+            stagger: 0.08,
+            duration: 0.8,
             ease: 'power4.out',
-            delay: 0.3,
+            delay: 0.15,
           }
         );
       }
@@ -77,7 +77,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
         obj,
         {
           val: 100,
-          duration: 2.2,
+          duration: 1.4,
           ease: 'power2.inOut',
           onUpdate() {
             const v = Math.round(obj.val);
@@ -90,7 +90,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
           },
           onComplete: triggerExit,
         },
-        '-=0.8'
+        '-=0.6'
       );
     }, containerRef);
 
@@ -109,7 +109,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
       {/* Gradient mesh */}
       <div className="absolute inset-0 opacity-30">
         <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[150px]"
+          className="absolute w-[600px] h-[600px] rounded-full blur-[100px]"
           style={{
             background:
               'radial-gradient(circle, rgba(134,102,255,0.5) 0%, transparent 70%)',
@@ -118,7 +118,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
           }}
         />
         <div
-          className="absolute w-[400px] h-[400px] rounded-full blur-[120px]"
+          className="absolute w-[400px] h-[400px] rounded-full blur-[80px]"
           style={{
             background:
               'radial-gradient(circle, rgba(34,211,238,0.4) 0%, transparent 70%)',

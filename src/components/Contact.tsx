@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Mail, Phone, MapPin, Github, Linkedin, Instagram, Send, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -469,4 +469,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default memo(Contact);

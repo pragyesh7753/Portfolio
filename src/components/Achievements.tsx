@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Star, Search, X } from 'lucide-react';
 import { Button } from './ui/button';
@@ -407,4 +407,4 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
   );
 };
 
-export default Achievements;
+export default memo(Achievements);

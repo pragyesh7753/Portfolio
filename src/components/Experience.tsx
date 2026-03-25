@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -263,4 +263,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default memo(Experience);

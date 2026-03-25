@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
-import About from './components/About';
-import Experience from './components/Experience';
-import Projects from './components/Projects';
-import Achievements from './components/Achievements';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import InteractiveBackground from './components/InteractiveBackground';
 import CustomCursor from './components/CustomCursor';
+
+// Lazy load below-the-fold components
+const About = lazy(() => import('./components/About'));
+const Experience = lazy(() => import('./components/Experience'));
+const Projects = lazy(() => import('./components/Projects'));
+const Achievements = lazy(() => import('./components/Achievements'));
+const Contact = lazy(() => import('./components/Contact'));
+const Footer = lazy(() => import('./components/Footer'));
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -27,13 +29,17 @@ function App() {
           <Navbar />
           <main>
             <Home />
-            <About />
-            <Experience />
-            <Projects />
-            <Achievements />
-            <Contact />
+            <Suspense fallback={<div className="min-h-screen" />}>
+              <About />
+              <Experience />
+              <Projects />
+              <Achievements />
+              <Contact />
+            </Suspense>
           </main>
-          <Footer />
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
           <Toaster />
         </div>
       </SmoothScroll>
