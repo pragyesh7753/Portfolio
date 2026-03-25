@@ -20,7 +20,7 @@ const skills = [
   {
     category: 'Backend',
     icon: '▲',
-    items: ['Node.js', 'Express', 'Python', 'Flask', 'REST APIs'],
+    items: ['Node.js', 'Express', 'Python', 'FastAPI', 'Flask', 'REST APIs'],
   },
   {
     category: 'Database',

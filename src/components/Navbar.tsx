@@ -99,7 +99,7 @@ const Navbar = () => {
                   {activeSection === item.id && (
                     <motion.span
                       layoutId="active-pill"
-                      className="absolute inset-0 rounded-full gradient-border"
+                      className="absolute inset-0 rounded-full "
                       style={{
                         background:
                           'rgba(var(--primary-rgb), 0.08)',
