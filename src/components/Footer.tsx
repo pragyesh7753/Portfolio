@@ -1,6 +1,6 @@
 import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
 import { memo, useCallback, useRef, useEffect } from 'react';
-import { scrollToSection } from './SmoothScroll';
+import { scrollToSection } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -54,13 +54,13 @@ const Footer = memo(() => {
   return (
     <footer
       ref={footerRef}
-      className="relative border-t border-primary/[0.06] overflow-hidden"
+      className="relative border-t border-primary/6 overflow-hidden"
     >
       {/* Large background text — scroll-reveal scale */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <span
           ref={bigTextRef}
-          className="text-stroke font-display text-foreground/[0.03] whitespace-nowrap leading-none"
+          className="text-stroke font-display text-foreground/3 whitespace-nowrap leading-none"
           style={{
             fontSize: 'clamp(5rem, 18vw, 22rem)',
             fontWeight: 700,
@@ -71,18 +71,18 @@ const Footer = memo(() => {
         </span>
       </div>
 
-      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12">
+      <div className="relative max-w-350 mx-auto px-6 lg:px-12">
         {/* CTA marquee strip */}
-        <div className="py-12 border-b border-foreground/[0.04] overflow-hidden">
+        <div className="py-12 border-b border-foreground/4 overflow-hidden">
           <div className="animate-marquee flex whitespace-nowrap">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map(
               (item, i) => (
                 <span
                   key={i}
-                  className="mx-10 text-xl md:text-2xl font-display font-bold text-primary/[0.06] uppercase tracking-[0.1em] flex items-center gap-10"
+                  className="mx-10 text-xl md:text-2xl font-display font-bold text-primary/6 uppercase tracking-widest flex items-center gap-10"
                 >
                   {item}
-                  <span className="text-accent-violet/[0.1]">✦</span>
+                  <span className="text-accent-violet/10">✦</span>
                 </span>
               )
             )}
@@ -93,7 +93,7 @@ const Footer = memo(() => {
         <div className="py-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h3 className="text-lg font-display font-bold tracking-tight mb-1">
-              <span className="bg-gradient-to-r from-primary to-accent-violet bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary to-accent-violet bg-clip-text text-transparent">
                 Pragyesh Kumar Seth
               </span>
             </h3>
@@ -111,7 +111,7 @@ const Footer = memo(() => {
                   href={href}
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] hover:scale-110 transition-all duration-300"
+                  className="p-2.5 rounded-full border border-foreground/6 text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/5 hover:scale-110 transition-all duration-300"
                   aria-label={label}
                 >
                   <Icon className="w-4 h-4" />
@@ -122,7 +122,7 @@ const Footer = memo(() => {
             {/* Back to top */}
             <button
               onClick={scrollTop}
-              className="group p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] transition-all duration-300"
+              className="group p-2.5 rounded-full border border-foreground/6 text-muted-foreground/50 hover:text-foreground hover:border-primary/20 hover:bg-primary/5 transition-all duration-300"
               aria-label="Back to top"
             >
               <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-300" />
@@ -131,7 +131,7 @@ const Footer = memo(() => {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-primary/[0.05] py-8 text-center">
+        <div className="border-t border-primary/5 py-8 text-center">
           <p className="text-[11px] text-muted-foreground/30 font-mono tracking-wider">
             © {new Date().getFullYear()} Pragyesh Kumar Seth
           </p>

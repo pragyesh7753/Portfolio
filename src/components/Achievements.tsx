@@ -205,7 +205,7 @@ const Achievements = () => {
       ref={sectionRef}
       className="relative py-32 md:py-40 overflow-hidden"
     >
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <div className="max-w-350 mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
           <span className="text-[10px] font-mono text-amber-400/50 uppercase tracking-[0.3em]">
@@ -220,7 +220,7 @@ const Achievements = () => {
               {'ACHIEVEMENTS'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="ach-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="ach-char inline-block leading-[0.85] font-display bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 700,
@@ -248,8 +248,8 @@ const Achievements = () => {
                 className={cn(
                   'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 capitalize',
                   selectedCategory === cat.id
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20'
-                    : 'bg-foreground/[0.04] text-muted-foreground hover:bg-foreground/[0.08] border border-foreground/[0.06]'
+                    ? 'bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20'
+                    : 'bg-foreground/4 text-muted-foreground hover:bg-foreground/8 border border-foreground/6'
                 )}
               >
                 {cat.label}
@@ -257,7 +257,7 @@ const Achievements = () => {
             ))}
             <button
               onClick={() => setShowAll(!showAll)}
-              className="px-3 py-1.5 rounded-full text-xs font-medium bg-foreground/[0.04] text-muted-foreground hover:bg-foreground/[0.08] border border-foreground/[0.06] transition-all"
+              className="px-3 py-1.5 rounded-full text-xs font-medium bg-foreground/4 text-muted-foreground hover:bg-foreground/8 border border-foreground/6 transition-all"
             >
               {showAll ? 'Featured' : 'Show All'}
             </button>
@@ -268,7 +268,7 @@ const Achievements = () => {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-8 rounded-full bg-foreground/[0.03] border-foreground/[0.06] text-sm h-9"
+              className="pl-9 pr-8 rounded-full bg-foreground/3 border-foreground/6 text-sm h-9"
             />
             {searchQuery && (
               <Button
@@ -334,14 +334,14 @@ const CertCard = ({ cert }: { cert: Certificate }) => {
   return (
     <motion.div
       layout
-      className="cert-card group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-amber-500/[0.015] hover:border-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-500 overflow-hidden"
+      className="cert-card group relative rounded-2xl border border-foreground/6 bg-linear-to-br from-foreground/2 to-amber-500/1.5 hover:border-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-500 overflow-hidden"
       whileHover={{ y: -3 }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] via-transparent to-orange-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute inset-0 bg-linear-to-br from-amber-500/3 via-transparent to-orange-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
       <div className="relative p-5">
         {/* Image */}
-        <div className="relative aspect-[3/2] rounded-xl overflow-hidden bg-foreground/[0.03] mb-5">
+        <div className="relative aspect-3/2 rounded-xl overflow-hidden bg-foreground/3 mb-5">
           {!imageError ? (
             <>
               <img

@@ -186,7 +186,7 @@ const Contact = () => {
       ref={sectionRef}
       className="relative py-32 md:py-40 overflow-hidden"
     >
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <div className="max-w-350 mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
           <span className="text-[10px] font-mono text-accent-cyan/50 uppercase tracking-[0.3em]">
@@ -201,7 +201,7 @@ const Contact = () => {
               {"LET'S".split('').map((char, i) => (
                 <span
                   key={`a-${i}`}
-                  className="ct-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="ct-char inline-block leading-[0.85] font-display bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 700,
@@ -253,9 +253,9 @@ const Contact = () => {
               {contactInfo.map((info, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] bg-gradient-to-r from-foreground/[0.02] to-primary/[0.015] hover:border-primary/15 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-foreground/6 bg-linear-to-r from-foreground/2 to-primary/1.5 hover:border-primary/15 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
                 >
-                  <div className="p-2 rounded-lg bg-foreground/[0.05] text-muted-foreground group-hover:text-foreground group-hover:bg-primary/10 transition-all duration-300">
+                  <div className="p-2 rounded-lg bg-foreground/5 text-muted-foreground group-hover:text-foreground group-hover:bg-primary/10 transition-all duration-300">
                     {info.icon}
                   </div>
                   <div>
@@ -289,7 +289,7 @@ const Contact = () => {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.05] hover:scale-110 transition-all duration-300"
+                    className="p-3 rounded-xl border border-foreground/6 bg-foreground/2 text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/5 hover:scale-110 transition-all duration-300"
                     aria-label={s.label}
                   >
                     {s.icon}
@@ -299,7 +299,7 @@ const Contact = () => {
             </div>
 
             {/* Response time */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/[0.04] border border-primary/[0.08]">
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/4 border border-primary/8">
               <Clock className="w-4 h-4 text-primary" />
               <p className="text-xs text-muted-foreground">
                 Typically respond within 24 hours
@@ -313,9 +313,9 @@ const Contact = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="p-8 rounded-2xl border border-foreground/[0.05] bg-foreground/[0.015] relative overflow-hidden">
+            <div className="p-8 rounded-2xl border border-foreground/5 bg-foreground/1.5 relative overflow-hidden">
               {/* Subtle gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-accent-cyan/[0.02] pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary/2 via-transparent to-accent-cyan/2 pointer-events-none" />
 
               <div className="relative">
                 <div className="flex items-center gap-2.5 mb-2">
@@ -344,7 +344,7 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="Your name"
                         className={cn(
-                          'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                          'mt-2 bg-foreground/3 border-foreground/6 focus:border-primary/30',
                           errors.name && 'border-destructive'
                         )}
                       />
@@ -369,7 +369,7 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="your@email.com"
                         className={cn(
-                          'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                          'mt-2 bg-foreground/3 border-foreground/6 focus:border-primary/30',
                           errors.email && 'border-destructive'
                         )}
                       />
@@ -394,7 +394,7 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="Project inquiry"
                       className={cn(
-                        'mt-2 bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30',
+                        'mt-2 bg-foreground/3 border-foreground/6 focus:border-primary/30',
                         errors.subject && 'border-destructive'
                       )}
                     />
@@ -425,7 +425,7 @@ const Contact = () => {
                       rows={4}
                       maxLength={500}
                       className={cn(
-                        'bg-foreground/[0.03] border-foreground/[0.06] focus:border-primary/30 resize-none',
+                        'bg-foreground/3 border-foreground/6 focus:border-primary/30 resize-none',
                         errors.message && 'border-destructive'
                       )}
                     />
@@ -437,7 +437,7 @@ const Contact = () => {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full rounded-full h-12 font-medium bg-gradient-to-r from-primary to-accent-violet text-white hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+                    className="w-full rounded-full h-12 font-medium bg-linear-to-r from-primary to-accent-violet text-white hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (

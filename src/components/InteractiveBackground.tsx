@@ -10,7 +10,7 @@ const InteractiveBackground = memo(() => {
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
       {/* Primary orb — violet/purple */}
       <div
-        className="absolute w-[900px] h-[900px] rounded-full opacity-20 dark:opacity-[0.10] blur-[140px] animate-aurora-1"
+        className="absolute w-225 h-225 rounded-full opacity-20 dark:opacity-[0.10] blur-[140px] animate-aurora-1"
         style={{
           background:
             'radial-gradient(circle, rgba(var(--accent-violet-rgb),0.8) 0%, rgba(var(--primary-rgb),0.4) 50%, transparent 70%)',
@@ -20,7 +20,7 @@ const InteractiveBackground = memo(() => {
       />
       {/* Secondary orb — cyan/blue */}
       <div
-        className="absolute w-[700px] h-[700px] rounded-full opacity-15 dark:opacity-[0.07] blur-[120px] animate-aurora-2"
+        className="absolute w-175 h-175 rounded-full opacity-15 dark:opacity-[0.07] blur-[120px] animate-aurora-2"
         style={{
           background:
             'radial-gradient(circle, rgba(var(--accent-cyan-rgb),0.7) 0%, rgba(59,130,246,0.3) 50%, transparent 70%)',
@@ -30,7 +30,7 @@ const InteractiveBackground = memo(() => {
       />
       {/* Third orb — rose/pink */}
       <div
-        className="absolute w-[600px] h-[600px] rounded-full opacity-12 dark:opacity-[0.06] blur-[120px] animate-aurora-3"
+        className="absolute w-150 h-150 rounded-full opacity-12 dark:opacity-[0.06] blur-[120px] animate-aurora-3"
         style={{
           background:
             'radial-gradient(circle, rgba(var(--accent-rose-rgb),0.5) 0%, rgba(var(--accent-violet-rgb),0.2) 50%, transparent 70%)',

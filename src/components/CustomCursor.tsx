@@ -25,47 +25,69 @@ const CustomCursor = () => {
   const isTouchRef = useRef(false);
   const visibleRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const moveFrameRef = useRef<number | null>(null);
+  const pointerRef = useRef({ x: -100, y: -100 });
+  const hoveredRef = useRef<HTMLElement | null>(null);
+
+  const flushMove = useCallback(() => {
+    moveFrameRef.current = null;
+    dotX.set(pointerRef.current.x);
+    dotY.set(pointerRef.current.y);
+  }, [dotX, dotY]);
 
   const handleMove = useCallback(
     (e: MouseEvent) => {
-      dotX.set(e.clientX);
-      dotY.set(e.clientY);
+      pointerRef.current = { x: e.clientX, y: e.clientY };
+      if (moveFrameRef.current !== null) return;
+      moveFrameRef.current = window.requestAnimationFrame(flushMove);
     },
-    [dotX, dotY]
+    [flushMove]
   );
 
   useEffect(() => {
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      isTouchRef.current = true;
+      if (visibleRef.current) visibleRef.current.style.display = 'none';
+      return;
+    }
+
     const checkTouch = () => {
       isTouchRef.current = true;
       if (visibleRef.current) visibleRef.current.style.display = 'none';
     };
     window.addEventListener('touchstart', checkTouch, { once: true, passive: true });
 
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-      isTouchRef.current = true;
-      return;
-    }
-
     document.body.style.cursor = 'none';
     window.addEventListener('mousemove', handleMove, { passive: true });
 
     // Scale + label on hoverable elements
+    const hoverSelector =
+      'a, button, [role="button"], input, textarea, select, label, [data-cursor-hover]';
+    const getHoverable = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return null;
+      return target.closest(hoverSelector) as HTMLElement | null;
+    };
+
     const handleOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const hoverable = target.closest(
-        'a, button, [role="button"], input, textarea, select, label, [data-cursor-hover]'
-      );
-      if (hoverable) {
-        scale.set(2.2);
-        // Show label if data-cursor-label is set
-        const label = (hoverable as HTMLElement).getAttribute('data-cursor-label');
-        if (label && labelRef.current) {
-          labelRef.current.textContent = label;
-          labelRef.current.style.opacity = '1';
-        }
+      const hoverable = getHoverable(e.target);
+      if (!hoverable || hoveredRef.current === hoverable) return;
+
+      hoveredRef.current = hoverable;
+      scale.set(2.2);
+
+      const label = hoverable.getAttribute('data-cursor-label');
+      if (label && labelRef.current) {
+        labelRef.current.textContent = label;
+        labelRef.current.style.opacity = '1';
       }
     };
-    const handleOut = () => {
+
+    const handleOut = (e: MouseEvent) => {
+      if (!hoveredRef.current) return;
+      const nextHoverable = getHoverable(e.relatedTarget);
+      if (nextHoverable === hoveredRef.current) return;
+
+      hoveredRef.current = null;
       scale.set(1);
       if (labelRef.current) {
         labelRef.current.style.opacity = '0';
@@ -81,6 +103,12 @@ const CustomCursor = () => {
     document.addEventListener('mouseup', handleUp);
 
     const handleLeave = () => {
+      hoveredRef.current = null;
+      if (labelRef.current) labelRef.current.style.opacity = '0';
+      if (moveFrameRef.current !== null) {
+        window.cancelAnimationFrame(moveFrameRef.current);
+        moveFrameRef.current = null;
+      }
       dotX.set(-100);
       dotY.set(-100);
     };
@@ -95,6 +123,10 @@ const CustomCursor = () => {
       document.removeEventListener('mouseup', handleUp);
       document.removeEventListener('mouseleave', handleLeave);
       window.removeEventListener('touchstart', checkTouch);
+      if (moveFrameRef.current !== null) {
+        window.cancelAnimationFrame(moveFrameRef.current);
+        moveFrameRef.current = null;
+      }
     };
   }, [handleMove, dotX, dotY, scale]);
 
@@ -106,7 +138,7 @@ const CustomCursor = () => {
     <div ref={visibleRef} className="hidden md:block">
       {/* Inner dot */}
       <motion.div
-        className="fixed top-0 left-0 z-[9998] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 z-9998 pointer-events-none mix-blend-difference"
         style={{
           x: dotSpringX,
           y: dotSpringY,
@@ -119,7 +151,7 @@ const CustomCursor = () => {
 
       {/* Outer ring */}
       <motion.div
-        className="fixed top-0 left-0 z-[9997] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 z-9997 pointer-events-none mix-blend-difference"
         style={{
           x: ringX,
           y: ringY,

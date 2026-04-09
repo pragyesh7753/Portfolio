@@ -43,24 +43,32 @@ const LoadingScreen = ({ onComplete }: Props) => {
   }, []);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const lightweightMode = prefersReducedMotion || isMobile;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
       // Stagger word reveal
       const words = wordsRef.current?.querySelectorAll('.ld-word');
       if (words?.length) {
-        tl.fromTo(
-          words,
-          { y: '120%', rotateX: -60 },
-          {
-            y: '0%',
-            rotateX: 0,
-            stagger: 0.08,
-            duration: 0.8,
-            ease: 'power4.out',
-            delay: 0.15,
-          }
-        );
+        if (lightweightMode) {
+          gsap.set(words, { y: '0%', rotateX: 0 });
+        } else {
+          tl.fromTo(
+            words,
+            { y: '120%', rotateX: -60 },
+            {
+              y: '0%',
+              rotateX: 0,
+              stagger: 0.08,
+              duration: 0.8,
+              ease: 'power4.out',
+              delay: 0.15,
+            }
+          );
+        }
       }
 
       // Counter + ring
@@ -77,7 +85,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
         obj,
         {
           val: 100,
-          duration: 1.4,
+          duration: lightweightMode ? 0.8 : 1.4,
           ease: 'power2.inOut',
           onUpdate() {
             const v = Math.round(obj.val);
@@ -90,7 +98,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
           },
           onComplete: triggerExit,
         },
-        '-=0.6'
+        lightweightMode ? '+=0' : '-=0.6'
       );
     }, containerRef);
 
@@ -100,7 +108,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[200] flex items-center justify-center"
+      className="fixed inset-0 z-200 flex items-center justify-center"
       style={{
         backgroundColor: '#080810',
         clipPath: 'inset(0 0 0 0)',
@@ -109,7 +117,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
       {/* Gradient mesh */}
       <div className="absolute inset-0 opacity-30">
         <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[100px]"
+          className="absolute w-150 h-150 rounded-full blur-[100px]"
           style={{
             background:
               'radial-gradient(circle, rgba(134,102,255,0.5) 0%, transparent 70%)',
@@ -118,7 +126,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
           }}
         />
         <div
-          className="absolute w-[400px] h-[400px] rounded-full blur-[80px]"
+          className="absolute w-100 h-100 rounded-full blur-[80px]"
           style={{
             background:
               'radial-gradient(circle, rgba(34,211,238,0.4) 0%, transparent 70%)',
@@ -186,7 +194,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
             {'PRAGYESH'.split('').map((char, i) => (
               <span
                 key={i}
-                className="ld-word inline-block bg-gradient-to-b from-white via-white to-purple-200 bg-clip-text text-transparent font-display"
+                className="ld-word inline-block bg-linear-to-b from-white via-white to-purple-200 bg-clip-text text-transparent font-display"
                 style={{
                   fontSize: 'clamp(3rem, 10vw, 7rem)',
                   fontWeight: 700,
@@ -241,14 +249,6 @@ const LoadingScreen = ({ onComplete }: Props) => {
           </div>
         </div>
       </div>
-
-      {/* Corner metadata */}
-      <span className="absolute top-8 left-8 text-[10px] text-white/[0.1] font-mono tracking-[0.25em] uppercase hidden sm:block">
-        Portfolio / 2026
-      </span>
-      <span className="absolute bottom-8 right-8 text-[10px] text-white/[0.1] font-mono tracking-[0.25em] uppercase hidden sm:block">
-        Full Stack Developer
-      </span>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { scrollToSection } from './SmoothScroll';
+import { scrollToSection } from '@/lib/utils';
 import { ArrowRight, Download } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -29,6 +29,10 @@ const Home = () => {
   const floatingRef = useRef<HTMLDivElement>(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const [animReady, setAnimReady] = useState(false);
+  const lightweightMotion =
+    typeof window !== 'undefined' &&
+    (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      window.matchMedia('(max-width: 768px)').matches);
 
   // Role cycling
   useEffect(() => {
@@ -42,7 +46,7 @@ const Home = () => {
 
   // GSAP entrance
   useEffect(() => {
-    const DELAY = 3.6;
+    const DELAY = lightweightMotion ? 0.12 : 1.1;
     const timerId = setTimeout(() => {
       setAnimReady(true);
 
@@ -59,58 +63,74 @@ const Home = () => {
         // Name characters
         const nameChars = nameRef.current?.querySelectorAll('.hero-char');
         if (nameChars?.length) {
-          tl.fromTo(
-            nameChars,
-            { y: '115%', rotateX: -80, opacity: 0 },
-            {
-              y: '0%',
-              rotateX: 0,
-              opacity: 1,
-              stagger: 0.04,
-              duration: 1.3,
-            },
-            '-=0.3'
-          );
+          if (lightweightMotion) {
+            gsap.set(nameChars, { y: '0%', rotateX: 0, opacity: 1 });
+          } else {
+            tl.fromTo(
+              nameChars,
+              { y: '115%', rotateX: -80, opacity: 0 },
+              {
+                y: '0%',
+                rotateX: 0,
+                opacity: 1,
+                stagger: 0.04,
+                duration: 1.3,
+              },
+              '-=0.3'
+            );
+          }
         }
 
         // Subtitle characters
         const subChars = subRef.current?.querySelectorAll('.hero-char');
         if (subChars?.length) {
-          tl.fromTo(
-            subChars,
-            { y: '115%', opacity: 0 },
-            { y: '0%', opacity: 1, stagger: 0.025, duration: 0.9 },
-            '-=0.8'
-          );
+          if (lightweightMotion) {
+            gsap.set(subChars, { y: '0%', opacity: 1 });
+          } else {
+            tl.fromTo(
+              subChars,
+              { y: '115%', opacity: 0 },
+              { y: '0%', opacity: 1, stagger: 0.025, duration: 0.9 },
+              '-=0.8'
+            );
+          }
         }
 
         // Bottom content
         const fadeEls = bottomRef.current?.querySelectorAll('.hero-fade');
         if (fadeEls?.length) {
           gsap.set(bottomRef.current, { opacity: 1 });
-          tl.fromTo(
-            fadeEls,
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, stagger: 0.12, duration: 0.7 },
-            '-=0.5'
-          );
+          if (lightweightMotion) {
+            gsap.set(fadeEls, { y: 0, opacity: 1 });
+          } else {
+            tl.fromTo(
+              fadeEls,
+              { y: 30, opacity: 0 },
+              { y: 0, opacity: 1, stagger: 0.12, duration: 0.7 },
+              '-=0.5'
+            );
+          }
         }
 
         // Floating shapes
         const shapes = floatingRef.current?.querySelectorAll('.floating-shape');
         if (shapes?.length) {
-          tl.fromTo(
-            shapes,
-            { scale: 0, opacity: 0 },
-            {
-              scale: 1,
-              opacity: 1,
-              stagger: 0.1,
-              duration: 0.8,
-              ease: 'back.out(1.7)',
-            },
-            '-=0.6'
-          );
+          if (lightweightMotion) {
+            gsap.set(shapes, { scale: 1, opacity: 1 });
+          } else {
+            tl.fromTo(
+              shapes,
+              { scale: 0, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                stagger: 0.1,
+                duration: 0.8,
+                ease: 'back.out(1.7)',
+              },
+              '-=0.6'
+            );
+          }
         }
 
         // Parallax on scroll
@@ -154,7 +174,7 @@ const Home = () => {
     }, DELAY * 1000);
 
     return () => clearTimeout(timerId);
-  }, []);
+  }, [lightweightMotion]);
 
   return (
     <section
@@ -165,7 +185,7 @@ const Home = () => {
       {/* Hero glow */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[700px] rounded-full blur-[160px] opacity-25 dark:opacity-15"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-175 rounded-full blur-[160px] opacity-25 dark:opacity-15"
           style={{
             background:
               'radial-gradient(ellipse, rgba(var(--primary-rgb),0.6) 0%, rgba(var(--accent-violet-rgb),0.3) 40%, rgba(var(--accent-cyan-rgb),0.1) 70%, transparent 100%)',
@@ -176,7 +196,7 @@ const Home = () => {
       {/* Floating geometric shapes */}
       <div
         ref={floatingRef}
-        className="absolute inset-0 -z-[5] pointer-events-none"
+        className="absolute inset-0 -z-5 pointer-events-none"
       >
         <div
           className="floating-shape absolute top-[15%] right-[18%] w-20 h-20 rounded-full border border-primary/10 animate-float opacity-0"
@@ -195,16 +215,16 @@ const Home = () => {
           style={{ animationDelay: '1.5s' }}
         />
         <div
-          className="floating-shape absolute top-[20%] left-[15%] w-1 h-24 bg-gradient-to-b from-accent-cyan/10 to-transparent animate-float opacity-0"
+          className="floating-shape absolute top-[20%] left-[15%] w-1 h-24 bg-linear-to-b from-accent-cyan/10 to-transparent animate-float opacity-0"
           style={{ animationDelay: '0.5s' }}
         />
       </div>
 
       {/* Main content */}
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full">
+      <div className="max-w-350 mx-auto px-6 lg:px-12 w-full">
         {/* Available badge */}
         <div ref={badgeRef} className="mb-10 opacity-0">
-          <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/15 bg-primary/[0.04] text-xs font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/15 bg-primary/4 text-xs font-medium text-muted-foreground">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -223,7 +243,7 @@ const Home = () => {
               {'PRAGYESH'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="hero-char inline-block font-display bg-gradient-to-br from-foreground via-foreground/90 to-primary/70 dark:from-white dark:via-purple-100 dark:to-violet-300 bg-clip-text text-transparent leading-[0.85]"
+                  className="hero-char inline-block font-display bg-linear-to-br from-foreground via-foreground/90 to-primary/70 dark:from-white dark:via-purple-100 dark:to-violet-300 bg-clip-text text-transparent leading-[0.85]"
                   style={{
                     fontSize: 'clamp(3.5rem, 12vw, 13rem)',
                     fontWeight: 700,
@@ -269,7 +289,7 @@ const Home = () => {
         {/* Bottom content row */}
         <div
           ref={bottomRef}
-          className="grid lg:grid-cols-2 gap-12 items-end opacity-0"
+          className={`grid lg:grid-cols-2 gap-12 items-end ${lightweightMotion ? '' : 'opacity-0'}`}
         >
           <div className="space-y-5">
             {/* Role cycling */}
@@ -286,7 +306,7 @@ const Home = () => {
                   }}
                   className="block text-lg tracking-wide font-light"
                 >
-                  <span className="bg-gradient-to-r from-primary to-accent-violet bg-clip-text text-transparent">
+                  <span className="bg-linear-to-r from-primary to-accent-violet bg-clip-text text-transparent">
                     {ROLES[roleIndex]}
                   </span>
                 </motion.span>
@@ -303,7 +323,7 @@ const Home = () => {
             <div className="hero-fade flex items-center gap-4 pt-2">
               <button
                 onClick={() => scrollToSection('contact')}
-                className="group relative px-7 py-3.5 text-sm font-semibold rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.03] active:scale-95 bg-gradient-to-r from-primary to-accent-violet text-white shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                className="group relative px-7 py-3.5 text-sm font-semibold rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.03] active:scale-95 bg-linear-to-r from-primary to-accent-violet text-white shadow-lg shadow-primary/20 hover:shadow-primary/30"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Let's Talk
@@ -313,7 +333,7 @@ const Home = () => {
               <a
                 href="https://drive.google.com/uc?export=download&id=1cXLVxskfDsiRtHcAdQY_p8EbdB5Do3gb"
                 download="Pragyesh_Kumar_Seth_Resume.pdf"
-                className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium rounded-full border border-foreground/10 text-foreground hover:border-primary/30 hover:bg-primary/[0.04] transition-all duration-300"
+                className="flex items-center gap-2 px-7 py-3.5 text-sm font-medium rounded-full border border-foreground/10 text-foreground hover:border-primary/30 hover:bg-primary/4 transition-all duration-300"
               >
                 <Download className="w-4 h-4" />
                 Resume
@@ -324,15 +344,15 @@ const Home = () => {
       </div>
 
       {/* Horizontal marquee strip */}
-      <div className="absolute bottom-6 left-0 right-0 border-y border-foreground/[0.04] py-3.5 overflow-hidden pointer-events-none z-0">
+      <div className="absolute bottom-6 left-0 right-0 border-y border-foreground/4 py-3.5 overflow-hidden pointer-events-none z-0">
         <div className="animate-marquee flex whitespace-nowrap">
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
             <span
               key={i}
-              className="mx-8 text-[13px] font-semibold font-display text-primary/[0.08] uppercase tracking-[0.2em] flex items-center gap-8"
+              className="mx-8 text-[13px] font-semibold font-display text-primary/8 uppercase tracking-[0.2em] flex items-center gap-8"
             >
               {item}
-              <span className="text-accent-violet/[0.12]">✦</span>
+              <span className="text-accent-violet/12">✦</span>
             </span>
           ))}
         </div>
@@ -349,7 +369,7 @@ const Home = () => {
           Scroll Down
         </span>
         <motion.div
-          className="w-[1.5px] h-16 bg-gradient-to-b from-primary/40 to-transparent origin-top"
+          className="w-[1.5px] h-16 bg-linear-to-b from-primary/40 to-transparent origin-top"
           initial={{ scaleY: 0 }}
           animate={animReady ? { scaleY: [0, 1, 0] } : {}}
           transition={{

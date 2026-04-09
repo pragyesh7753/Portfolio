@@ -18,12 +18,17 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('framer-motion')) return 'framer-motion';
-            if (id.includes('gsap')) return 'gsap';
-            if (id.includes('lenis')) return 'lenis';
-            if (id.includes('lucide-react')) return 'lucide-react';
-            return 'vendor';
+          const moduleId = id.replace(/\\/g, '/');
+          if (!moduleId.includes('/node_modules/')) return;
+
+          if (moduleId.includes('/framer-motion/')) return 'framer-motion';
+          if (moduleId.includes('/gsap/')) return 'gsap';
+          if (moduleId.includes('/lenis/')) return 'lenis';
+          if (moduleId.includes('/lucide-react/')) return 'lucide-react';
+          if (moduleId.includes('/@emailjs/')) return 'emailjs';
+          if (moduleId.includes('/@radix-ui/')) return 'radix-ui';
+          if (moduleId.includes('/react/') || moduleId.includes('/react-dom/')) {
+            return 'react-vendor';
           }
         },
       },

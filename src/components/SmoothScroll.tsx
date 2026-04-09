@@ -21,24 +21,20 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const update = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+
+    gsap.ticker.add(update);
 
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      lenis.off('scroll', ScrollTrigger.update);
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(update);
     };
   }, []);
 
   return <>{children}</>;
-}
-
-export function scrollToSection(id: string) {
-  const el = document.getElementById(id);
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' });
-  }
 }

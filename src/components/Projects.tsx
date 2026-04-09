@@ -221,12 +221,12 @@ const Projects = () => {
     <section id="projects" ref={sectionRef} className="relative py-32 md:py-40 overflow-hidden">
       {/* Accent glow */}
       <div
-        className="absolute top-20 left-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.04] pointer-events-none"
+        className="absolute top-20 left-0 w-125 h-125 rounded-full blur-[120px] opacity-[0.04] pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(var(--accent-violet-rgb),0.8), transparent 70%)',
         }}
       />
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <div className="max-w-350 mx-auto px-6 lg:px-12">
         {/* Label */}
         <div className="mb-4">
           <span className="text-[10px] font-mono text-accent-violet/50 uppercase tracking-[0.3em]">
@@ -241,7 +241,7 @@ const Projects = () => {
               {'SELECTED WORK'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="proj-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="proj-char inline-block leading-[0.85] font-display bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 700,
@@ -269,8 +269,8 @@ const Projects = () => {
                 className={cn(
                   'px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 capitalize',
                   filter === cat
-                    ? 'bg-gradient-to-r from-primary to-accent-violet text-white shadow-md shadow-primary/20'
-                    : 'bg-foreground/[0.04] text-muted-foreground hover:bg-foreground/[0.08] border border-foreground/[0.06]'
+                    ? 'bg-linear-to-r from-primary to-accent-violet text-white shadow-md shadow-primary/20'
+                    : 'bg-foreground/4 text-muted-foreground hover:bg-foreground/8 border border-foreground/6'
                 )}
               >
                 {cat === 'all' ? 'All' : cat}
@@ -283,7 +283,7 @@ const Projects = () => {
               placeholder="Search projects..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 rounded-full bg-foreground/[0.03] border-foreground/[0.06] text-sm h-10"
+              className="pl-10 rounded-full bg-foreground/3 border-foreground/6 text-sm h-10"
             />
           </div>
         </div>
@@ -314,7 +314,7 @@ const Projects = () => {
                 </Button>
               </motion.div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 auto-rows-fr gap-5">
                 {filtered.map((project, index) => (
                   <ProjectCard key={project.id} project={project} index={index} />
                 ))}
@@ -332,12 +332,17 @@ const Projects = () => {
 const ProjectCard = memo(({ project, index }: { project: Project; index: number }) => {
   const num = String(index + 1).padStart(2, '0');
   const cardRef = useRef<HTMLDivElement>(null);
+  const boundsRef = useRef<DOMRect | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+  const applyTilt = useCallback(() => {
+    frameRef.current = null;
+    if (!cardRef.current || !boundsRef.current) return;
+
+    const rect = boundsRef.current;
+    const x = pointerRef.current.x - rect.left;
+    const y = pointerRef.current.y - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     const rotateX = ((y - centerY) / centerY) * -4;
@@ -346,31 +351,59 @@ const ProjectCard = memo(({ project, index }: { project: Project; index: number 
     cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
   }, []);
 
+  const handleMouseEnter = useCallback(() => {
+    if (!cardRef.current) return;
+    boundsRef.current = cardRef.current.getBoundingClientRect();
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    pointerRef.current = { x: e.clientX, y: e.clientY };
+    if (!boundsRef.current && cardRef.current) {
+      boundsRef.current = cardRef.current.getBoundingClientRect();
+    }
+    if (frameRef.current !== null) return;
+    frameRef.current = window.requestAnimationFrame(applyTilt);
+  }, [applyTilt]);
+
   const handleMouseLeave = useCallback(() => {
+    boundsRef.current = null;
+    if (frameRef.current !== null) {
+      window.cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
     if (!cardRef.current) return;
     cardRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
   }, []);
 
   return (
     <motion.div
       layout
-      className="project-card"
+      className="project-card h-full"
     >
       <div
         ref={cardRef}
+        onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="group relative rounded-2xl border border-foreground/[0.06] bg-gradient-to-br from-foreground/[0.02] to-primary/[0.015] hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
+        className="group relative h-full rounded-2xl border border-foreground/6 bg-linear-to-br from-foreground/2 to-primary/1.5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
         style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
       >
         {/* Hover gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-accent-violet/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute inset-0 bg-linear-to-br from-primary/4 via-transparent to-accent-violet/4 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-        <div className="relative p-7 sm:p-8">
+        <div className="relative h-full p-7 sm:p-8 flex flex-col">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 mb-5">
             <div className="flex items-center gap-3">
-              <span className="text-4xl font-display font-bold text-foreground/[0.06] leading-none select-none">
+              <span className="text-4xl font-display font-bold text-foreground/6 leading-none select-none">
                 {num}
               </span>
               <div>
@@ -392,7 +425,7 @@ const ProjectCard = memo(({ project, index }: { project: Project; index: number 
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-full border border-foreground/[0.06] text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/[0.04] transition-all duration-300 opacity-0 group-hover:opacity-100"
+              className="p-2.5 rounded-full border border-foreground/6 text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/4 transition-all duration-300 opacity-0 group-hover:opacity-100"
               aria-label={`Visit ${project.title}`}
             >
               <ArrowUpRight className="w-4 h-4" />
@@ -405,11 +438,11 @@ const ProjectCard = memo(({ project, index }: { project: Project; index: number 
           </p>
 
           {/* Tech tags */}
-          <div className="flex flex-wrap gap-1.5 mb-6">
+          <div className="flex flex-wrap gap-1.5 mb-6 min-h-14 content-start">
             {project.tech.map((t) => (
               <span
                 key={t}
-                className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-primary/[0.06] text-primary/80 border border-primary/10 hover:bg-primary/10 transition-colors duration-300"
+                className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-primary/6 text-primary/80 border border-primary/10 hover:bg-primary/10 transition-colors duration-300"
               >
                 {t}
               </span>
@@ -417,7 +450,7 @@ const ProjectCard = memo(({ project, index }: { project: Project; index: number 
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-5 border-t border-foreground/[0.04]">
+          <div className="mt-auto flex items-center gap-2 pt-5 border-t border-foreground/4">
             <Button variant="ghost" size="sm" className="rounded-full text-xs h-8 px-3" asChild>
               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3 h-3 mr-1.5" />
@@ -467,7 +500,7 @@ const ProjectModal = ({ project }: { project: Project }) => (
         </p>
         <Separator />
         <Tabs defaultValue="features" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-foreground/[0.04]">
+          <TabsList className="grid w-full grid-cols-3 bg-foreground/4">
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="tech">Tech</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
@@ -477,7 +510,7 @@ const ProjectModal = ({ project }: { project: Project }) => (
               <ul className="space-y-2.5 pt-2">
                 {project.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 shrink-0" />
                     {f}
                   </li>
                 ))}

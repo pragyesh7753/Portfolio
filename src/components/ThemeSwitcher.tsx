@@ -1,5 +1,5 @@
 
-import { useTheme } from "./ThemeProvider"
+import { useTheme } from "./theme-provider-context"
 import { Sun, Moon } from "lucide-react"
 
 export function ThemeSwitcher() {
@@ -9,7 +9,7 @@ export function ThemeSwitcher() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={`relative w-20 h-10 rounded-full transition-all duration-700 overflow-hidden shadow-lg border-2 border-slate-300 dark:border-slate-700 flex items-center px-1 ${isDark ? 'bg-gradient-to-br from-slate-800 to-slate-900' : 'bg-gradient-to-br from-sky-200 to-blue-400'}`}
+      className={`relative w-20 h-10 rounded-full transition-all duration-700 overflow-hidden shadow-lg border-2 border-slate-300 dark:border-slate-700 flex items-center px-1 ${isDark ? 'bg-linear-to-br from-slate-800 to-slate-900' : 'bg-linear-to-br from-sky-200 to-blue-400'}`}
       aria-label="Toggle theme"
       style={{ minWidth: 80, minHeight: 40 }}
     >
@@ -30,7 +30,7 @@ export function ThemeSwitcher() {
       </div>
       {/* Toggle knob with icon */}
       <div
-        className={`absolute w-9 h-9 rounded-full shadow-md flex items-center justify-center transition-transform duration-700 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ${isDark ? 'translate-x-[2.5rem]' : 'translate-x-0'}`}
+        className={`absolute w-9 h-9 rounded-full shadow-md flex items-center justify-center transition-transform duration-700 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ${isDark ? 'translate-x-10' : 'translate-x-0'}`}
         style={{ zIndex: 2 }}
       >
         {isDark ? (

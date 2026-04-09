@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { cn } from '@/lib/utils';
-import { scrollToSection } from './SmoothScroll';
+import { cn, scrollToSection } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { id: 'home', label: 'Home' },
@@ -14,10 +13,15 @@ const NAV_ITEMS = [
   { id: 'contact', label: 'Contact' },
 ];
 
+const SECTION_IDS = NAV_ITEMS.map((item) => item.id);
+
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const visibleRef = useRef(false);
+  const activeSectionRef = useRef('home');
+  const scrollRafRef = useRef<number | null>(null);
 
   // Scroll progress
   const { scrollYProgress } = useScroll();
@@ -34,20 +38,47 @@ const Navbar = () => {
   }, [scaleX]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.6);
+    const updateNavFromScroll = () => {
+      const nextVisible = window.scrollY > window.innerHeight * 0.6;
+      if (nextVisible !== visibleRef.current) {
+        visibleRef.current = nextVisible;
+        setVisible(nextVisible);
+      }
 
-      const sections = NAV_ITEMS.map((n) => n.id);
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
+      let nextActive = activeSectionRef.current;
+      for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
+        const el = document.getElementById(SECTION_IDS[i]);
         if (el && el.getBoundingClientRect().top <= 200) {
-          setActiveSection(sections[i]);
+          nextActive = SECTION_IDS[i];
           break;
         }
       }
+
+      if (nextActive !== activeSectionRef.current) {
+        activeSectionRef.current = nextActive;
+        setActiveSection(nextActive);
+      }
     };
+
+    const handleScroll = () => {
+      if (scrollRafRef.current !== null) return;
+      scrollRafRef.current = window.requestAnimationFrame(() => {
+        scrollRafRef.current = null;
+        updateNavFromScroll();
+      });
+    };
+
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (scrollRafRef.current !== null) {
+        window.cancelAnimationFrame(scrollRafRef.current);
+      }
+    };
   }, []);
 
   const handleClick = useCallback((id: string) => {
@@ -68,7 +99,7 @@ const Navbar = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden md:block"
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-100 hidden md:block"
           >
             <div className="flex items-center gap-1 px-2.5 py-2 rounded-full glass shadow-2xl shadow-black/10 dark:shadow-black/30">
               {/* Logo */}
@@ -83,7 +114,7 @@ const Navbar = () => {
                 />
               </button>
 
-              <div className="w-px h-4 bg-foreground/[0.08]" />
+              <div className="w-px h-4 bg-foreground/8" />
 
               {NAV_ITEMS.map((item) => (
                 <button
@@ -115,7 +146,7 @@ const Navbar = () => {
                 </button>
               ))}
 
-              <div className="w-px h-4 bg-foreground/[0.08]" />
+              <div className="w-px h-4 bg-foreground/8" />
 
               <div className="px-1">
                 <ThemeSwitcher />
@@ -126,7 +157,7 @@ const Navbar = () => {
       </AnimatePresence>
 
       {/* Mobile controls */}
-      <div className="md:hidden fixed top-4 right-4 z-[100] flex items-center gap-2">
+      <div className="md:hidden fixed top-4 right-4 z-100 flex items-center gap-2">
         <AnimatePresence>
           {visible && (
             <>
@@ -161,7 +192,7 @@ const Navbar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[99] bg-background/98 backdrop-blur-2xl md:hidden flex items-center justify-center"
+            className="fixed inset-0 z-99 bg-background/98 backdrop-blur-2xl md:hidden flex items-center justify-center"
           >
             <nav className="space-y-6 text-center">
               {NAV_ITEMS.map((item, i) => (

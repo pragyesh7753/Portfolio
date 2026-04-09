@@ -8,7 +8,7 @@ const stats = [
   { value: 6, suffix: '+', label: 'Projects' },
   { value: 10, suffix: '+', label: 'Technologies' },
   { value: 8, suffix: '', label: 'Certificates' },
-  { value: 1, suffix: 'K+', label: 'Lines of Code' },
+  { value: 10, suffix: 'K+', label: 'Lines of Code' },
 ];
 
 const skills = [
@@ -28,9 +28,9 @@ const skills = [
     items: ['MongoDB', 'MySQL', 'Appwrite'],
   },
   {
-    category: 'Tools',
+    category: 'Cloud',
     icon: '■',
-    items: ['Git', 'VS Code', 'Figma', 'Vercel', 'Cloudinary'],
+    items: ['AWS'],
   },
 ];
 
@@ -174,14 +174,14 @@ const About = () => {
     >
       {/* Section accent glow */}
       <div
-        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none"
+        className="absolute top-0 right-0 w-125 h-125 rounded-full blur-[120px] opacity-[0.05] pointer-events-none"
         style={{
           background:
             'radial-gradient(circle, rgba(var(--accent-cyan-rgb),0.8), transparent 70%)',
         }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <div className="max-w-350 mx-auto px-6 lg:px-12">
         {/* Section label */}
         <div className="mb-4">
           <span className="text-[10px] font-mono text-primary/50 uppercase tracking-[0.3em]">
@@ -196,7 +196,7 @@ const About = () => {
               {'ABOUT ME'.split('').map((char, i) => (
                 <span
                   key={i}
-                  className="about-char inline-block leading-[0.85] font-display bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
+                  className="about-char inline-block leading-[0.85] font-display bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent"
                   style={{
                     fontSize: 'clamp(2.5rem, 7vw, 8rem)',
                     fontWeight: 700,
@@ -215,7 +215,7 @@ const About = () => {
           {/* Avatar */}
           <div className="lg:col-span-4 bio-reveal">
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-foreground/[0.03] border border-primary/10 shadow-2xl shadow-primary/5">
+              <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-foreground/3 border border-primary/10 shadow-2xl shadow-primary/5">
                 <img
                   src="/dp.jpg"
                   alt="Pragyesh Kumar Seth"
@@ -223,7 +223,7 @@ const About = () => {
                   loading="lazy"
                 />
                 {/* Gradient overlay */}
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background/80 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-background/80 to-transparent" />
               </div>
               {/* Decorative accent */}
               <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-2xl border border-primary/10 -z-10" />
@@ -263,7 +263,7 @@ const About = () => {
               {personalInfo.map((item) => (
                 <span
                   key={item}
-                  className="text-sm text-muted-foreground px-4 py-2 rounded-full border border-primary/10 bg-primary/[0.03] hover:border-primary/20 hover:bg-primary/[0.06] transition-all duration-300"
+                  className="text-sm text-muted-foreground px-4 py-2 rounded-full border border-primary/10 bg-primary/3 hover:border-primary/20 hover:bg-primary/6 transition-all duration-300"
                 >
                   {item}
                 </span>
@@ -275,12 +275,12 @@ const About = () => {
         {/* Stats */}
         <div
           ref={statsRef}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-28 py-14 border-y border-primary/[0.06]"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-28 py-14 border-y border-primary/6"
         >
           {stats.map((stat) => (
             <div key={stat.label} className="text-center group">
               <span
-                className="stat-number text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight bg-gradient-to-b from-foreground to-foreground/40 bg-clip-text text-transparent transition-all duration-300 group-hover:from-primary group-hover:to-accent-violet"
+                className="stat-number text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight bg-linear-to-b from-foreground to-foreground/40 bg-clip-text text-transparent transition-all duration-300 group-hover:from-primary group-hover:to-accent-violet"
                 data-target={stat.value}
                 data-suffix={stat.suffix}
               >
@@ -302,10 +302,10 @@ const About = () => {
             {skills.map((group) => (
               <div
                 key={group.category}
-                className="skill-card group p-6 rounded-2xl border border-foreground/[0.05] bg-gradient-to-br from-foreground/[0.02] to-primary/[0.02] hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden"
+                className="skill-card group p-6 rounded-2xl border border-foreground/5 bg-linear-to-br from-foreground/2 to-primary/2 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden"
               >
                 {/* Hover glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-accent-cyan/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/4 via-transparent to-accent-cyan/4 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
@@ -320,7 +320,7 @@ const About = () => {
                     {group.items.map((skill) => (
                       <span
                         key={skill}
-                        className="text-[13px] px-3 py-1.5 rounded-full bg-foreground/[0.04] text-foreground/70 hover:bg-primary/10 hover:text-foreground transition-all duration-300 cursor-default"
+                        className="text-[13px] px-3 py-1.5 rounded-full bg-foreground/4 text-foreground/70 hover:bg-primary/10 hover:text-foreground transition-all duration-300 cursor-default"
                       >
                         {skill}
                       </span>
