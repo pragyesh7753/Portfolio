@@ -31,6 +31,53 @@ interface Project {
 
 const PROJECTS: Project[] = [
   {
+    id: 'rakshak-ai',
+    title: 'Rakshak AI',
+    description:
+      'A proactive cyber intelligence platform designed to help MSMEs detect, analyze, and mitigate digital threats using AI-driven monitoring and threat intelligence.',
+    longDescription:
+      'Rakshak AI is a full-stack cyber intelligence platform focused on proactive security for MSMEs. It continuously monitors social platforms, suspicious domains, and email threats to detect early signs of cyber attacks such as phishing, brand impersonation, and data leaks. The system leverages AI models for contextual analysis, risk scoring, and automated insights, enabling organizations to respond to threats before they escalate.',
+    tech: [
+      'React',
+      'Tailwind CSS',
+      'Node.js',
+      'Express',
+      'MongoDB',
+      'REST APIs',
+      'WHOIS API',
+      'crt.sh',
+      'AI/LLM Integration'
+    ],
+    category: 'fullstack',
+    liveUrl: '',
+    githubUrl: '',
+    featured: true,
+    status: 'in-progress',
+    features: [
+      'AI-powered social media threat intelligence (keyword + context-based detection)',
+      'Domain analysis for typosquatting, phishing, and malicious registrations',
+      'Real-time monitoring using WHOIS and certificate transparency logs (crt.sh)',
+      'Risk scoring engine to prioritize threats based on severity',
+      'Email intelligence system for analyzing suspicious forwarded emails',
+      'Custom keyword generation using AI for organization-specific threat tracking',
+      'Centralized dashboard for monitoring and alerts'
+    ],
+    challenges: [
+      'Designing accurate threat detection beyond simple keyword matching',
+      'Integrating multiple external data sources (WHOIS, crt.sh, social feeds)',
+      'Building a scalable and dynamic risk scoring system',
+      'Handling noisy and unstructured social media data',
+      'Ensuring real-time monitoring without performance bottlenecks'
+    ],
+    learnings: [
+      'Applied AI/LLMs for cybersecurity use cases',
+      'Built multi-source threat intelligence pipelines',
+      'Learned domain monitoring techniques (WHOIS + SSL logs)',
+      'Improved backend architecture for real-time data processing',
+      'Understood practical challenges in cybersecurity for MSMEs'
+    ],
+  },
+  {
     id: 'chatify',
     title: 'Chatify',
     description:
