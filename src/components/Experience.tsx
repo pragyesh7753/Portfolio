@@ -1,53 +1,9 @@
 import { useEffect, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { TIMELINE } from '@/data/experienceData';
 
 gsap.registerPlugin(ScrollTrigger);
-
-interface TimelineEntry {
-  year: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  type: 'education' | 'project' | 'milestone' | 'work';
-  bullets?: string[];
-  icon: string;
-}
-
-const TIMELINE: TimelineEntry[] = [
-  {
-    year: '2021 – 2024',
-    title: 'Bachelor of Computer Applications (BCA)',
-    subtitle: 'VBS Purvanchal University',
-    description:
-      'Built a strong foundation in computer science, programming, and software development fundamentals.',
-    type: 'education',
-    icon: '🎓',
-  },
-  {
-    year: '2024 – 2026',
-    title: 'Master of Computer Applications (MCA)',
-    subtitle: 'St. Andrews Institute of Technology & Management',
-    description:
-      'Advanced studies in software engineering, web technologies, and modern application development.',
-    type: 'education',
-    icon: '🎓',
-  },
-  {
-    year: '2025',
-    title: 'Full Stack Developer Intern — Anvex AI Technologies',
-    subtitle: 'Jun 2025 – Sep 2025 · 3 Months',
-    description:
-      'Contributed to multiple production projects using the MERN stack, building both frontend and backend features.',
-    type: 'work',
-    icon: '💼',
-    bullets: [
-      'Contributed to "Anvex Speak" (frontend & backend) using MERN Stack, Shadcn UI, and Vapi.',
-      'Contributed to "Anvex Card Scanner" (frontend) using React and Shadcn UI.',
-      'Rebuilt and deployed the company website from scratch (rebranding) using React, Tailwind CSS, and Aceternity UI.',
-    ],
-  },
-];
 
 const typeColors: Record<string, string> = {
   education:

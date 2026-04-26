@@ -4,21 +4,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { scrollToSection } from '@/lib/utils';
 import { ArrowRight, Download } from 'lucide-react';
+import { MARQUEE_ITEMS, ROLES } from '@/data/homeData';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const ROLES = [
-  'Full Stack Developer',
-  'React Specialist',
-  'UI/UX Enthusiast',
-  'Problem Solver',
-];
-
-const MARQUEE_ITEMS = [
-  'REACT', 'TYPESCRIPT', 'NODE.JS', 'NEXT.JS', 'GSAP',
-  'FRAMER MOTION', 'TAILWIND CSS', 'MONGODB', 'EXPRESS',
-  'PYTHON', 'JAVASCRIPT', 'GIT',
-];
 
 const Home = () => {
   const sectionRef = useRef<HTMLElement>(null);

@@ -1,45 +1,9 @@
 import { useEffect, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { personalInfo, skills, stats } from '@/data/aboutData';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const stats = [
-  { value: 6, suffix: '+', label: 'Projects' },
-  { value: 10, suffix: '+', label: 'Technologies' },
-  { value: 8, suffix: '', label: 'Certificates' },
-  { value: 10, suffix: 'K+', label: 'Lines of Code' },
-];
-
-const skills = [
-  {
-    category: 'Frontend',
-    icon: '◆',
-    items: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'JavaScript', 'HTML/CSS'],
-  },
-  {
-    category: 'Backend',
-    icon: '▲',
-    items: ['Node.js', 'Express', 'Python', 'FastAPI', 'Flask', 'REST APIs'],
-  },
-  {
-    category: 'Database',
-    icon: '●',
-    items: ['MongoDB', 'MySQL', 'Appwrite'],
-  },
-  {
-    category: 'Cloud',
-    icon: '■',
-    items: ['AWS'],
-  },
-];
-
-const personalInfo = [
-  '📍 India',
-  '📧 spragyesh86@gmail.com',
-  '🗣️ Hindi, English',
-  '⏰ Available Full-time',
-];
 
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
