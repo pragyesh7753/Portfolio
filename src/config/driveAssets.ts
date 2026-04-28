@@ -11,7 +11,8 @@ export const DRIVE_ASSETS = {
     merit: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view",
     java: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view",
     bapu: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view",
-    voter: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view"
+    voter: "https://drive.google.com/file/d/1-s3ush5s-l02xGnR5EQImH-evfbcXq8n/view",
+    cloudComputing: "https://drive.google.com/file/d/1MjqtL_goeu7Lz0twg7ckjSPWmkyiXzPl/view"
   },
 
   // Documents

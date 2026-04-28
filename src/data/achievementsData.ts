@@ -121,6 +121,18 @@ export const certificates: Certificate[] = [
     category: 'community',
     description: 'Volunteering in the Voter Awareness Campaign.',
   },
+  {
+    id: 'cert-9',
+    title: 'Cloud Computing',
+    issuedBy: 'Victory Tech Solutions',
+    date: 'April 2026',
+    imageUrl: DRIVE_ASSETS.certificates.cloudComputing,
+    driveUrl: DRIVE_ASSETS.certificates.cloudComputing,
+    featured: true,
+    category: 'development',
+    description:
+      'Successful completion of the Cloud Computing training programme covering cloud infrastructure, services, and deployment models.',
+  },
 ];
 
 export const achievementCategoryFilters: AchievementCategoryFilter[] = [
