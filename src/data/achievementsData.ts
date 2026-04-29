@@ -93,7 +93,7 @@ export const certificates: Certificate[] = [
     date: 'December 2023',
     imageUrl: DRIVE_ASSETS.certificates.java,
     driveUrl: DRIVE_ASSETS.certificates.java,
-    featured: true,
+    featured: false,
     category: 'development',
     description:
       'Proficiency in core Java concepts and object-oriented programming.',
