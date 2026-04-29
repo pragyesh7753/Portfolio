@@ -8,6 +8,7 @@ export const DRIVE_ASSETS = {
     python: "https://drive.google.com/file/d/10JjoNg3OWXE88hxbSszL0JqnyjFnZalZ/view",
     aincat: "https://drive.google.com/file/d/10GkkBMfouZQFMABYuQlmHPH2a_YklnPB/view",
     innoviz: "https://drive.google.com/file/d/10BadZlGjPAen5ArSRActyX7W1jjFP4TI/view",
+    innoviz2026: "https://drive.google.com/file/d/1rENgLBlJeUi1PvVYJP-1N-26B-sFbVOG/view?usp=drive_link",
     merit: "https://drive.google.com/file/d/1-NElN1Nzlr7rZJ3KZMIgkEeuCU2X0gZ2/view",
     java: "https://drive.google.com/file/d/1-OQW-uE9895leHDSoU8MC_qwF9x6Eqko/view",
     bapu: "https://drive.google.com/file/d/1-llO6dL6eguwMM4dOcymZ7j3Iu9Thjsz/view",

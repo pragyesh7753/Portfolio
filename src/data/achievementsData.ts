@@ -69,7 +69,7 @@ export const certificates: Certificate[] = [
     date: 'April 2025',
     imageUrl: DRIVE_ASSETS.certificates.innoviz,
     driveUrl: DRIVE_ASSETS.certificates.innoviz,
-    featured: true,
+    featured: false,
     category: 'competition',
     description:
       'Participated in Innoviz 2025, showcasing innovative solutions and teamwork.',
@@ -123,6 +123,18 @@ export const certificates: Certificate[] = [
   },
   {
     id: 'cert-9',
+    title: 'InnoviZ 2026 - 1st Position',
+    issuedBy: 'St. Andrews Institute of Technology & Management',
+    date: 'April 2026',
+    imageUrl: DRIVE_ASSETS.certificates.innoviz2026,
+    driveUrl: DRIVE_ASSETS.certificates.innoviz2026,
+    featured: true,
+    category: 'competition',
+    description:
+      'Earned 1st position in InnoviZ 2026 and received the Certificate of Appreciation.',
+  },
+  {
+    id: 'cert-10',
     title: 'Cloud Computing',
     issuedBy: 'Victory Tech Solutions',
     date: 'April 2026',
