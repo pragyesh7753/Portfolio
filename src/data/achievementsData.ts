@@ -50,6 +50,42 @@ export const certificates: Certificate[] = [
       'Comprehensive Python programming course covering core concepts, data structures, and OOP.',
   },
   {
+    id: 'cert-9',
+    title: 'InnoviZ 2026 - 1st Position',
+    issuedBy: 'St. Andrews Institute of Technology & Management',
+    date: 'April 2026',
+    imageUrl: DRIVE_ASSETS.certificates.innoviz2026,
+    driveUrl: DRIVE_ASSETS.certificates.innoviz2026,
+    featured: true,
+    category: 'competition',
+    description:
+      'Earned 1st position in InnoviZ 2026 and received the Certificate of Appreciation.',
+  },
+  {
+    id: 'cert-11',
+    title: 'DevSummit 2026 - Certificate of Appreciation',
+    issuedBy: 'Faculty of Engineering & Technology, Jagannath University',
+    date: 'May 2026',
+    imageUrl: DRIVE_ASSETS.certificates.devsummit2026,
+    driveUrl: DRIVE_ASSETS.certificates.devsummit2026,
+    featured: true,
+    category: 'competition',
+    description:
+      'Awarded 6th position at DevSummit 2026 for the project "GIT HAPPENS" held on May 1-2.',
+  },
+  {
+    id: 'cert-10',
+    title: 'Cloud Computing',
+    issuedBy: 'Victory Tech Solutions',
+    date: 'April 2026',
+    imageUrl: DRIVE_ASSETS.certificates.cloudComputing,
+    driveUrl: DRIVE_ASSETS.certificates.cloudComputing,
+    featured: true,
+    category: 'development',
+    description:
+      'Successful completion of the Cloud Computing training programme covering cloud infrastructure, services, and deployment models.',
+  },
+  {
     id: 'cert-3',
     title: 'All India Online Aptitude Test 2025',
     issuedBy: 'Naukri Campus',
@@ -120,30 +156,6 @@ export const certificates: Certificate[] = [
     featured: false,
     category: 'community',
     description: 'Volunteering in the Voter Awareness Campaign.',
-  },
-  {
-    id: 'cert-9',
-    title: 'InnoviZ 2026 - 1st Position',
-    issuedBy: 'St. Andrews Institute of Technology & Management',
-    date: 'April 2026',
-    imageUrl: DRIVE_ASSETS.certificates.innoviz2026,
-    driveUrl: DRIVE_ASSETS.certificates.innoviz2026,
-    featured: true,
-    category: 'competition',
-    description:
-      'Earned 1st position in InnoviZ 2026 and received the Certificate of Appreciation.',
-  },
-  {
-    id: 'cert-10',
-    title: 'Cloud Computing',
-    issuedBy: 'Victory Tech Solutions',
-    date: 'April 2026',
-    imageUrl: DRIVE_ASSETS.certificates.cloudComputing,
-    driveUrl: DRIVE_ASSETS.certificates.cloudComputing,
-    featured: true,
-    category: 'development',
-    description:
-      'Successful completion of the Cloud Computing training programme covering cloud infrastructure, services, and deployment models.',
   },
 ];
 
