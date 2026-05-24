@@ -49,7 +49,7 @@ export const skills: SkillGroup[] = [
 
 export const personalInfo: string[] = [
   '\u{1F4CD} India',
-  '\u{1F4E7} spragyesh86@gmail.com',
+  '\u{1F4E7} admin@pragyesh.in',
   '\u{1F5E3}\uFE0F Hindi, English',
   '\u23F0 Available Full-time',
 ];

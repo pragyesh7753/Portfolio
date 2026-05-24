@@ -30,8 +30,8 @@ const contactInfo = [
   {
     icon: <Mail className="w-4 h-4" />,
     title: 'Email',
-    value: 'spragyesh86@gmail.com',
-    link: 'mailto:spragyesh86@gmail.com',
+    value: 'admin@pragyesh.in',
+    link: 'mailto:admin@pragyesh.in',
   },
   {
     icon: <Phone className="w-4 h-4" />,

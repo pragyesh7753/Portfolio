@@ -15,7 +15,7 @@ const XIcon = () => (
 const socialLinks = [
   { href: 'https://github.com/pragyesh7753', icon: Github, label: 'GitHub' },
   { href: 'http://www.linkedin.com/in/pragyesh77', icon: Linkedin, label: 'LinkedIn' },
-  { href: 'mailto:spragyesh86@gmail.com', icon: Mail, label: 'Email' },
+  { href: 'mailto:admin@pragyesh.in', icon: Mail, label: 'Email' },
   { href: 'https://x.com/SethPragyesh', icon: XIcon, label: 'X' },
 ];
 
