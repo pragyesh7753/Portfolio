@@ -41,8 +41,12 @@ export function throttle<T extends (...args: any[]) => any>(
 }
 
 export function scrollToSection(id: string) {
+  const lenis = (window as Window & { __lenis?: { scrollTo: (target: HTMLElement, options?: { offset?: number }) => void } }).__lenis;
   const el = document.getElementById(id);
-  if (el) {
+  if (!el) return;
+  if (lenis) {
+    lenis.scrollTo(el, { offset: 0 });
+  } else {
     el.scrollIntoView({ behavior: 'smooth' });
   }
 }
