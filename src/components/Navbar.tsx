@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { cn, scrollToSection } from '@/lib/utils';
@@ -22,24 +22,22 @@ const Navbar = () => {
   const visibleRef = useRef(false);
   const activeSectionRef = useRef('home');
   const scrollRafRef = useRef<number | null>(null);
-
-  // Scroll progress
-  const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const unsubscribe = scaleX.on('change', (v) => {
-      if (progressRef.current) {
-        progressRef.current.style.transform = `scaleX(${v})`;
-      }
-    });
-    return () => unsubscribe();
-  }, [scaleX]);
+    type LenisInstance = { scroll: number; limit: number; on: (e: string, cb: () => void) => void; off: (e: string, cb: () => void) => void };
+    type LenisWindow = Window & { __lenis?: LenisInstance };
 
-  useEffect(() => {
     const updateNavFromScroll = () => {
-      const nextVisible = window.scrollY > window.innerHeight * 0.6;
+      const lenis = (window as LenisWindow).__lenis;
+      const scrollY = lenis ? lenis.scroll : window.scrollY;
+      const scrollMax = lenis ? lenis.limit : document.documentElement.scrollHeight - window.innerHeight;
+      const nextVisible = scrollY > window.innerHeight * 0.6;
+
+      // Update progress bar
+      if (progressRef.current && scrollMax > 0) {
+        progressRef.current.style.transform = `scaleX(${scrollY / scrollMax})`;
+      }
       if (nextVisible !== visibleRef.current) {
         visibleRef.current = nextVisible;
         setVisible(nextVisible);
@@ -68,13 +66,29 @@ const Navbar = () => {
       });
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Attach to Lenis scroll event once it's available
+    const attachLenis = () => {
+      const lenis = (window as LenisWindow).__lenis;
+      if (lenis) {
+        lenis.on('scroll', handleScroll);
+        handleScroll();
+        return true;
+      }
+      return false;
+    };
+
+    let retryId: ReturnType<typeof setTimeout> | null = null;
+    if (!attachLenis()) {
+      retryId = setTimeout(attachLenis, 300);
+    }
+
     window.addEventListener('resize', handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      const lenis = (window as LenisWindow).__lenis;
+      lenis?.off('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      if (retryId !== null) clearTimeout(retryId);
       if (scrollRafRef.current !== null) {
         window.cancelAnimationFrame(scrollRafRef.current);
       }
