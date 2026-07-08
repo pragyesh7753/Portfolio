@@ -47,4 +47,20 @@ export const TIMELINE: TimelineEntry[] = [
       'Rebuilt and deployed the company website from scratch (rebranding) using React, Tailwind CSS, and Aceternity UI.',
     ],
   },
+  {
+    year: '2026',
+    title: 'Software Development Engineer I \u2014 Anvex AI Technologies',
+    subtitle: 'Jul 2026 \u2013 Present',
+    description:
+      'Designing and building scalable software solutions while contributing to the development, deployment, and continuous improvement of production systems.',
+    type: 'work',
+    icon: '\u{1F4BC}',
+    bullets: [
+      'Building production-ready applications and services across the software development lifecycle.',
+      'Designing scalable solutions with a focus on performance, reliability, and maintainability.',
+      'Collaborating with engineering teams to deliver new features and enhance existing systems.',
+      'Leveraging modern development practices, automation, and deployment workflows to improve engineering efficiency.',
+      'Continuously learning and adopting new technologies to solve complex technical challenges.',
+    ],
+  },
 ];
